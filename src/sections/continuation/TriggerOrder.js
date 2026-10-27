@@ -1,6 +1,4 @@
-import { ScrollTrigger } from '../../core/BaseSection.js';
-
-const FOLLOWING = 4; // Node.DOCUMENT_POSITION_FOLLOWING
+import { ScrollTrigger, byDocument } from '../../core/Scroll.js';
 
 /**
  * Sections init in page order, but matchMedia rebuilds after 'ready' create triggers late, not in page order, so pinned
@@ -8,12 +6,7 @@ const FOLLOWING = 4; // Node.DOCUMENT_POSITION_FOLLOWING
  * trigger into document order before a refresh keeps pin spacing correct.
  */
 export class TriggerOrder {
-  static byDocument(a, b) {
-    const ea = a.trigger;
-    const eb = b.trigger;
-    if (!ea || !eb || ea === eb) return (b.vars.refreshPriority || 0) - (a.vars.refreshPriority || 0);
-    return ea.compareDocumentPosition(eb) & FOLLOWING ? -1 : 1;
-  }
+  static byDocument = byDocument;
 
   static apply(refresh = false) {
     ScrollTrigger.sort(TriggerOrder.byDocument);

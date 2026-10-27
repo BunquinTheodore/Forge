@@ -1,7 +1,4 @@
-/**
- * Footer-local chapter navigation helpers (kept inside the footer folder so the
- * footer does not depend on another section's internals).
- */
+/** Chapter navigation helpers shared by the chrome (menu, rail) and the footer. */
 
 /** Resolve a chapter's DOM element (null when that section is not on the page). */
 export function chapterEl(id) {

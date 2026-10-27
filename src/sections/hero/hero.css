@@ -23,8 +23,10 @@
   mask-composite: intersect;
 }
 .sec--hero .hero__ribbon { width: 100%; height: 100%; opacity: 0.62; background: center / cover no-repeat; }
+/* Static ribbon while there is no GL: no WebGL, no JS, and mid tier until its deferred stage arrives. */
 .no-gl .sec--hero .hero__ribbon,
-.no-js .sec--hero .hero__ribbon { background-image: url('/img/ribbon-1280.webp'); }
+.no-js .sec--hero .hero__ribbon,
+.tier-mid .sec--hero:not(.has-gl) .hero__ribbon { background-image: url('/img/ribbon-1280.webp'); }
 .sec--hero.has-gl .hero__fallback { opacity: 0; }
 
 .sec--hero .hero__haze {

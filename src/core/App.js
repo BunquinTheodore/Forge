@@ -1,5 +1,5 @@
 import { Device } from './Device.js';
-import { Scroll, gsap, ScrollTrigger } from './Scroll.js';
+import { Scroll, gsap, ScrollTrigger, byDocument } from './Scroll.js';
 
 /** Section classes are discovered automatically: any src/sections/<id>/*Section.js file. */
 const SECTION_MODULES = import.meta.glob('../sections/*/*Section.js', { eager: true });
@@ -27,21 +27,14 @@ const windowLoaded = () => new Promise((r) => {
   else window.addEventListener('load', () => r(), { once: true });
 });
 
-/** ScrollTrigger refresh order: page order, so pins higher up exist before the triggers below them. */
-function byDocument(a, b) {
-  const ea = a.trigger;
-  const eb = b.trigger;
-  if (!ea || !eb || ea === eb) return (b.vars.refreshPriority || 0) - (a.vars.refreshPriority || 0);
-  return ea.compareDocumentPosition(eb) & FOLLOWING ? -1 : 1;
-}
-
 /**
  * Application root. Owns the device profile, smooth scroll, the section instances,
  * the single frame loop and the (lazily loaded) WebGL stage.
  *
  * Events (app.on / app.emit):
  *   'ready'   splash finished, page is interactive. Hero intro listens to this.
- *   'gl'      WebGL stage created (payload: stage). On desktop this happens during the splash;
+ *   'gl'      WebGL stage created (payload: stage)
+ *   'gl-failed'  the stage could not start (html.no-gl has just been added). On desktop this happens during the splash;
  *             on other tiers only after 'ready' and the first interaction, so never assume order.
  */
 export class App {
@@ -203,7 +196,10 @@ export class App {
       return this.stage;
     } catch (err) {
       console.error('[App] WebGL stage unavailable, continuing without it', err);
+      this.stage?.dispose();
+      this.stage = null;
       document.documentElement.classList.add('no-gl');
+      this.emit('gl-failed');
       return null;
     }
   }

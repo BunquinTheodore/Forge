@@ -92,6 +92,7 @@ export class Stage {
   }
 
   async #load(slot) {
+    if (slot.act || slot.loading) return;
     slot.loading = true;
     try {
       const mod = await slot.loader();

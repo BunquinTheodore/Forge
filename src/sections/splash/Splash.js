@@ -40,9 +40,9 @@ export default class Splash {
     try { return sessionStorage.getItem(SEEN_KEY) === '1'; } catch { return false; }
   }
 
-  /** Automated audits and data saver users get the page straight away, without the overlay. */
+  /** Data saver users get the page straight away, without the overlay. */
   static #shouldBypass(device) {
-    try { return Boolean(navigator.webdriver) || Boolean(device?.saveData); } catch { return false; }
+    return Boolean(device?.saveData);
   }
 
   static #markSeen() {

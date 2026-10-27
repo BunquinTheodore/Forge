@@ -1,5 +1,5 @@
 import { BaseSection, gsap } from '../../core/BaseSection.js';
-import { WordSplit } from './WordSplit.js';
+import { WordSplit } from '../../core/WordSplit.js';
 import { CompareTabs } from './CompareTabs.js';
 import { TiltCards } from './TiltCards.js';
 

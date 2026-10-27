@@ -129,13 +129,14 @@ export class RoleMap {
     this.nameEl.textContent = role.name;
     this.#list(this.giveEl, give, OPEN_ROLE_NOTE);
     this.#list(this.drawEl, draw, OPEN_ROLE_NOTE);
-    this.#announce(role.name, give.length, draw.length);
+    this.#announce(role.name, new Set(out).size, new Set(draw.map((f) => f.peer)).size);
   }
 
-  /** Short polite summary for screen readers; skipped for the initial selection. */
+  /** Short polite summary for screen readers, counting the roles linked on the map; skipped for the initial selection. */
   #announce(name, gives, draws) {
     if (!this.statusEl) return;
     if (!this.announced) { this.announced = true; return; }
-    this.statusEl.textContent = `${name} selected. Provides ${gives}, draws on ${draws}.`;
+    const roles = (n) => `${n} ${n === 1 ? 'role' : 'roles'}`;
+    this.statusEl.textContent = `${name} selected. Provides to ${roles(gives)}, draws on ${roles(draws)}.`;
   }
 }

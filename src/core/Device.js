@@ -19,11 +19,12 @@ export class Device {
 
   #computeTier() {
     if (!this.webgl || this.saveData || this.memory <= 2 || this.cores <= 2) return 'low';
-    // Phones and small tablets with few cores cannot hold the shared stage at a usable frame rate:
-    // they get the CSS fallbacks instead of GL.
-    const handheld = this.coarsePointer || this.isSmallScreen;
-    if (handheld && this.cores <= 4) return 'low';
-    if (handheld || this.memory <= 4) return 'mid';
+    // Phones with few cores cannot hold the shared stage at a usable frame rate: they get the CSS
+    // fallbacks instead of GL. Judge by touch input plus physical screen size, so a desktop in a
+    // short window or a touch tablet is not mistaken for a phone.
+    const phone = this.coarsePointer && Math.min(screen.width, screen.height) < 600;
+    if (phone && this.cores <= 4) return 'low';
+    if (this.coarsePointer || this.isSmallScreen || this.memory <= 4) return 'mid';
     return 'high';
   }
 

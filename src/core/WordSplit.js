@@ -1,7 +1,7 @@
 /**
  * Splits the text of an element into word spans while keeping inline markup (em, strong).
  * The accessible text is unchanged: spans only wrap words, whitespace text nodes are preserved.
- * Local copy for the problem section so it does not depend on another section folder.
+ * Shared text-splitting helper used by several sections.
  */
 export class WordSplit {
   constructor(root, className = 'w') {

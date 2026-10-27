@@ -28,8 +28,9 @@ export default class HeroSection extends BaseSection {
       this.motion.prime();
     });
     // The stage never exists yet at init (sections are built before it), so only commit to the
-    // fallback parallax when GL is known to be missing. A late GL failure adds .no-gl, caught at ready.
+    // fallback parallax when GL is known to be missing. A late GL failure is caught at ready or by 'gl-failed'.
     if (this.#glMissing()) this.#buildParallax();
+    this.app.on('gl-failed', () => this.#buildParallax());
 
     this.app.on('ready', () => {
       if (this.#glMissing()) this.#buildParallax();

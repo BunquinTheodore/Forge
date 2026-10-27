@@ -60,4 +60,14 @@ export class Scroll {
   }
 }
 
+const FOLLOWING = 4; // Node.DOCUMENT_POSITION_FOLLOWING
+
+/** ScrollTrigger refresh order: page order, so pins higher up exist before the triggers below them. */
+export function byDocument(a, b) {
+  const ea = a.trigger;
+  const eb = b.trigger;
+  if (!ea || !eb || ea === eb) return (b.vars.refreshPriority || 0) - (a.vars.refreshPriority || 0);
+  return ea.compareDocumentPosition(eb) & FOLLOWING ? -1 : 1;
+}
+
 export { gsap, ScrollTrigger };
