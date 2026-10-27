@@ -51,9 +51,9 @@ void main() {
   float d = length(gl_PointCoord - 0.5);
   float a = smoothstep(0.5, 0.0, d);
   a *= a;
-  vec3 ember = vec3(0.91, 0.36, 0.13);
-  vec3 glow = vec3(1.0, 0.70, 0.42);
-  vec3 col = mix(ember, glow, clamp(vHot * uHeat * 1.4, 0.0, 1.0));
+  vec3 ember = vec3(0.910, 0.357, 0.133); // #e85b22
+  vec3 hot = vec3(1.000, 0.478, 0.184);   // #ff7a2f, keeps red dominant when sparks stack additively
+  vec3 col = mix(ember, hot, clamp(vHot * uHeat * 1.4, 0.0, 1.0));
   gl_FragColor = vec4(col, a * vTw * uOpacity * (0.45 + 0.55 * vHot));
 }
 `;
@@ -72,6 +72,20 @@ uniform float uHeat;
 uniform float uOpacity;
 varying vec2 vUv;
 
+// Ember ramp in display space: deep ember, ember #e85b22, ember-hot #ff7a2f, white-hot.
+// Every stop stays <= 1.0 and the ramp is applied to the colour only, while intensity rides
+// on alpha, so the framebuffer never clamps red and drifts the hue toward yellow or olive.
+const vec3 DEEP = vec3(0.659, 0.204, 0.059);
+const vec3 EMBER = vec3(0.910, 0.357, 0.133);
+const vec3 HOT = vec3(1.000, 0.478, 0.184);
+const vec3 WHITE = vec3(1.000, 0.945, 0.870);
+
+vec3 emberRamp(float t) {
+  vec3 c = mix(DEEP, EMBER, smoothstep(0.0, 0.35, t));
+  c = mix(c, HOT, smoothstep(0.35, 0.7, t));
+  return mix(c, WHITE, smoothstep(0.7, 1.0, t));
+}
+
 void main() {
   vec2 q = vUv - 0.5;
   float d = length(q) * 2.0;
@@ -80,10 +94,10 @@ void main() {
   float core = exp(-d * d * 22.0);
   float halo = exp(-d * 4.0) * 0.55 * flick;
   float rim = smoothstep(0.03, 0.0, abs(d - 0.42 - 0.04 * sin(uTime * 1.2))) * 0.12 * uHeat;
-  vec3 ember = vec3(0.91, 0.36, 0.13);
-  vec3 glow = vec3(1.0, 0.70, 0.42);
-  vec3 col = mix(ember, glow, core) + vec3(1.0, 0.82, 0.62) * core * uHeat * 0.6;
+  // temperature: the halo sits at ember, the core climbs to ember-hot and turns white-hot only near full heat
+  float t = clamp(halo * 0.9 + core * 0.75 * uHeat, 0.0, 1.0);
+  vec3 col = emberRamp(t);
   float a = (core * (0.3 + 0.6 * uHeat) + halo + rim) * uHeat * uOpacity * smoothstep(1.0, 0.55, d);
-  gl_FragColor = vec4(col, a);
+  gl_FragColor = vec4(col, clamp(a, 0.0, 1.0));
 }
 `;

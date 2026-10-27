@@ -31,6 +31,10 @@ export default class AudienceSection extends BaseSection {
     this.gsap(() => this.#entrance());
   }
 
+  /** Ambient CSS loops (flow-line dashes) only run while the section is on screen. */
+  onEnter() { this.el.classList.add('is-visible'); }
+  onLeave() { this.el.classList.remove('is-visible'); }
+
   #select(i) {
     this.el.dataset.role = String(i);
     this.map.select(i);

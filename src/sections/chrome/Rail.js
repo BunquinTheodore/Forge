@@ -1,6 +1,6 @@
 import { CHAPTERS, chapterEl } from './chapters.js';
 
-const TICK_PITCH = 16; // px, must match --rail-pitch in chrome.css
+const TICK_PITCH = 24; // px, must match --rail-pitch in chrome.css
 const LABEL_HOLD_MS = 1800; // how long the chapter label stays after a change
 const SWAP_FRAMES = [
   { opacity: 0, transform: 'translate3d(10px, 0, 0)' },

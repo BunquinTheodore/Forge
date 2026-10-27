@@ -1,5 +1,5 @@
 import { BaseSection, gsap } from '../../core/BaseSection.js';
-import { WordSplit } from '../thesis/WordSplit.js';
+import { WordSplit } from './WordSplit.js';
 import { Bridge } from './Bridge.js';
 
 /**
@@ -93,12 +93,22 @@ export default class ProblemSection extends BaseSection {
   #runAutoClose() {
     if (this.bridge.touched || this.bridge.value >= 1) return;
     this.auto.v = this.bridge.value;
-    gsap.to(this.auto, {
-      v: 1,
-      duration: AUTO_CLOSE_SECONDS,
-      ease: 'power2.inOut',
-      onUpdate: () => { if (!this.bridge.touched) this.bridge.set(this.auto.v); },
+    // Created from a ScrollTrigger callback, so register it with the section context explicitly;
+    // destroy() then reverts it and it can never drive the bridge after teardown.
+    this.gsap(() => {
+      this.autoTween = gsap.to(this.auto, {
+        v: 1,
+        duration: AUTO_CLOSE_SECONDS,
+        ease: 'power2.inOut',
+        onUpdate: () => { if (!this.bridge.touched) this.bridge.set(this.auto.v); },
+      });
     });
+  }
+
+  destroy() {
+    this.autoTween?.kill();
+    this.autoTween = null;
+    super.destroy();
   }
 
   #onBridge(v) {

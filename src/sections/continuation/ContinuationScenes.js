@@ -1,4 +1,5 @@
 import { gsap } from '../../core/BaseSection.js';
+import { continuationState } from './continuationState.js';
 
 const RUN = 0.7;            // share of the pinned timeline spent running the 90-day ruler
 const PIN_SCREENS = 3.4;    // pinned scroll length in viewport heights
@@ -24,7 +25,7 @@ export class ContinuationScenes {
   setHeat(v) {
     if (Math.abs(v - this.heat) < HEAT_STEP) return;
     this.heat = v;
-    this.el.dataset.heat = v.toFixed(3);
+    continuationState.heat = v;
   }
 
   #titleIntro() {
@@ -63,6 +64,8 @@ export class ContinuationScenes {
       },
     });
     this.trigger = tl.scrollTrigger;
+    continuationState.mode = 'film';
+    continuationState.trigger = this.trigger;
     tl.to(proxy, { p: 1, duration: RUN, onUpdate: () => this.clock.set(proxy.p) }, 0)
       .to($('.cont__head'), { yPercent: -30, autoAlpha: 0, duration: 0.1, ease: 'power2.in' }, RUN + 0.02)
       .to($('.cont__counter'), { yPercent: -40, autoAlpha: 0, duration: 0.08, ease: 'power2.in' }, RUN + 0.01)
@@ -75,11 +78,14 @@ export class ContinuationScenes {
       this.el.classList.remove('is-film');
       this.trigger = null;
       this.mode = 'static';
+      continuationState.mode = 'static';
+      continuationState.trigger = null;
     };
   }
 
   buildFlow() {
     this.mode = 'flow';
+    continuationState.mode = 'flow';
     this.clock.setAxis('y');
     this.clock.set(0);
     this.#titleIntro();
@@ -111,7 +117,10 @@ export class ContinuationScenes {
       scrollTrigger: { trigger: this.el.querySelector('.cont__outro'), start: 'top 85%', toggleActions: 'play none none reverse' },
     });
 
-    return () => { this.mode = 'static'; };
+    return () => {
+      this.mode = 'static';
+      continuationState.mode = 'static';
+    };
   }
 
   #measureStops(list) {

@@ -30,7 +30,16 @@ export class RecapBoard {
     this.live = root.querySelector('.recap__live');
     this.cols = Array.from(root.querySelectorAll('.recap__col'));
     this.chips = Array.from(root.querySelectorAll('.recap__chip'));
-    this.typer = new Typewriter(root.querySelector('.recap__caption-text'), gsap);
+    this.typer = new Typewriter(root.querySelector('.recap__caption-text'), gsap, {
+      ghost: root.querySelector('.recap__caption-ghost'),
+      caret: root.querySelector('.recap__caret'),
+    });
+    this.pileLabel = root.querySelector('.recap__pile-k');
+    this.pileText = {
+      idle: this.pileLabel?.textContent ?? '',
+      sorted: this.pileLabel?.dataset.sorted ?? '',
+    };
+    this.raf = 0;
     this.offsets = this.chips.map(() => ({ x: 0, y: 0, r: 0 }));
     this.scattered = false;
     this.hasRun = false;
@@ -43,10 +52,9 @@ export class RecapBoard {
 
   #observe() {
     if (typeof ResizeObserver === 'undefined') return;
-    let raf = 0;
     this.ro = new ResizeObserver(() => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => this.#remeasure());
+      cancelAnimationFrame(this.raf);
+      this.raf = requestAnimationFrame(() => { this.raf = 0; this.#remeasure(); });
     });
     this.ro.observe(this.board);
   }
@@ -69,8 +77,9 @@ export class RecapBoard {
     });
   }
 
+  /** Only a scattered pile depends on cached offsets; prepare() and run() measure fresh. */
   #remeasure() {
-    if (this.tl?.isActive()) return;
+    if (!this.scattered || this.tl?.isActive()) return;
     this.#measure();
     if (this.scattered) this.#applyScatter();
   }
@@ -82,6 +91,7 @@ export class RecapBoard {
     });
     this.root.classList.add('is-scattered');
     this.root.classList.remove('is-sorted');
+    this.#labelPile(false);
     this.cols.forEach((c) => c.classList.remove('is-on'));
     this.scattered = true;
   }
@@ -93,8 +103,14 @@ export class RecapBoard {
     this.#applyScatter();
   }
 
+  #labelPile(sorted) {
+    if (!this.pileLabel) return;
+    this.pileLabel.textContent = sorted ? this.pileText.sorted : this.pileText.idle;
+  }
+
   #settle() {
     this.root.classList.add('is-sorted');
+    this.#labelPile(true);
     this.cols.forEach((c) => c.classList.add('is-on'));
     this.typer.set('Capture, structure, surface possibilities, return to people.');
   }
@@ -152,10 +168,12 @@ export class RecapBoard {
   #done() {
     this.root.classList.remove('is-running');
     this.root.classList.add('is-sorted');
+    this.#labelPile(true);
     this.live.textContent = LIVE_DONE;
   }
 
   destroy() {
+    cancelAnimationFrame(this.raf);
     this.tl?.kill();
     this.ro?.disconnect();
   }

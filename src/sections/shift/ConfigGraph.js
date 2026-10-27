@@ -135,6 +135,7 @@ export class ConfigGraph {
   }
 
   #down(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     const p = this.#local(e);
     const n = this.#hit(p.x, p.y);
     if (!n) return;

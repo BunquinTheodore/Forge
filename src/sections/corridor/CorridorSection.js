@@ -4,6 +4,7 @@ import { corridorState } from './corridorState.js';
 import { GlobeController } from './GlobeController.js';
 import { GlobeDrag } from './GlobeDrag.js';
 import { CorridorMap } from './CorridorMap.js';
+import { GlobeGeometry } from './GlobeGeometry.js';
 
 const PIN_QUERY = '(min-width: 960px) and (min-height: 640px)';
 const VIEW_H_AT_ORIGIN = 2 * Math.tan((17.5 * Math.PI) / 180) * 10; // shared camera: fov 35, z 10
@@ -29,8 +30,12 @@ export default class CorridorSection extends BaseSection {
     this.controller = new GlobeController(this.reducedMotion);
     this.map = new CorridorMap(this.$('.corridor__map'));
     this.drag = new GlobeDrag(this, this.globe, this.controller);
+    this.regionsEl = this.$('.corridor__regions');
+    this.geo = new GlobeGeometry(this.globe, this.$('.corridor__pin'), this.$('.corridor__track'));
+    corridorState.geo = this.geo;
     this.regionIndex = 0;
     this.scrollBand = 0;
+    this.userPicked = false;
     this.last = { lon: NaN, lat: NaN, reveal: NaN, gl: false };
 
     this.#bindTabs();
@@ -38,6 +43,11 @@ export default class CorridorSection extends BaseSection {
     this.onRefresh = () => this.#measure();
     this.listen(window, 'resize', this.onRefresh);
     ScrollTrigger.addEventListener('refresh', this.onRefresh);
+    // Content above can shift (fonts, lazy media): re-measure when the page height changes.
+    if ('ResizeObserver' in window) {
+      this.ro = new ResizeObserver(this.onRefresh);
+      this.ro.observe(document.body);
+    }
 
     this.controller.update(1);
     this.map.render(corridorState.lon, corridorState.lat, corridorState.reveal);
@@ -47,7 +57,10 @@ export default class CorridorSection extends BaseSection {
   /* Tabs: click, arrow keys, Home and End. */
   #bindTabs() {
     this.tabs.forEach((tab, i) => {
-      this.listen(tab, 'click', () => this.setRegion(i, { animate: true }));
+      this.listen(tab, 'click', () => {
+        this.userPicked = true;
+        this.setRegion(i, { animate: true });
+      });
     });
     const list = this.$('.corridor__tabs');
     this.listen(list, 'keydown', (e) => {
@@ -58,6 +71,7 @@ export default class CorridorSection extends BaseSection {
       if (e.key === 'End') next = REGIONS.length - 1;
       if (next === null) return;
       e.preventDefault();
+      this.userPicked = true;
       this.setRegion(next, { animate: true });
       this.tabs[next].focus();
     }, { passive: false });
@@ -83,10 +97,12 @@ export default class CorridorSection extends BaseSection {
     }
   }
 
+  /** Layout reads live here only (resize and refresh), never in update(). */
   #measure() {
     if (!this.globe) return;
-    const w = this.globe.getBoundingClientRect().width;
-    const rWorld = ((w * 0.5 * GLOBE_FILL) / Math.max(1, window.innerHeight)) * VIEW_H_AT_ORIGIN;
+    this.geo.measure();
+    const w = this.geo.rect.width;
+    const rWorld = ((w * 0.5 * GLOBE_FILL) / this.geo.vh) * VIEW_H_AT_ORIGIN;
     this.perspGL = rWorld / CAMERA_Z;
     this.last.lon = NaN;
   }
@@ -97,18 +113,27 @@ export default class CorridorSection extends BaseSection {
       start: 'top bottom',
       end: 'bottom top',
       onUpdate: (self) => this.controller.setProgress(self.progress),
+      // A visitor's own tab choice holds until they leave the section.
+      onLeave: () => { this.userPicked = false; },
+      onLeaveBack: () => { this.userPicked = false; },
+      onToggle: (self) => this.el.classList.toggle('is-visible', self.isActive),
     });
 
     this.mm = gsap.matchMedia();
     this.mm.add({ pin: `${PIN_QUERY} and (prefers-reduced-motion: no-preference)`, flow: `not all and ${PIN_QUERY}`, reduced: '(prefers-reduced-motion: reduce)' }, (ctx) => {
       const { pin, reduced } = ctx.conditions;
+      if (reduced) return;
       this.#regionBands(pin);
-      if (!reduced) this.#entrance(pin);
-      if (!reduced) this.#background();
+      this.#entrance(pin);
+      this.#background();
     });
   }
 
-  /** Scroll walks the corridor: Europe, Philippines, ASEAN. A clicked tab holds until the next band. */
+  /**
+   * Scroll walks the corridor: Europe, Philippines, ASEAN. Never overrides the visitor: while
+   * focus is inside the region controls, or after they chose a tab (until they leave the
+   * section), scroll stops driving the selection. Off under reduced motion.
+   */
   #regionBands(pin) {
     ScrollTrigger.create({
       trigger: this.$('.corridor__track'),
@@ -119,6 +144,7 @@ export default class CorridorSection extends BaseSection {
         const band = p < BANDS[0] ? 0 : p < BANDS[1] ? 1 : 2;
         if (band === this.scrollBand) return;
         this.scrollBand = band;
+        if (this.userPicked || this.regionsEl?.contains(document.activeElement)) return;
         this.setRegion(band, { animate: true });
       },
     });
@@ -185,12 +211,13 @@ export default class CorridorSection extends BaseSection {
     last.lon = s.lon; last.lat = s.lat; last.reveal = s.reveal; last.gl = gl;
   }
 
-  /** Globe centre offset from the viewport centre in SVG viewBox units (sticky, so read per frame). */
+  /** Globe centre offset from the viewport centre in SVG viewBox units. Derived, no layout read. */
   #offAxis() {
-    const r = this.globe.getBoundingClientRect();
+    const g = this.geo;
+    const r = g.compute(this.scroll.y);
     const unit = 400 / Math.max(1, r.width);
-    this.ox = (r.left + r.width / 2 - window.innerWidth / 2) * unit;
-    this.oy = (r.top + r.height / 2 - window.innerHeight / 2) * unit;
+    this.ox = (r.left + r.width / 2 - g.vw / 2) * unit;
+    this.oy = (r.top + r.height / 2 - g.vh / 2) * unit;
   }
 
   #hud(lon, lat) {
@@ -202,6 +229,8 @@ export default class CorridorSection extends BaseSection {
 
   destroy() {
     ScrollTrigger.removeEventListener('refresh', this.onRefresh);
+    this.ro?.disconnect();
+    if (corridorState.geo === this.geo) corridorState.geo = null;
     this.mm?.revert();
     super.destroy();
   }

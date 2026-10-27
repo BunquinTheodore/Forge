@@ -81,7 +81,7 @@ export class PromiseFinale {
   #stacked() {
     this.vows.forEach((vow) => {
       gsap.fromTo(vow.firstElementChild,
-        { opacity: 0.12, y: 24 },
+        { opacity: 0.5, y: 24 },
         {
           opacity: 1, y: 0, ease: 'none',
           scrollTrigger: { refreshPriority: this.section.prio, trigger: vow, start: 'top 92%', end: 'top 55%', scrub: 0.4 },

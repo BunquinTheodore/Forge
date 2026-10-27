@@ -14,6 +14,7 @@ export class WorkshopLoop {
     this.orbit = root.querySelector('.loop__orbit');
     this.buttons = Array.from(root.querySelectorAll('.programme__step-btn'));
     this.descs = Array.from(root.querySelectorAll('.programme__step-desc'));
+    this.live = root.querySelector('.programme__loop-live');
     this.angle = 0;
     this.drawn = -1;
     this.active = -1;
@@ -26,7 +27,11 @@ export class WorkshopLoop {
       // Keyboard focus holds the spark; focus that comes from a tap or click does not.
       section.listen(btn, 'focus', () => { if (btn.matches(':focus-visible')) this.hover = i; });
       section.listen(btn, 'blur', () => { this.hover = -1; });
-      section.listen(btn, 'click', () => { this.pinned = this.pinned === i ? -1 : i; this.#sync(); });
+      section.listen(btn, 'click', () => {
+        this.pinned = this.pinned === i ? -1 : i;
+        this.#sync();
+        this.#announce(i);
+      });
     });
     this.#setActive(0);
     this.#sync();
@@ -40,6 +45,15 @@ export class WorkshopLoop {
   #sync() {
     this.buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === this.pinned)));
     this.root.classList.toggle('is-held', this.held >= 0);
+  }
+
+  /** Announce only on explicit clicks; the free running orbit must stay silent. */
+  #announce(i) {
+    if (!this.live) return;
+    const name = this.buttons[i].textContent.replace(/^\s*\d+/, '').trim();
+    this.live.textContent = this.pinned === i
+      ? `${name}. ${this.descs[i]?.textContent.trim() ?? ''}`
+      : `${name} released.`;
   }
 
   #setActive(i) {

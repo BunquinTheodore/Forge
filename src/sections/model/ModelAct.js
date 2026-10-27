@@ -11,6 +11,7 @@ const HALF = new Vector2(0.5, 0.32);
 const FOV_TAN = 0.6306;          // 2 * tan(35deg / 2)
 const COMPACT_WIDTH = 900;       // below this the CSS stack is used
 const SPARKS = 220;
+const MEASURE_EVERY = 30;        // frames between DOM rect refreshes (catches late layout shifts)
 
 const cssColor = (name, fallback) => {
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -35,6 +36,10 @@ export default class ModelAct extends GLAct {
     this.heat = new Float32Array(PLATES);
     this.lift = new Float32Array(PLATES);
     this.sparkY = 0;
+    this.frame = 0;
+    this.box = {
+      ok: false, left: 0, width: 1, height: 1, naturalTop: 0, stickyTop: null, limitBottom: 0,
+    };
     this.colors = {
       uSteel: { value: cssColor('--steel', '#293342') },
       uSteelHi: { value: cssColor('--mute', '#7f8996') },
@@ -100,26 +105,68 @@ export default class ModelAct extends GLAct {
   resize(width, height) {
     this.view = this.stage.viewSize(0);
     this.pxScale = (height * this.stage.renderer.getPixelRatio()) / FOV_TAN;
+    this.frame = 0;
+    this.#measure();
+  }
+
+  /**
+   * Cache the stage geometry in document space. The stage is position: sticky inside
+   * .model__aside on desktop, so its viewport top is reconstructed per frame from the
+   * natural top, the sticky offset and the aside bottom, with no layout reads.
+   */
+  #measure() {
+    const b = this.box;
+    if (!this.stageEl || this.stage.width < COMPACT_WIDTH) { b.ok = false; return; }
+    const aside = this.stageEl.parentElement;
+    const scroll = window.scrollY;
+    const a = aside.getBoundingClientRect();
+    const r = this.stageEl.getBoundingClientRect();
+    const cs = getComputedStyle(this.stageEl);
+    const sticky = cs.position === 'sticky' ? parseFloat(cs.top) : NaN;
+    // offsetTop of a stuck element includes the sticky shift, so derive the unstuck offset.
+    const prev = this.stageEl.previousElementSibling;
+    const offset = prev
+      ? prev.offsetTop + prev.offsetHeight
+      : parseFloat(getComputedStyle(aside).paddingTop) || 0;
+    b.left = r.left;
+    b.width = r.width;
+    b.height = r.height;
+    b.naturalTop = a.top + scroll + offset + (parseFloat(cs.marginTop) || 0);
+    b.stickyTop = Number.isFinite(sticky) ? sticky : null;
+    b.limitBottom = a.bottom + scroll;
+    b.ok = r.width > 0;
+  }
+
+  #viewportTop(scrollY) {
+    const b = this.box;
+    const natural = b.naturalTop - scrollY;
+    if (b.stickyTop === null) return natural;
+    const capped = Math.min(b.stickyTop, b.limitBottom - scrollY - b.height);
+    return Math.max(natural, capped);
   }
 
   /** Align the stack with the DOM stage. Returns false when it should not draw. */
-  #place() {
+  #place(scrollY) {
     if (this.stage.width < COMPACT_WIDTH) return false;
-    const r = this.stageEl.getBoundingClientRect();
+    if (this.frame % MEASURE_EVERY === 0) this.#measure();
+    this.frame += 1;
+    const b = this.box;
+    if (!b.ok) return false;
+    const top = this.#viewportTop(scrollY);
     const W = this.stage.width;
     const H = this.stage.height;
-    if (r.bottom < 0 || r.top > H || r.width === 0) return false;
+    if (top + b.height < 0 || top > H) return false;
     const v = this.view;
-    this.stack.position.x = ((r.left + r.width / 2) / W - 0.5) * v.width;
-    this.stack.position.y = -((r.top + r.height / 2) / H - 0.5) * v.height;
-    const s = Math.min((r.width / W) * v.width * 0.56, (r.height / H) * v.height * 0.46);
+    this.stack.position.x = ((b.left + b.width / 2) / W - 0.5) * v.width;
+    this.stack.position.y = -((top + b.height / 2) / H - 0.5) * v.height;
+    const s = Math.min((b.width / W) * v.width * 0.56, (b.height / H) * v.height * 0.46);
     this.stack.scale.setScalar(s);
     this.scale = s;
     return true;
   }
 
   update(dt, time, state) {
-    if (!this.#place()) { this.group.visible = false; return; }
+    if (!this.#place(state.scrollY)) { this.group.visible = false; return; }
     if (!this.device.reducedMotion) this.time += dt;
     const p = state.progress;
     const enter = smooth(0.04, 0.24, p);

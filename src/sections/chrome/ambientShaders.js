@@ -94,7 +94,7 @@ export const STREAK_VERTEX = /* glsl */ `
 
     float stretch = 1.0 + uVel * 2.4;
     float size = uLength * (0.6 + aSeed.w) * stretch * (CAM_Z / -mv.z);
-    gl_PointSize = min(size * uPR, 256.0 * uPR);
+    gl_PointSize = min(size * uPR, 96.0 * uPR);
     vThick = 1.4 * uPR / max(gl_PointSize, 1.0);
     vAngle = atan(aSeed.y / uAspect);
 

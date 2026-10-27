@@ -2,8 +2,10 @@ import {
   BufferGeometry, Float32BufferAttribute, Points, ShaderMaterial, AdditiveBlending, Color,
 } from 'three';
 import { GLAct } from '../../gl/GLAct.js';
+import { ScrollTrigger } from '../../core/Scroll.js';
 
 const RINGS = 3;
+const MEASURE_EVERY = 30; // frames between DOM rect refreshes (catches late layout shifts)
 const POINTS_PER_RING = 520;
 const DEPTH = 0;
 
@@ -78,13 +80,35 @@ export default class ShiftAct extends GLAct {
         uGlow: { value: cssColor('--ember-glow') },
       },
     }));
+    // Document-space rect of the builder, cached so update() never forces layout.
+    // The builder sits below the pin spacer, so docTop stays valid between refreshes.
+    this.box = { docTop: 0, left: 0, width: 1, height: 1 };
+    this.view = { width: 1, height: 1 };
+    this.frame = 0;
+    this.onRefresh = () => this.#measure();
+    ScrollTrigger.addEventListener('refresh', this.onRefresh);
+    this.#measure();
     this.#build();
+  }
+
+  #measure() {
+    if (!this.target) return;
+    const r = this.target.getBoundingClientRect();
+    this.box.docTop = r.top + window.scrollY;
+    this.box.left = r.left;
+    this.box.width = Math.max(1, r.width);
+    this.box.height = Math.max(1, r.height);
+    const v = this.stage.viewSize(DEPTH);
+    this.view.width = v.width;
+    this.view.height = v.height;
   }
 
   #build() {
     if (this.points) {
+      const old = this.points.geometry;
       this.group.remove(this.points);
-      this.points.geometry.dispose();
+      old.dispose();
+      this.disposables = this.disposables.filter((d) => d !== old);
     }
     const per = Math.max(60, Math.round(POINTS_PER_RING * this.detail));
     const total = per * RINGS;
@@ -113,6 +137,8 @@ export default class ShiftAct extends GLAct {
 
   resize(_width, height) {
     if (!this.material) return;
+    this.#measure();
+    this.frame = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, this.device.maxDpr);
     this.material.uniforms.uPixel.value = Math.max(1.5, (height / 900) * 2.2) * dpr;
   }
@@ -123,17 +149,30 @@ export default class ShiftAct extends GLAct {
 
   update(dt, time, state) {
     if (!this.target) return;
-    const rect = this.target.getBoundingClientRect();
-    const box = this.stage.rectToWorld(rect, DEPTH);
-    const vh = this.stage.height;
+    if (this.frame % MEASURE_EVERY === 0) this.#measure();
+    this.frame += 1;
+    const b = this.box;
+    const stage = this.stage;
+    const vw = stage.width;
+    const vh = stage.height;
+    const top = b.docTop - state.scrollY;
     // Fade in only while the builder itself is on screen.
-    const centre = rect.top + rect.height / 2;
+    const centre = top + b.height / 2;
     const onScreen = Math.max(0, 1 - Math.abs(centre / vh - 0.5) * 1.6);
+    const x = ((b.left + b.width / 2) / vw - 0.5) * this.view.width;
+    const y = -(centre / vh - 0.5) * this.view.height;
+    const w = (b.width / vw) * this.view.width;
+    const h = (b.height / vh) * this.view.height;
     const u = this.material.uniforms;
     u.uTime.value = this.device.reducedMotion ? 0 : time;
     u.uProgress.value = state.progress;
-    u.uRadius.value = Math.min(box.w, box.h) * 0.36;
+    u.uRadius.value = Math.min(w, h) * 0.36;
     u.uOpacity.value = 0.75 * state.visibility * onScreen;
-    this.group.position.set(box.x + state.pointer.x * 0.08, box.y + state.pointer.y * 0.08, DEPTH);
+    this.group.position.set(x + state.pointer.x * 0.08, y + state.pointer.y * 0.08, DEPTH);
+  }
+
+  dispose() {
+    ScrollTrigger.removeEventListener('refresh', this.onRefresh);
+    super.dispose();
   }
 }

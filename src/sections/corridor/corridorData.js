@@ -14,30 +14,34 @@ export const REGION_INDEX = Object.freeze(
   Object.fromEntries(REGIONS.map((r, i) => [r.id, i])),
 );
 
-/** [lon, lat] of each corridor city, plus label placement for the SVG overlay. */
+/**
+ * Corridor nodes: [lon, lat] arc endpoints, grouped by region. The source names regions only
+ * (Italy / Europe, Philippines, ASEAN), so only one node per region carries a visible label and
+ * no node implies a named partner city beyond the event's own host city, Manila.
+ */
 export const CITIES = {
-  milan: { name: 'Milan', lon: 9.19, lat: 45.46, dx: -7, anchor: 'end' },
-  rome: { name: 'Rome', lon: 12.5, lat: 41.9, dx: 7, anchor: 'start' },
-  manila: { name: 'Manila', lon: 120.98, lat: 14.6, dx: 8, anchor: 'start' },
-  bangkok: { name: 'Bangkok', lon: 100.5, lat: 13.75, dx: -7, anchor: 'end' },
-  hcmc: { name: 'Ho Chi Minh City', lon: 106.63, lat: 10.82, dx: 7, anchor: 'start', dy: 9 },
-  kl: { name: 'Kuala Lumpur', lon: 101.69, lat: 3.14, dx: -7, anchor: 'end' },
-  singapore: { name: 'Singapore', lon: 103.82, lat: 1.35, dx: 7, anchor: 'start' },
-  jakarta: { name: 'Jakarta', lon: 106.85, lat: -6.2, dx: 7, anchor: 'start' },
+  eu1: { region: 'europe', lon: 9.19, lat: 45.46 },
+  eu2: { region: 'europe', label: 'Italy', lon: 12.5, lat: 41.9, dx: 7, anchor: 'start' },
+  ph: { region: 'philippines', label: 'Manila', lon: 120.98, lat: 14.6, dx: 8, anchor: 'start' },
+  as1: { region: 'asean', lon: 100.5, lat: 13.75 },
+  as2: { region: 'asean', lon: 106.63, lat: 10.82 },
+  as3: { region: 'asean', label: 'ASEAN', lon: 101.69, lat: 3.14, dx: -7, anchor: 'end' },
+  as4: { region: 'asean', lon: 103.82, lat: 1.35 },
+  as5: { region: 'asean', lon: 106.85, lat: -6.2 },
 };
 
 /**
  * Routes: [from, to, gateStart, gateLength]. The gate is the slice of the global
- * reveal (0..1) during which the arc draws itself. Europe first, then ASEAN fan-out.
+ * reveal (0..1) during which the arc draws itself. Europe first, then the ASEAN fan-out.
  */
 export const ROUTES = [
-  ['milan', 'manila', 0.0, 0.5],
-  ['rome', 'manila', 0.04, 0.5],
-  ['manila', 'bangkok', 0.56, 0.24],
-  ['manila', 'hcmc', 0.6, 0.22],
-  ['manila', 'kl', 0.64, 0.24],
-  ['manila', 'singapore', 0.68, 0.22],
-  ['manila', 'jakarta', 0.72, 0.26],
+  ['eu1', 'ph', 0.0, 0.5],
+  ['eu2', 'ph', 0.04, 0.5],
+  ['ph', 'as1', 0.56, 0.24],
+  ['ph', 'as2', 0.6, 0.22],
+  ['ph', 'as3', 0.64, 0.24],
+  ['ph', 'as4', 0.68, 0.22],
+  ['ph', 'as5', 0.72, 0.26],
 ];
 
 /** Arc altitude (in sphere radii) for an arc spanning `omega` radians. */

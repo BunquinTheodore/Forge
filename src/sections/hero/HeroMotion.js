@@ -37,7 +37,13 @@ export class HeroMotion {
 
   /** Hammer strike entrance. Returns the timeline. */
   intro(onDone) {
-    const tl = gsap.timeline({ onComplete: onDone });
+    this.mark.classList.add('is-forging');
+    const tl = gsap.timeline({
+      onComplete: () => {
+        this.mark.classList.remove('is-forging');
+        onDone?.();
+      },
+    });
     this.letters.forEach((l, i) => {
       const at = i * 0.075;
       tl.to(l, { yPercent: 0, scaleY: 1, duration: 0.42, ease: 'power4.in' }, at)
@@ -83,17 +89,26 @@ export class HeroMotion {
     ScrollTrigger.refresh();
   }
 
-  /** Fallback ribbon parallax (no GL): scroll drift on the image, pointer drift on its frame. */
+  /**
+   * Fallback ribbon parallax (no GL only): scroll drift on the image, pointer drift on its frame.
+   * Returns { x, y, kill }; kill() reverts every tween and its ScrollTrigger.
+   */
   fallbackParallax(frame, img) {
     if (!frame || !img) return null;
-    gsap.to(img, {
+    const drift = gsap.to(img, {
       yPercent: -14, scale: 1.08, ease: 'none',
       scrollTrigger: { trigger: this.el, start: 'top top', end: 'bottom top', scrub: true },
     });
-    return {
-      x: gsap.quickTo(frame, 'x', { duration: 1.1, ease: 'power3.out' }),
-      y: gsap.quickTo(frame, 'y', { duration: 1.1, ease: 'power3.out' }),
+    const x = gsap.quickTo(frame, 'x', { duration: 1.1, ease: 'power3.out' });
+    const y = gsap.quickTo(frame, 'y', { duration: 1.1, ease: 'power3.out' });
+    const kill = () => {
+      drift.scrollTrigger?.kill();
+      drift.kill();
+      x.tween.kill();
+      y.tween.kill();
+      gsap.set([frame, img], { clearProps: 'transform' });
     };
+    return { x, y, kill };
   }
 
   destroy() { this.mm?.revert(); }

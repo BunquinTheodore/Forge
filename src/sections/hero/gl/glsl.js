@@ -25,6 +25,9 @@ export const NOISE = /* glsl */ `
     }
     return v;
   }
+  float fbm2(vec2 p) {
+    return 0.5 * vnoise(p) + 0.25 * vnoise(p * 2.03 + vec2(17.1, 9.2));
+  }
 `;
 
 /** Ember colour ramp shared by every hero material. */

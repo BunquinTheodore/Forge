@@ -65,13 +65,9 @@
   fill: var(--fog); paint-order: stroke; stroke: var(--ink); stroke-width: 3.5px; stroke-linejoin: round;
   transition: fill var(--dur) var(--ease-out);
 }
-.sec--corridor[data-region="europe"] [data-city="milan"] .cmap__label,
-.sec--corridor[data-region="europe"] [data-city="rome"] .cmap__label,
-.sec--corridor[data-region="philippines"] [data-city="manila"] .cmap__label,
-.sec--corridor[data-region="asean"] [data-city="bangkok"] .cmap__label,
-.sec--corridor[data-region="asean"] [data-city="hcmc"] .cmap__label,
-.sec--corridor[data-region="asean"] [data-city="singapore"] .cmap__label,
-.sec--corridor[data-region="asean"] [data-city="jakarta"] .cmap__label { fill: var(--cream); font-weight: 700; }
+.sec--corridor[data-region="europe"] [data-city-region="europe"] .cmap__label,
+.sec--corridor[data-region="philippines"] [data-city-region="philippines"] .cmap__label,
+.sec--corridor[data-region="asean"] [data-city-region="asean"] .cmap__label { fill: var(--cream); font-weight: 700; }
 
 /* When the GL globe is live the SVG only carries the city labels. */
 .sec--corridor.has-globe .cmap__base,
@@ -156,3 +152,7 @@
 @media (prefers-reduced-motion: reduce) {
   .sec--corridor .cmap__pulse { animation: none; stroke-dasharray: none; opacity: 0.6; }
 }
+
+.sec--corridor .cmap__pulse { animation-play-state: paused; }
+.sec--corridor.is-visible .cmap__pulse { animation-play-state: running; }
+html.tier-low .sec--corridor .cmap__pulse { animation: none; stroke-dasharray: none; opacity: 0.6; }

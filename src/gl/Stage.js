@@ -6,8 +6,16 @@ import { ScrollTrigger } from '../core/Scroll.js';
 const CAMERA_Z = 10;
 const FOV = 35;
 const SLOW_FRAME = 1 / 40;      // frames slower than this count against the governor
-const GOVERNOR_WINDOW = 90;     // consecutive slow frames before downgrading quality
-const PRELOAD_MARGIN = 1.0;     // init an act when its section is within one viewport
+const GOVERNOR_WINDOW = 60;     // consecutive slow frames before downgrading quality
+const PRELOAD_MARGIN = 2.0;     // queue an act when its section is within two viewports
+const WARMUP_MARGIN = 1.0;      // acts awaited by warmup(): global ones and those within one viewport
+const IDLE_TIMEOUT = 300;       // ms: max wait for an idle slot before loading the next queued act
+const COMPILE_TIMEOUT = 4000;   // ms: never let a shader compile wait hold an act back longer
+
+const idle = (timeout) => new Promise((r) => {
+  if (window.requestIdleCallback) window.requestIdleCallback(() => r(), { timeout });
+  else setTimeout(r, 16);
+});
 
 /** Act modules are discovered automatically: any src/sections/<id>/*Act.js file. */
 const ACT_MODULES = import.meta.glob('../sections/*/*Act.js');
@@ -28,6 +36,12 @@ export class Stage {
     this.time = 0;
     this.slowFrames = 0;
     this.slots = [];
+    this.queue = [];
+    this.pumping = false;
+    // Reused every frame for every act (no per-frame allocation). Acts must not keep a reference.
+    this.state = {
+      progress: 0, visibility: 0, pointer: this.pointer, velocity: 0, scrollY: 0, pageProgress: 0, tier: this.device.tier,
+    };
 
     this.renderer = new WebGLRenderer({
       canvas,
@@ -62,7 +76,7 @@ export class Stage {
     for (const [path, loader] of Object.entries(ACT_MODULES)) {
       const id = path.split('/').at(-2);
       const el = document.querySelector(`[data-section="${id}"]`);
-      this.slots.push({ id, el, loader, act: null, loading: false, top: 0, height: 0, visibility: 0 });
+      this.slots.push({ id, el, loader, act: null, loading: false, queued: false, top: 0, height: 0, visibility: 0 });
     }
     this.#measure();
   }
@@ -85,6 +99,7 @@ export class Stage {
       const act = new ActClass(this, slot.el);
       await act.init();
       act.resize(this.width, this.height);
+      await this.#compile(act);
       act.ready = true;
       act.group.renderOrder = ActClass.order;
       this.scene.add(act.group);
@@ -95,13 +110,50 @@ export class Stage {
     }
   }
 
-  /** Ensure global acts and the acts near the first viewport are loaded. */
+  /**
+   * Compile the act's shaders before it is added to the scene, in an idle slot instead of on the
+   * frame where it first appears (non-blocking with KHR_parallel_shader_compile).
+   */
+  async #compile(act) {
+    if (!this.renderer.compileAsync) return;
+    try {
+      const job = this.renderer.compileAsync(act.group, this.camera, this.scene);
+      await Promise.race([job, new Promise((r) => setTimeout(r, COMPILE_TIMEOUT))]);
+    } catch (err) {
+      console.warn('[Stage] shader precompile skipped', err);
+    }
+  }
+
+  /** Queue an act for loading. Queued acts load one at a time, in idle slots, nearest first. */
+  #enqueue(slot) {
+    if (slot.act || slot.loading || slot.queued) return;
+    slot.queued = true;
+    this.queue.push(slot);
+    this.#pump();
+  }
+
+  async #pump() {
+    if (this.pumping) return;
+    this.pumping = true;
+    while (this.queue.length) {
+      await idle(IDLE_TIMEOUT);
+      const y = this.app.scroll.y;
+      this.queue.sort((a, b) => this.#distance(a, y) - this.#distance(b, y));
+      const slot = this.queue.shift();
+      slot.queued = false;
+      if (!slot.act && !slot.loading) await this.#load(slot);
+    }
+    this.pumping = false;
+  }
+
+  /** Ensure global acts and the acts near the first viewport are loaded, one after another. */
   async warmup() {
     const y = window.scrollY;
-    const jobs = this.slots
-      .filter((s) => !s.el || this.#distance(s, y) < PRELOAD_MARGIN)
-      .map((s) => this.#load(s));
-    await Promise.all(jobs);
+    const first = this.slots.filter((s) => !s.el || this.#distance(s, y) < WARMUP_MARGIN);
+    for (const slot of first) {
+      await this.#load(slot);
+      await idle(IDLE_TIMEOUT);
+    }
   }
 
   #distance(slot, y) {
@@ -113,8 +165,9 @@ export class Stage {
   }
 
   resize() {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    // Clamp: a 0-size window (minimised or embedded) would give an Infinity aspect and NaN in acts.
+    this.width = Math.max(1, window.innerWidth);
+    this.height = Math.max(1, window.innerHeight);
     const dpr = Math.min(window.devicePixelRatio || 1, this.device.maxDpr);
     this.renderer.setPixelRatio(dpr);
     this.renderer.setSize(this.width, this.height, false);
@@ -166,8 +219,13 @@ export class Stage {
 
     const y = this.app.scroll.y;
     const vh = this.height;
+    const state = this.state;
+    state.velocity = this.velocity;
+    state.scrollY = y;
+    state.pageProgress = this.app.scroll.progress;
+    state.tier = this.device.tier;
     for (const s of this.slots) {
-      if (!s.act && !s.loading && this.#distance(s, y) < PRELOAD_MARGIN) this.#load(s);
+      if (!s.act && !s.loading && this.#distance(s, y) < PRELOAD_MARGIN) this.#enqueue(s);
       const act = s.act;
       if (!act) continue;
 
@@ -183,15 +241,9 @@ export class Stage {
 
       act.group.visible = s.visibility > 0;
       if (!act.group.visible) continue;
-      act.update(dt, this.time, {
-        progress,
-        visibility: s.visibility,
-        pointer: this.pointer,
-        velocity: this.velocity,
-        scrollY: y,
-        pageProgress: this.app.scroll.progress,
-        tier: this.device.tier,
-      });
+      state.progress = progress;
+      state.visibility = s.visibility;
+      act.update(dt, this.time, state);
     }
     this.renderer.render(this.scene, this.camera);
   }

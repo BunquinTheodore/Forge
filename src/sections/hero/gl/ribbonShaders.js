@@ -91,7 +91,10 @@ const COMMON_FRAG = /* glsl */ `
   ${EMBER_RAMP}
 `;
 
-/** Dark forged metal body with flowing ember cracks, brushed streaks and a fresnel rim. */
+/**
+ * Dark forged metal body with flowing ember cracks, brushed streaks and a fresnel rim.
+ * LOW_DETAIL (mid tier): single-octave pits and a 2-octave crack field, about a quarter of the noise cost.
+ */
 export const bodyFragment = /* glsl */ `
   uniform vec3 uDark;
   uniform vec3 uSteel;
@@ -108,12 +111,20 @@ export const bodyFragment = /* glsl */ `
     float spec = pow(max(dot(reflect(-L, N), V), 0.0), 28.0);
     float fres = pow(1.0 - abs(dot(N, V)), 2.4);
     float streak = vnoise(vec2(vS * 46.0 + vSeed * 9.0, vT * 3.0));
+  #ifdef LOW_DETAIL
+    float pits = vnoise(vec2(vT * 60.0, vS * 6.0 + vSeed * 4.0)) * 0.9375;
+  #else
     float pits = fbm(vec2(vT * 60.0, vS * 6.0 + vSeed * 4.0));
+  #endif
 
     vec3 metal = mix(uDark, uSteel, 0.08 + diff * (0.28 + streak * 0.4) + pits * 0.1);
     metal += uRim * (spec * 0.55 + fres * 0.18);
 
+  #ifdef LOW_DETAIL
+    float n = fbm2(vec2(vT * 16.0 - uTime * 0.11, vS * 1.4 + vSeed * 13.0)) * 1.25;
+  #else
     float n = fbm(vec2(vT * 16.0 - uTime * 0.11, vS * 1.4 + vSeed * 13.0));
+  #endif
     float crack = 1.0 - smoothstep(0.0, 0.03 + vHeat * 0.05, abs(n - 0.5));
     float flow = smoothstep(0.38, 0.85, vnoise(vec2(vT * 3.5 - uTime * 0.22, vSeed * 5.0)));
     float edge = smoothstep(0.86, 1.0, abs(vS));

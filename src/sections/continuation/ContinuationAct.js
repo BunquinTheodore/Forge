@@ -2,6 +2,8 @@ import {
   BufferGeometry, BufferAttribute, Points, ShaderMaterial, AdditiveBlending, Color, Mesh, PlaneGeometry, Vector2,
 } from 'three';
 import { GLAct } from '../../gl/GLAct.js';
+import { ScrollTrigger } from '../../core/Scroll.js';
+import { continuationState } from './continuationState.js';
 import { emberVertex, emberFragment, horizonVertex, horizonFragment } from './emberShaders.js';
 
 const BASE_COUNT = 2600;
@@ -19,6 +21,7 @@ const cssColor = (name, fallback) => {
 /**
  * Ember field under a horizon. The horizon tracks the 90-day ruler (the ground line);
  * as the film nears D+90 the embers erupt upward through it.
+ * DOM positions are measured on refresh only and projected from scrollY each frame (no per-frame layout reads).
  */
 export default class ContinuationAct extends GLAct {
   static order = 2;
@@ -28,6 +31,10 @@ export default class ContinuationAct extends GLAct {
     this.count = Math.round(BASE_COUNT * this.detail);
     this.ruler = this.section.querySelector('.cont__ruler');
     this.ground = this.section.querySelector('.cont__og');
+    this.pinEl = this.section.querySelector('.cont__stage');
+    this.groundBottom = 0;   // document Y of OVERGROUND's ground line (flow)
+    this.rulerOffset = 0;    // ruler centre relative to the pinned stage top (film)
+    this.stageTop = 0;       // document Y of the stage, fallback when no trigger exists
     this.heat = 0;
     this.erupt = 0;
     this.horizon = 0;
@@ -41,6 +48,29 @@ export default class ContinuationAct extends GLAct {
     };
     this.#buildEmbers(colors);
     this.#buildHorizon(colors);
+    this.onRefresh = () => this.#measure();
+    ScrollTrigger.addEventListener('refresh', this.onRefresh);
+    this.#measure();
+  }
+
+  #measure() {
+    const y = window.scrollY;
+    if (this.ground) this.groundBottom = this.ground.getBoundingClientRect().bottom + y;
+    if (this.ruler && this.pinEl) {
+      const r = this.ruler.getBoundingClientRect();
+      const s = this.pinEl.getBoundingClientRect();
+      this.rulerOffset = r.top + r.height / 2 - s.top;
+      this.stageTop = s.top + y;
+    }
+  }
+
+  /** Screen Y of the pinned stage top: scrolls in, holds at 0 while pinned, scrolls out. */
+  #stageScreenTop(y) {
+    const st = continuationState.trigger;
+    if (!st) return this.stageTop - y;
+    if (y < st.start) return st.start - y;
+    if (y > st.end) return st.end - y;
+    return 0;
   }
 
   #buildEmbers(colors) {
@@ -104,6 +134,7 @@ export default class ContinuationAct extends GLAct {
     u.uWidth.value = this.view.width;
     this.horizonMesh.scale.set(this.view.width * 1.1, this.view.height * 0.5, 1);
     this.width = width;
+    this.#measure();
   }
 
   onTierChange() {
@@ -111,28 +142,27 @@ export default class ContinuationAct extends GLAct {
     this.resize(this.stage.width, this.stage.height);
   }
 
-  #targetHorizon() {
+  #targetHorizon(y) {
     const h = this.stage.height;
-    if (!this.section.classList.contains('is-film')) {
+    if (continuationState.mode !== 'film') {
       // Flow mode: sit on OVERGROUND's ground line so the glow never lies behind the copy below it.
       if (!this.ground) return FLOW_HORIZON * this.view.height;
-      const bottom = this.ground.getBoundingClientRect().bottom;
+      const bottom = this.groundBottom - y;
       const cy = Math.min(Math.max(bottom, 0), h * (0.5 - FLOW_HORIZON));
       return -(cy / h - 0.5) * this.view.height;
     }
-    const r = this.ruler.getBoundingClientRect();
-    const cy = r.top + r.height / 2;
+    const cy = this.#stageScreenTop(y) + this.rulerOffset;
     return -(cy / h - 0.5) * this.view.height;
   }
 
   update(dt, time, state) {
     if (!this.device.reducedMotion) this.time += dt;
-    const heat = Number(this.section.dataset.heat) || 0;
+    const heat = continuationState.heat;
     const k = Math.min(1, dt * 3);
     this.heat += (heat - this.heat) * k;
     const e = Math.min(1, Math.max(0, (this.heat - ERUPT_FROM) / (ERUPT_TO - ERUPT_FROM)));
     this.erupt += (e * e * (3 - 2 * e) - this.erupt) * k;
-    this.horizon += (this.#targetHorizon() - this.horizon) * Math.min(1, dt * 8);
+    this.horizon += (this.#targetHorizon(state.scrollY) - this.horizon) * Math.min(1, dt * 8);
 
     const u = this.emberMat.uniforms;
     u.uTime.value = this.time;
@@ -148,5 +178,10 @@ export default class ContinuationAct extends GLAct {
     h.uVis.value = state.visibility;
     h.uTime.value = this.time;
     this.horizonMesh.position.y = this.horizon;
+  }
+
+  dispose() {
+    ScrollTrigger.removeEventListener('refresh', this.onRefresh);
+    super.dispose();
   }
 }

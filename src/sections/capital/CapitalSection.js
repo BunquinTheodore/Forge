@@ -32,8 +32,6 @@ export default class CapitalSection extends BaseSection {
       const v = it.dataset.capital;
       this.listen(it, 'pointerenter', (e) => { if (e.pointerType !== 'touch') set(v); });
       this.listen(it, 'pointerleave', (e) => { if (e.pointerType !== 'touch') set(null); });
-      this.listen(it, 'focus', () => set(v));
-      this.listen(it, 'blur', () => set(null));
       this.listen(it, 'click', () => set(this.el.dataset.capital === v ? null : v));
     }
   }

@@ -7,6 +7,7 @@ const STATES = [
   [65, 'Investor conditions shifting'],
   [101, 'Ready for the next capital step'],
 ];
+const ANNOUNCE_DELAY = 400;
 
 /**
  * MOAT. Four draggable score dials feed an illustrative "investability" readout,
@@ -20,6 +21,7 @@ export default class MoatSection extends BaseSection {
     this.readoutV = this.$('.moat__readout-v');
     this.meter = this.$('.moat__meter-fill');
     this.stateEl = this.$('.moat__readout-state');
+    this.liveEl = this.$('.moat__readout-live');
     this.gauges = this.$$('.gauge').map((el) => new Gauge(el, {
       listen: (t, type, fn, opts) => this.listen(t, type, fn, opts),
       onChange: (key, v) => this.#onScore(key, v),
@@ -57,6 +59,16 @@ export default class MoatSection extends BaseSection {
   #onScore(key, v) {
     this.values[key] = v;
     this.#updateReadout();
+    this.#announce();
+  }
+
+  /** Debounced summary for screen readers, so a drag is announced once it pauses. */
+  #announce() {
+    if (!this.liveEl) return;
+    clearTimeout(this.announceTimer);
+    this.announceTimer = setTimeout(() => {
+      this.liveEl.textContent = `Illustrative investability ${this.#score()} out of 100. ${this.stateEl.textContent}.`;
+    }, ANNOUNCE_DELAY);
   }
 
   /** Geometric mean: one weak score drags the whole result down. Illustrative only. */
@@ -151,6 +163,7 @@ export default class MoatSection extends BaseSection {
 
   destroy() {
     this.ro?.disconnect();
+    clearTimeout(this.announceTimer);
     super.destroy();
   }
 }

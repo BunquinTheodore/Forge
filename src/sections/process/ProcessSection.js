@@ -5,20 +5,17 @@ import { WorkingCell } from './WorkingCell.js';
 /**
  * How FORGE works: six steps heated by a molten line, the solution architecture,
  * and the Working Cell rule as an interactive ignition.
- * Publishes data-hot / data-hx / data-hy (line head) for ProcessAct.
+ * Publishes data-hot on the section and the line head through moltenHeads for ProcessAct.
  */
 export default class ProcessSection extends BaseSection {
   static id = 'process';
 
   init() {
-    this.track = new MoltenTrack(this.el);
+    this.track = new MoltenTrack(this.el, this.scroll);
     this.cell = new WorkingCell(this.$('[data-cell]'), { listen: this.listen.bind(this) });
     this.cell.render();
 
     this.gsap(() => this.track.build());
-    // Sections are created in file order, not page order, so a pin further up the page (created later)
-    // would be ignored when this pin's start is measured. Refresh once in page order when ready.
-    this.app.on('ready', () => { ScrollTrigger.sort(); ScrollTrigger.refresh(); });
     if (this.reducedMotion) {
       this.el.classList.add('is-in');
       return;
@@ -56,7 +53,7 @@ export default class ProcessSection extends BaseSection {
       scrollTrigger: { trigger: head, start: 'top 80%', once: true },
     });
     // the four phrases heat up one after another as the reader scrolls
-    gsap.fromTo(this.$$('.prc__phrase'), { opacity: 0.14 }, {
+    gsap.fromTo(this.$$('.prc__phrase'), { opacity: 0.5 }, {
       opacity: 1, stagger: 0.5, ease: 'none',
       scrollTrigger: { trigger: head, start: 'top 70%', end: 'bottom 45%', scrub: true },
     });
@@ -76,7 +73,7 @@ export default class ProcessSection extends BaseSection {
         onEnter: () => this.$('.arch__flow').classList.add('is-linked'),
       },
     });
-    gsap.fromTo(this.$$('.hypo__w'), { opacity: 0.12 }, {
+    gsap.fromTo(this.$$('.hypo__w'), { opacity: 0.6 }, {
       opacity: 1, stagger: 0.08, ease: 'none',
       scrollTrigger: { trigger: this.$('.hypo'), start: 'top 82%', end: 'bottom 55%', scrub: true },
     });

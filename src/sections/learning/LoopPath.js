@@ -101,6 +101,16 @@ export class LoopPath {
       t: 1, ease: 'none', onUpdate: apply,
       scrollTrigger: { trigger: this.root, start: 'top 78%', end: 'bottom 45%', scrub: 0.6 },
     });
+    return () => {
+      this.path.style.strokeDashoffset = '';
+      this.spark?.removeAttribute('transform');
+      this.#unlight();
+    };
+  }
+
+  /** Clears every lit state so the next layout mode starts clean. */
+  #unlight() {
+    [...this.stages, ...this.nodes].forEach((el) => el.classList.remove('is-lit'));
   }
 
   #mobile() {
@@ -119,7 +129,10 @@ export class LoopPath {
         onRefresh: () => { this.#measureRail(); apply(); },
       },
     });
-    return () => { this.railFill.style.transform = ''; };
+    return () => {
+      this.railFill.style.transform = '';
+      this.#unlight();
+    };
   }
 
   destroy() { this.mm?.revert(); }

@@ -50,7 +50,9 @@ export default class HeroAct extends GLAct {
       uBurstAge: { value: IDLE_BURST_AGE },
     };
 
-    this.ribbon = new Ribbon({ strands: d >= 1 ? 6 : 5, segments: Math.round(220 * d + 60), palette, shared: this.shared });
+    this.ribbon = new Ribbon({
+      strands: d >= 1 ? 6 : 5, segments: Math.round(220 * d + 60), palette, shared: this.shared, lowDetail: d < 1,
+    });
     this.sparks = new Sparks({ count: Math.round(SPARKS_MAX * d), ribbon: this.ribbon, palette, shared: this.shared });
     this.network = new Network({ nodes: Math.round(NODES_MAX * d + 8), palette, shared: this.shared });
     this.track(...this.ribbon.disposables, ...this.sparks.disposables, ...this.network.disposables);

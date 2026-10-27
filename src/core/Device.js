@@ -19,13 +19,17 @@ export class Device {
 
   #computeTier() {
     if (!this.webgl || this.saveData || this.memory <= 2 || this.cores <= 2) return 'low';
-    if (this.coarsePointer || this.isSmallScreen || this.memory <= 4) return 'mid';
+    // Phones and small tablets with few cores cannot hold the shared stage at a usable frame rate:
+    // they get the CSS fallbacks instead of GL.
+    const handheld = this.coarsePointer || this.isSmallScreen;
+    if (handheld && this.cores <= 4) return 'low';
+    if (handheld || this.memory <= 4) return 'mid';
     return 'high';
   }
 
   /** Device pixel ratio cap for the GL canvas at the current tier. */
   get maxDpr() {
-    return { low: 1, mid: 1.5, high: 2 }[this.tier];
+    return { low: 1, mid: 1.25, high: 2 }[this.tier];
   }
 
   /** Multiplier for particle counts and geometry detail: 0.35 / 0.6 / 1. */

@@ -24,7 +24,7 @@
 
   <div class="wrap thesis__wrap">
     <header class="thesis__head">
-      <p class="label thesis__eyebrow"><span class="num">01</span> <span>The thesis</span></p>
+      <p class="label thesis__eyebrow"><span>The thesis</span></p>
       <h2 class="thesis__title h-block" id="thesis-title">An event built like a startup.</h2>
     </header>
 
@@ -44,7 +44,7 @@
         <button class="thesis__tab thesis__tab--forge" role="tab" type="button" id="thesis-tab-forge" aria-controls="thesis-panel" aria-selected="true" tabindex="0" data-mode="forge">FORGE</button>
       </div>
 
-      <div class="thesis__panel" id="thesis-panel" role="tabpanel" aria-labelledby="thesis-tab-forge" aria-live="polite">
+      <div class="thesis__panel" id="thesis-panel" role="tabpanel" aria-labelledby="thesis-tab-forge">
         <figure class="thesis__diagram" data-mode="forge" aria-hidden="true">
           <svg viewBox="-160 -160 320 320" focusable="false">
             <circle class="dg__orbit" r="118" />
@@ -59,7 +59,7 @@
           </svg>
         </figure>
         <div class="thesis__readout">
-          <p class="thesis__verb" data-readout>
+          <p class="thesis__verb" data-readout aria-live="polite" aria-atomic="true">
             <span class="thesis__verb-who">FORGE</span>
             <span class="thesis__verb-what">would design, finance and test the temporary configuration that changes the risk.</span>
           </p>

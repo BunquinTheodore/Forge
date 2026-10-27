@@ -2,7 +2,7 @@
 .sec--trust {
   --t-ink: var(--ink);
   --t-ink-2: var(--ink-3);
-  --t-mute: var(--mute-2);
+  --t-mute: color-mix(in srgb, var(--ink) 62%, var(--cream));
   --t-rule: rgba(17, 37, 58, 0.18);
   --t-rule-strong: rgba(17, 37, 58, 0.55);
   --t-accent: var(--ember-deep);

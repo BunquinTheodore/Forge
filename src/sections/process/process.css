@@ -56,19 +56,25 @@
   background: radial-gradient(closest-side, rgba(255, 179, 107, 0.6), transparent);
   opacity: 0; transition: opacity 0.5s var(--ease-out);
 }
-.sec--process .step__n { display: block; font-size: var(--fs-small); color: var(--mute-2); letter-spacing: var(--track-wide); transition: color 0.5s var(--ease-out); }
+.sec--process .step__n { display: block; font-size: var(--fs-small); color: var(--mute); letter-spacing: var(--track-wide); transition: color 0.5s var(--ease-out); }
 .sec--process .step__k {
   margin-top: 6px; font-weight: 850; font-stretch: 115%; text-transform: uppercase; letter-spacing: -0.01em;
-  font-size: clamp(1.7rem, 0.9rem + 3.6vw, 4.2rem); line-height: 0.95; color: var(--steel-2);
+  font-size: clamp(1.7rem, 0.9rem + 3.6vw, 4.2rem); line-height: 0.95; color: var(--mute);
   transition: color 0.6s var(--ease-out), text-shadow 0.6s var(--ease-out);
 }
-.sec--process .step__p { margin-top: 12px; max-width: 30ch; color: var(--fog); opacity: 0.45; transition: opacity 0.6s var(--ease-out); }
+.sec--process .step__p { margin-top: 12px; max-width: 30ch; color: var(--fog); opacity: 0.8; transition: opacity 0.6s var(--ease-out); }
 
-.sec--process .step.is-hot .step__node { border-color: var(--ember-glow); background: var(--ember); }
-.sec--process .step.is-hot .step__node::after { opacity: 1; }
-.sec--process .step.is-hot .step__n { color: var(--ember-glow); }
-.sec--process .step.is-hot .step__k { color: var(--cream); text-shadow: 0 0 28px rgba(232, 91, 34, 0.45); }
-.sec--process .step.is-hot .step__p { opacity: 1; }
+/* Resting steps pass contrast on their own (mute about 5.5:1, fog at 0.8 about 6:1); hot is the emphasis. */
+.sec--process .step.is-hot .step__node,
+html.no-js .sec--process .step .step__node { border-color: var(--ember-glow); background: var(--ember); }
+.sec--process .step.is-hot .step__node::after,
+html.no-js .sec--process .step .step__node::after { opacity: 1; }
+.sec--process .step.is-hot .step__n,
+html.no-js .sec--process .step .step__n { color: var(--ember-glow); }
+.sec--process .step.is-hot .step__k,
+html.no-js .sec--process .step .step__k { color: var(--cream); text-shadow: 0 0 28px rgba(232, 91, 34, 0.45); }
+.sec--process .step.is-hot .step__p,
+html.no-js .sec--process .step .step__p { opacity: 1; }
 
 /* Horizontal pinned track (added by JS on wide screens with motion allowed) */
 .sec--process.is-h .prc__pin {

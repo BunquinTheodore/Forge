@@ -1,5 +1,5 @@
 import { BaseSection, gsap } from '../../core/BaseSection.js';
-import { goToChapter, chapterEl, focusChapter } from '../chrome/chapters.js';
+import { goToChapter, chapterEl, focusChapter } from './footerNav.js';
 import { MoltenWordmark } from './MoltenWordmark.js';
 
 /**

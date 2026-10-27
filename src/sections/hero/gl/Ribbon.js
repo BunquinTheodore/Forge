@@ -25,7 +25,7 @@ export function seeded(seed) {
  * an opaque-ish forged body and an additive molten edge.
  */
 export class Ribbon {
-  constructor({ strands, segments, palette, shared }) {
+  constructor({ strands, segments, palette, shared, lowDetail = false }) {
     this.curves = Ribbon.#makeCurves(strands);
     const geometry = Ribbon.#makeGeometry(this.curves, segments);
     this.geometry = geometry;
@@ -45,6 +45,7 @@ export class Ribbon {
       },
       vertexShader: ribbonVertex,
       fragmentShader: bodyFragment,
+      defines: lowDetail ? { LOW_DETAIL: '' } : {},
       side: DoubleSide,
       transparent: true,
     });

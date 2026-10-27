@@ -30,10 +30,18 @@
 /* Morning: clock + agenda */
 .sec--programme .programme__morning { margin-top: clamp(40px, 7vw, 96px); display: grid; gap: 24px; }
 .sec--programme .programme__clock {
-  position: sticky; top: 64px; z-index: 2; display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center;
+  /* Sits just under the fixed chrome bar. Mirrors chrome.css --bar-h (scoped to .chrome) plus the safe area. */
+  --programme-bar-h: var(--header-h, clamp(60px, 4.6vw + 40px, 84px));
+  position: sticky; top: calc(var(--programme-bar-h) + env(safe-area-inset-top, 0px));
+  z-index: 2; display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center;
   margin: 0 calc(-1 * var(--gutter)); padding: 10px var(--gutter);
-  background: color-mix(in srgb, var(--cream) 92%, transparent); border-bottom: 1px solid rgba(8, 11, 14, 0.12);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  background: var(--cream); border-bottom: 1px solid rgba(8, 11, 14, 0.12);
+}
+/* Short landscape phones: header plus a sticky clock would eat the viewport. Keep a compact, in flow readout. */
+@media (max-width: 959px) and (max-height: 500px) {
+  .sec--programme .programme__clock { position: relative; top: auto; grid-template-columns: 40px 1fr; padding-block: 6px; }
+  .sec--programme .programme__readout { flex-direction: row; align-items: baseline; gap: 10px; }
+  .sec--programme .programme__now-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 }
 .sec--programme .programme__clock-svg { width: 100%; overflow: visible; }
 .sec--programme .programme__readout { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -170,7 +178,7 @@
   .sec--programme .programme__morning { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(40px, 5vw, 96px); }
   .sec--programme .programme__clock {
     top: 16vh; align-self: start; grid-template-columns: 1fr; gap: 24px; margin: 0; padding: 0;
-    background: none; border: 0; -webkit-backdrop-filter: none; backdrop-filter: none;
+    background: none; border: 0;
   }
   .sec--programme .programme__clock-svg { width: min(100%, 280px, 36vh); }
   .sec--programme .programme__now { font-size: clamp(2rem, min(4vw, 7vh), 4.2rem); line-height: 1; }
@@ -183,3 +191,5 @@
 @media (min-width: 2000px) {
   .sec--programme .programme__wrap { max-width: 1680px; }
 }
+
+.sec--programme :focus-visible { outline-color: var(--ember-deep); }

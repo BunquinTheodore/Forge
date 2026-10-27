@@ -14,44 +14,44 @@
       <ul class="ring__spin" data-ring-spin>
         <li class="role" data-role-id="founders">
           <button class="role__pick" type="button" aria-pressed="true">
-            <span class="role__n num">01</span>
-            <span class="role__k">Founders &amp; startups</span>
-            <span class="role__p">From credible early-stage ideas to operating startups seeking growth, capital, capabilities or market access.</span>
+            <span class="role__n num" id="aud-founders-n">01</span>
+            <span class="role__k" id="aud-founders-k">Founders &amp; startups</span>
+            <span class="role__p" id="aud-founders-p">From credible early-stage ideas to operating startups seeking growth, capital, capabilities or market access.</span>
           </button>
         </li>
         <li class="role" data-role-id="investors">
           <button class="role__pick" type="button" aria-pressed="false">
-            <span class="role__n num">02</span>
-            <span class="role__k">Investors &amp; finance</span>
-            <span class="role__p">Angels, family offices, VCs, banks and corporate investors looking for better-prepared opportunities.</span>
+            <span class="role__n num" id="aud-investors-n">02</span>
+            <span class="role__k" id="aud-investors-k">Investors &amp; finance</span>
+            <span class="role__p" id="aud-investors-p">Angels, family offices, VCs, banks and corporate investors looking for better-prepared opportunities.</span>
           </button>
         </li>
         <li class="role" data-role-id="corporates">
           <button class="role__pick" type="button" aria-pressed="false">
-            <span class="role__n num">03</span>
-            <span class="role__k">Corporates</span>
-            <span class="role__p">Companies offering market access, technology, distribution, pilots, procurement or strategic partnership.</span>
+            <span class="role__n num" id="aud-corporates-n">03</span>
+            <span class="role__k" id="aud-corporates-k">Corporates</span>
+            <span class="role__p" id="aud-corporates-p">Companies offering market access, technology, distribution, pilots, procurement or strategic partnership.</span>
           </button>
         </li>
         <li class="role" data-role-id="capability">
           <button class="role__pick" type="button" aria-pressed="false">
-            <span class="role__n num">04</span>
-            <span class="role__k">Capability providers</span>
-            <span class="role__p">Digital, AI/data, legal, IP, finance, talent, marketing and business-development expertise.</span>
+            <span class="role__n num" id="aud-capability-n">04</span>
+            <span class="role__k" id="aud-capability-k">Capability providers</span>
+            <span class="role__p" id="aud-capability-p">Digital, AI/data, legal, IP, finance, talent, marketing and business-development expertise.</span>
           </button>
         </li>
         <li class="role" data-role-id="academia">
           <button class="role__pick" type="button" aria-pressed="false">
-            <span class="role__n num">05</span>
-            <span class="role__k">Accelerators &amp; universities</span>
-            <span class="role__p">Pipelines of founders, research, mentors, incubated ventures and entrepreneurial talent.</span>
+            <span class="role__n num" id="aud-academia-n">05</span>
+            <span class="role__k" id="aud-academia-k">Accelerators &amp; universities</span>
+            <span class="role__p" id="aud-academia-p">Pipelines of founders, research, mentors, incubated ventures and entrepreneurial talent.</span>
           </button>
         </li>
         <li class="role" data-role-id="institutions">
           <button class="role__pick" type="button" aria-pressed="false">
-            <span class="role__n num">06</span>
-            <span class="role__k">Institutions</span>
-            <span class="role__p">Public agencies and ecosystem actors supporting innovation, enterprise development and responsible finance.</span>
+            <span class="role__n num" id="aud-institutions-n">06</span>
+            <span class="role__k" id="aud-institutions-k">Institutions</span>
+            <span class="role__p" id="aud-institutions-p">Public agencies and ecosystem actors supporting innovation, enterprise development and responsible finance.</span>
           </button>
         </li>
       </ul>
@@ -83,7 +83,8 @@
         <g data-map-nodes></g>
       </svg>
     </figure>
-    <div class="flows" aria-live="polite">
+    <div class="flows">
+      <p class="sr-only" aria-live="polite" aria-atomic="true" data-flow-status></p>
       <p class="flows__now"><span class="flows__now-k">Selected</span> <strong data-flow-name>Founders &amp; startups</strong></p>
       <div class="flows__cols">
         <div class="flows__col flows__col--give">
@@ -95,6 +96,7 @@
           <ul class="flows__list" data-flow-draw></ul>
         </div>
       </div>
+      <p class="flows__note">Illustrative. Connections are drawn from how the programme describes each role.</p>
     </div>
   </div>
 

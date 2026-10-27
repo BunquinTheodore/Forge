@@ -7,6 +7,7 @@ const POINTER_RADIUS = 150;
 const POINTER_RING = 0.42;     // points settle on a ring at this fraction of the radius
 const POINTER_FORCE = 2600;
 const MAX_DPR = 2;
+const REST_EPSILON = 0.05;     // px: below this offset and per-frame travel the field sleeps
 
 /** Small deterministic PRNG so the field looks the same on every visit. */
 function mulberry32(seed) {
@@ -42,6 +43,7 @@ export class DataField {
     this.pointerOn = false;
     this.placed = false;
     this.dirty = true;
+    this.awake = true;
     this.#alloc();
     this.#readColors();
   }
@@ -100,6 +102,7 @@ export class DataField {
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (!this.placed || this.reduced) this.#snap();
     this.dirty = true;
+    this.awake = true;
   }
 
   #snap() {
@@ -117,29 +120,44 @@ export class DataField {
     return smooth(Math.min(1, Math.max(0, this.order))) * (0.45 + 0.55 * this.tension);
   }
 
-  setOrder(v) { this.order = v; this.dirty = true; if (this.reduced) this.#snap(); }
-  setTension(v) { this.tension = v; this.dirty = true; if (this.reduced) this.#snap(); }
+  setOrder(v) { this.#setParam('order', v); }
+  setTension(v) { this.#setParam('tension', v); }
+
+  #setParam(name, v) {
+    if (this[name] === v) return;
+    this[name] = v;
+    this.dirty = true;
+    this.awake = true;
+    if (this.reduced) this.#snap();
+  }
 
   setPointer(x, y) {
     if (this.reduced) return;
     this.px = x;
     this.py = y;
     this.pointerOn = true;
+    this.awake = true;
   }
 
-  clearPointer() { this.pointerOn = false; this.px = -1e5; this.py = -1e5; }
+  clearPointer() { this.pointerOn = false; this.px = -1e5; this.py = -1e5; this.awake = true; }
 
+  /** Integrates the springs. Skipped once the field has settled and nothing has changed. */
   step(dt) {
-    if (this.reduced || !this.w) return;
+    if (this.reduced || !this.w || !this.awake) return;
     const k = this.#mix();
     const damp = Math.exp(-DAMPING * dt);
     const r = POINTER_RADIUS;
     const r2 = r * r;
+    let motion = 0;
     for (let i = 0; i < this.n; i += 1) {
       const hx = (this.sx[i] + (this.tx[i] - this.sx[i]) * k) * this.w;
       const hy = (this.sy[i] + (this.ty[i] - this.sy[i]) * k) * this.h;
-      let ax = (hx - this.x[i]) * STIFFNESS;
-      let ay = (hy - this.y[i]) * STIFFNESS;
+      const ox = hx - this.x[i];
+      const oy = hy - this.y[i];
+      const m = Math.max(Math.abs(ox), Math.abs(oy), Math.abs(this.vx[i]) * dt, Math.abs(this.vy[i]) * dt);
+      if (m > motion) motion = m;
+      let ax = ox * STIFFNESS;
+      let ay = oy * STIFFNESS;
       if (this.pointerOn) {
         const dx = this.x[i] - this.px;
         const dy = this.y[i] - this.py;
@@ -157,6 +175,8 @@ export class DataField {
       this.y[i] += this.vy[i] * dt;
     }
     this.dirty = true;
+    // Sleep once every point is within a fraction of a pixel of home and barely moving.
+    if (!this.pointerOn && motion < REST_EPSILON) this.awake = false;
   }
 
   draw() {

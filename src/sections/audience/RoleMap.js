@@ -25,12 +25,14 @@ export class RoleMap {
     this.nameEl = root.querySelector('[data-flow-name]');
     this.giveEl = root.querySelector('[data-flow-give]');
     this.drawEl = root.querySelector('[data-flow-draw]');
+    this.statusEl = root.querySelector('[data-flow-status]');
     this.points = ROLES.map((_, i) => {
       const a = (-90 + i * 60) * (Math.PI / 180);
       return { x: CX + Math.cos(a) * R, y: CY + Math.sin(a) * R, a };
     });
     this.nodes = this.#buildNodes();
     this.index = -1;
+    this.announced = false;
 
     listen(this.nodesG, 'click', (e) => {
       const g = e.target.closest('[data-i]');
@@ -114,10 +116,11 @@ export class RoleMap {
     const { give, draw } = flowsFor(role.id);
 
     this.linesG.replaceChildren();
-    give.forEach((f, k) => this.#line(i, idx(f.peer), 'give', k * 90));
+    const out = give.flatMap((f) => f.peers.map(idx));
+    out.forEach((to, k) => this.#line(i, to, 'give', k * 90));
     draw.forEach((f, k) => this.#line(idx(f.peer), i, 'draw', 240 + k * 90));
 
-    const linked = new Set([...give, ...draw].map((f) => idx(f.peer)));
+    const linked = new Set([...out, ...draw.map((f) => idx(f.peer))]);
     this.nodes.forEach((g, k) => {
       g.classList.toggle('is-active', k === i);
       g.classList.toggle('is-linked', linked.has(k));
@@ -126,5 +129,13 @@ export class RoleMap {
     this.nameEl.textContent = role.name;
     this.#list(this.giveEl, give, OPEN_ROLE_NOTE);
     this.#list(this.drawEl, draw, OPEN_ROLE_NOTE);
+    this.#announce(role.name, give.length, draw.length);
+  }
+
+  /** Short polite summary for screen readers; skipped for the initial selection. */
+  #announce(name, gives, draws) {
+    if (!this.statusEl) return;
+    if (!this.announced) { this.announced = true; return; }
+    this.statusEl.textContent = `${name} selected. Provides ${gives}, draws on ${draws}.`;
   }
 }

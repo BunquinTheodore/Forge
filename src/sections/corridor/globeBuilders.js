@@ -7,6 +7,14 @@ const GOLDEN = Math.PI * (3 - Math.sqrt(5));
 const OCEAN_KEEP = 4;      // keep one ocean dot in N for a faint sphere body
 const ARC_POINTS = 90;     // travelling dots per route
 const ARC_SEGMENTS = 64;   // line segments per route
+const DOT_CHUNK = 2500;    // sphere samples per slice before yielding to the main thread
+const IDLE_TIMEOUT = 120;  // ms: never wait longer than this for an idle slot
+
+/** Resolve on the next idle slot (or a macrotask), so long builds split into short tasks. */
+const yieldToMain = () => new Promise((resolve) => {
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(() => resolve(), { timeout: IDLE_TIMEOUT });
+  else setTimeout(resolve, 0);
+});
 
 /** Rasterise the embedded outlines into a tiny equirectangular land mask (read once). */
 function landMask() {
@@ -39,30 +47,40 @@ function landMask() {
   };
 }
 
-/** Fibonacci sphere, land dots kept, ocean thinned. */
-export function buildDots(total) {
+/**
+ * Fibonacci sphere, land dots kept, ocean thinned. Async: the mask raster and the sampling
+ * run in short slices separated by idle yields, so the act's lazy load never blocks input.
+ */
+export async function buildDots(total) {
+  await yieldToMain();
   const isLand = landMask();
-  const pos = [];
-  const land = [];
-  const rand = [];
-  for (let i = 0; i < total; i += 1) {
-    const y = 1 - ((i + 0.5) / total) * 2;
-    const r = Math.sqrt(1 - y * y);
-    const th = i * GOLDEN;
-    const x = Math.cos(th) * r;
-    const z = Math.sin(th) * r;
-    const lat = (Math.asin(y) * 180) / Math.PI;
-    const lon = (Math.atan2(-z, x) * 180) / Math.PI;
-    const onLand = isLand(lat, lon);
-    if (!onLand && i % OCEAN_KEEP !== 0) continue;
-    pos.push(x, y, z);
-    land.push(onLand ? 1 : 0);
-    rand.push(Math.random());
+  const pos = new Float32Array(total * 3);
+  const land = new Float32Array(total);
+  const rand = new Float32Array(total);
+  let n = 0;
+  for (let start = 0; start < total; start += DOT_CHUNK) {
+    await yieldToMain();
+    const end = Math.min(total, start + DOT_CHUNK);
+    for (let i = start; i < end; i += 1) {
+      const y = 1 - ((i + 0.5) / total) * 2;
+      const r = Math.sqrt(1 - y * y);
+      const th = i * GOLDEN;
+      const x = Math.cos(th) * r;
+      const z = Math.sin(th) * r;
+      const lat = (Math.asin(y) * 180) / Math.PI;
+      const lon = (Math.atan2(-z, x) * 180) / Math.PI;
+      const onLand = isLand(lat, lon);
+      if (!onLand && i % OCEAN_KEEP !== 0) continue;
+      pos[n * 3] = x; pos[n * 3 + 1] = y; pos[n * 3 + 2] = z;
+      land[n] = onLand ? 1 : 0;
+      rand[n] = Math.random();
+      n += 1;
+    }
   }
   return {
-    position: new Float32Array(pos),
-    land: new Float32Array(land),
-    rand: new Float32Array(rand),
+    position: pos.slice(0, n * 3),
+    land: land.slice(0, n),
+    rand: rand.slice(0, n),
   };
 }
 
@@ -105,7 +123,7 @@ export function buildArcs() {
     const c = CITIES[key];
     latLonToUnit(c.lat, c.lon, unit);
     unit[0] *= 1.006; unit[1] *= 1.006; unit[2] *= 1.006;
-    const gate = key === 'milan' || key === 'rome' || key === 'manila' ? 0 : 0.5;
+    const gate = c.region === 'asean' ? 0.5 : 0;
     write(dots, di, unit, 0, gate, 0, i * 0.21, 1);
     di += 1;
   });

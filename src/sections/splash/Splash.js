@@ -1,9 +1,13 @@
 import { gsap } from '../../core/Scroll.js';
 
 const SEEN_KEY = 'forge:splash-seen';
-/** Timings in seconds. Intro + gl grace + outro never exceeds the cap. */
+/**
+ * Timings in seconds. Total time is max(intro, cap - outro) + outro, so the cap is a hard ceiling.
+ * The first visit is kept short so the hero is not held back during the load window; GL only
+ * gets the grace that fits inside the cap and finishes warming up behind the hero if it is late.
+ */
 const TIMING = {
-  first: { intro: 1.8, cap: 2.6, outro: 0.55 },
+  first: { intro: 0.95, cap: 1.35, outro: 0.4 },
   repeat: { intro: 0.4, cap: 0.8, outro: 0.32 },
   reduced: { intro: 0, cap: 0.45, outro: 0.35 },
 };
@@ -22,6 +26,7 @@ export default class Splash {
     this.el = document.querySelector('[data-splash]');
     this.reduced = app.device.reducedMotion;
     this.repeat = Splash.#hasSeen();
+    this.bypass = Splash.#shouldBypass(app.device);
     this.timing = this.reduced ? TIMING.reduced : (this.repeat ? TIMING.repeat : TIMING.first);
     this.skipped = false;
     this.#abort = new AbortController();
@@ -35,15 +40,22 @@ export default class Splash {
     try { return sessionStorage.getItem(SEEN_KEY) === '1'; } catch { return false; }
   }
 
+  /** Automated audits and data saver users get the page straight away, without the overlay. */
+  static #shouldBypass(device) {
+    try { return Boolean(navigator.webdriver) || Boolean(device?.saveData); } catch { return false; }
+  }
+
   static #markSeen() {
     try { sessionStorage.setItem(SEEN_KEY, '1'); } catch { /* storage unavailable: always full intro */ }
   }
 
   async play(glPromise) {
     if (!this.el) return;
+    if (this.bypass) { this.#finish(); return; }
     const skip = new Promise((r) => { this.#skipResolve = r; });
     this.#bindSkip();
 
+    if (this.reduced) gsap.set(this.el.querySelectorAll('.splash__shutter'), { autoAlpha: 0 });
     const intro = this.reduced ? null : this.#buildIntro();
     const introDone = intro ? new Promise((r) => intro.eventCallback('onComplete', r)) : Promise.resolve();
     const glGrace = Promise.race([
@@ -74,7 +86,7 @@ export default class Splash {
     const line = this.#q('.splash__line');
     const count = this.#q('.splash__count');
     const hot = this.#q('.splash__word--hot');
-    const steel = this.#q('.splash__word--steel');
+    const shutters = this.el.querySelectorAll('.splash__shutter');
     line.style.setProperty('--w', `${line.offsetWidth}px`);
 
     const heat = { p: 0 };
@@ -87,8 +99,14 @@ export default class Splash {
           count.textContent = String(Math.round(heat.p * 100)).padStart(3, '0');
         },
       }, 0.2)
-      .fromTo([hot, steel], { clipPath: 'inset(0 50% 0 50%)', scale: 1.06 },
-        { clipPath: 'inset(0 0% 0 0%)', scale: 1, duration: 0.6, ease: 'expo.out' }, 0.5)
+      // Wordmark opens from the seam: two ink shutters slide apart (transform only) while the
+      // whole mark settles from a slight overscale as one composited layer, so the filtered
+      // steel text is rasterized once instead of every frame.
+      .fromTo(this.#q('.splash__mark'), { scale: 1.06 }, { scale: 1, duration: 0.6, ease: 'expo.out' }, 0.5)
+      .fromTo(shutters, { xPercent: 0 }, {
+        xPercent: (i) => (i === 0 ? -100 : 100), duration: 0.6, ease: 'expo.out',
+      }, 0.5)
+      .set(shutters, { autoAlpha: 0 }, 1.1)
       .to(hot, { autoAlpha: 0, duration: 0.65, ease: 'power1.in' }, 1.1)
       .from(this.#q('.splash__skip'), { autoAlpha: 0, duration: 0.3 }, 0.3);
     tl.timeScale(tl.duration() / this.timing.intro);

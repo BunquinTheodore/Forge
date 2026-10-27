@@ -26,11 +26,15 @@ export default class HeroSection extends BaseSection {
     this.gsap(() => {
       if (this.reducedMotion) { this.motion.settle(); return; }
       this.motion.prime();
-      this.parallax = this.app.stage ? null
-        : this.motion.fallbackParallax(this.$('.hero__fallback'), this.$('.hero__ribbon'));
     });
+    // The stage never exists yet at init (sections are built before it), so only commit to the
+    // fallback parallax when GL is known to be missing. A late GL failure adds .no-gl, caught at ready.
+    if (this.#glMissing()) this.#buildParallax();
 
-    this.app.on('ready', () => this.#start());
+    this.app.on('ready', () => {
+      if (this.#glMissing()) this.#buildParallax();
+      this.#start();
+    });
     this.listen(window, 'resize', () => this.#queueMeasure());
   }
 
@@ -42,8 +46,23 @@ export default class HeroSection extends BaseSection {
     });
   }
 
+  #glMissing() {
+    return !this.app.stage && document.documentElement.classList.contains('no-gl');
+  }
+
+  #buildParallax() {
+    if (this.parallax || this.reducedMotion) return;
+    this.gsap(() => {
+      this.parallax = this.motion.fallbackParallax(this.$('.hero__fallback'), this.$('.hero__ribbon'));
+    });
+  }
+
   #watchGL() {
-    const mark = () => this.el.classList.add('has-gl');
+    const mark = () => {
+      this.el.classList.add('has-gl');
+      this.parallax?.kill();
+      this.parallax = null;
+    };
     if (this.app.stage) mark();
     else this.app.on('gl', (stage) => { if (stage) mark(); });
   }

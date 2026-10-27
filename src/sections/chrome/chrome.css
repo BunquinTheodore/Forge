@@ -1,7 +1,7 @@
 /* Chrome: header, progress, rail, menu, cursor, ambient fallback. Scoped under .chrome */
 .chrome {
   --bar-h: clamp(60px, 4.6vw + 40px, 84px);
-  --rail-pitch: 16px;
+  --rail-pitch: 24px; /* WCAG 2.5.8 minimum target height; must match TICK_PITCH in Rail.js */
   --chrome-fg: var(--cream);
   --chrome-dim: var(--fog);
   --chrome-line: var(--line-strong);
@@ -50,7 +50,7 @@ html.tier-low .chrome .chrome__ambient { display: block; }
 }
 .chrome .chrome__bar::before {
   content: ''; position: absolute; inset: 0 0 -28px 0; pointer-events: none; opacity: 0;
-  background: linear-gradient(180deg, rgba(8, 11, 14, 0.92), rgba(8, 11, 14, 0.6) 60%, transparent);
+  background: linear-gradient(180deg, rgba(8, 11, 14, 0.96), rgba(8, 11, 14, 0.78) 62%, transparent);
   transition: opacity 0.5s var(--ease-out);
 }
 .chrome.is-scrolled .chrome__bar::before { opacity: 1; }
@@ -76,7 +76,7 @@ html.tier-low .chrome .chrome__ambient { display: block; }
 }
 .chrome .chrome__iccpi {
   display: none; flex: 0 0 auto; width: 36px; height: 36px; border-radius: 9px; overflow: hidden;
-  background: #000; box-shadow: 0 0 0 1px var(--chrome-line);
+  background: var(--ink-0); box-shadow: 0 0 0 1px var(--chrome-line);
 }
 .chrome .chrome__iccpi img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
 .chrome .chrome__pill {
@@ -123,6 +123,15 @@ html.tier-low .chrome .chrome__ambient { display: block; }
 @media (min-width: 400px) { .chrome .chrome__iccpi { display: block; } .chrome .chrome__toggle-text { display: inline; } }
 @media (min-width: 600px) { .chrome .chrome__cta { display: inline-flex; } }
 @media (min-width: 760px) { .chrome .chrome__pill { display: inline-flex; } }
+/* Very wide screens: scale the header controls so they do not read as tiny. */
+@media (min-width: 1800px) {
+  .chrome .chrome__bar { --fs-micro: clamp(0.75rem, 0.4rem + 0.32vw, 0.95rem); }
+  .chrome .chrome__iccpi { width: clamp(36px, 1.2rem + 1vw, 52px); height: clamp(36px, 1.2rem + 1vw, 52px); }
+  .chrome .chrome__pill { height: clamp(34px, 1rem + 0.9vw, 46px); padding: 0 clamp(14px, 0.4rem + 0.5vw, 20px); }
+  .chrome .chrome__cta { min-height: clamp(44px, 1.6rem + 0.9vw, 56px); padding: 0 clamp(18px, 0.6rem + 0.6vw, 26px); }
+  .chrome .chrome__toggle-icon { width: clamp(40px, 1.4rem + 1vw, 52px); height: clamp(40px, 1.4rem + 1vw, 52px); }
+  .chrome .chrome__toggle-icon i { left: 30%; right: 30%; }
+}
 
 /* Chapter rail (desktop) */
 .chrome .chrome__rail { display: none; }
@@ -155,7 +164,7 @@ html.tier-low .chrome .chrome__ambient { display: block; }
   transition: transform 0.6s var(--ease-out), opacity 0.5s var(--ease-out);
   font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-wide); text-transform: uppercase;
 }
-.chrome .chrome__rail-label { padding: 0 12px; height: 26px; margin-top: -5px; border-radius: 999px; background: rgba(8, 11, 14, 0.78); }
+.chrome .chrome__rail-label { padding: 0 12px; height: 26px; margin-top: -1px; border-radius: 999px; background: rgba(8, 11, 14, 0.78); }
 .chrome.is-paper-mid .chrome__rail-label { background: rgba(245, 240, 232, 0.9); }
 /* The label floats over section content, so it only shows briefly after a chapter change
    or while the rail is hovered / focused. */
@@ -191,7 +200,7 @@ html.tier-low .chrome .chrome__ambient { display: block; }
   .chrome .chrome__list { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(9, auto); }
 }
 .chrome .chrome__link {
-  display: block; overflow: hidden; text-decoration: none; color: var(--bone);
+  display: flex; align-items: center; min-height: 44px; overflow: hidden; text-decoration: none; color: var(--bone);
   padding: clamp(4px, 0.7vh, 8px) 0; border-bottom: 1px solid var(--line);
 }
 .chrome .chrome__link-in { display: flex; align-items: baseline; gap: 14px; will-change: transform; }

@@ -17,7 +17,7 @@ export default class LearningSection extends BaseSection {
       reducedMotion: this.reducedMotion,
       listen: (t, type, fn, opts) => this.listen(t, type, fn, opts),
     });
-    this.loop.build();
+    this.gsap(() => this.loop.build());
     if (this.reducedMotion) return;
 
     this.gsap(() => {

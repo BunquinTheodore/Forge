@@ -24,6 +24,7 @@ export class RiskLens {
     this.target = { x: 0.5, y: 0.5 };
     this.size = { w: 1, h: 1, lens: 1 };
     this.dragging = false;
+    this.pointerId = null;
     this.dirty = true;
     this.#bind();
     this.measure();
@@ -64,23 +65,28 @@ export class RiskLens {
   }
 
   #onMove(e) {
-    if (e.pointerType === 'touch' && !this.dragging) return;
+    if (e.pointerType === 'touch' && (!this.dragging || e.pointerId !== this.pointerId)) return;
     this.#setTargetFromEvent(e);
   }
 
   #onDown(e) {
+    if (this.dragging) return;
     this.#setTargetFromEvent(e);
+    if (e.pointerType !== 'touch') this.#announce();
     if (e.pointerType !== 'touch') return;
     if (e.target === this.lens || this.lens.contains(e.target)) {
       this.dragging = true;
+      this.pointerId = e.pointerId;
       this.panel.setPointerCapture?.(e.pointerId);
     }
   }
 
   #onUp(e) {
-    if (!this.dragging) return;
+    if (!this.dragging || e.pointerId !== this.pointerId) return;
     this.dragging = false;
-    this.panel.releasePointerCapture?.(e.pointerId);
+    this.pointerId = null;
+    if (this.panel.hasPointerCapture?.(e.pointerId)) this.panel.releasePointerCapture(e.pointerId);
+    this.#announce();
   }
 
   #onKey(e) {
@@ -104,6 +110,11 @@ export class RiskLens {
     this.panel.classList.toggle('is-clear', on);
     this.reveal.setAttribute('aria-pressed', String(on));
     this.reveal.textContent = on ? 'Return to the lens' : 'Show everything in focus';
+    const lensHadFocus = document.activeElement === this.lens;
+    this.lens.tabIndex = on ? -1 : 0;
+    if (on) this.lens.setAttribute('aria-hidden', 'true');
+    else this.lens.removeAttribute('aria-hidden');
+    if (on && lensHadFocus) this.reveal.focus();
   }
 
   destroy() {

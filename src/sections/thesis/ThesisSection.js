@@ -3,6 +3,9 @@ import { WordSplit } from './WordSplit.js';
 import { CompareTabs } from './CompareTabs.js';
 import { TiltCards } from './TiltCards.js';
 
+/** Visual brightness of a word before the scroll heat-up reaches it. */
+const MIN_LIT = 0.35;
+
 /**
  * THESIS. Deck pages 1 and 2.
  * Entrance: the serif thesis statement heats up word by word as it is scrubbed through the viewport
@@ -39,12 +42,15 @@ export default class ThesisSection extends BaseSection {
   #heatUp(statement) {
     const words = this.split.words;
     const keys = this.split.keys;
-    gsap.set(words, { opacity: 0.14 });
+    // Dim through a CSS alpha mask (--lit), never the text's own opacity, so the real text keeps
+    // full contrast for assistive tech and contrast audits while the visual heat-up stays intact.
+    statement.classList.add('is-heating');
+    gsap.set(words, { '--lit': MIN_LIT });
     gsap.set(keys, { '--glow': 0 });
     const tl = gsap.timeline({
       scrollTrigger: { trigger: statement, start: 'top 82%', end: 'bottom 38%', scrub: 0.6 },
     });
-    tl.to(words, { opacity: 1, ease: 'none', stagger: { each: 0.08 }, duration: 0.3 }, 0);
+    tl.to(words, { '--lit': 1, ease: 'none', stagger: { each: 0.08 }, duration: 0.3 }, 0);
     keys.forEach((key) => {
       const at = (words.indexOf(key) * 0.08) + 0.2;
       tl.to(key, { '--glow': 1, ease: 'power2.out', duration: 0.4 }, at);
@@ -114,5 +120,6 @@ export default class ThesisSection extends BaseSection {
   destroy() {
     this.tilt?.destroy();
     super.destroy();
+    this.$('[data-heat]')?.classList.remove('is-heating');
   }
 }

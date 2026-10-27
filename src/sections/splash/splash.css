@@ -35,13 +35,27 @@
 }
 
 .splash__presents { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.splash__logo { width: clamp(40px, 5vw, 56px); height: auto; }
+.splash__logo-wrap {
+  /* The logo ships on pure black. The wrap gives the screen blend an ink backdrop inside the
+     stage's isolated stacking context, so the black box melts into the overlay. */
+  display: block; background: var(--ink); isolation: isolate; line-height: 0;
+}
+.splash__logo { display: block; width: clamp(40px, 5vw, 56px); height: auto; mix-blend-mode: screen; }
 .splash__by {
   font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label);
   text-transform: uppercase; color: var(--fog);
 }
 
-.splash__mark { position: relative; display: grid; }
+.splash__mark { position: relative; display: grid; will-change: transform; }
+.splash__shutter {
+  /* Ink shutters cover each half of the wordmark and slide apart to reveal it from the seam.
+     They overhang vertically so the hot glow stays hidden until the reveal. */
+  position: absolute; top: -0.5em; bottom: -0.5em; width: 50%; z-index: 1;
+  font-size: clamp(3.4rem, 1rem + 13vw, 12rem);
+  background: var(--ink); will-change: transform;
+}
+.splash__shutter--l { left: 0; }
+.splash__shutter--r { right: 0; }
 .splash__word {
   grid-area: 1 / 1;
   font-family: var(--font-sans); font-weight: 900; font-stretch: 125%;
@@ -57,7 +71,7 @@
 .splash__word--hot {
   color: var(--cream);
   text-shadow: 0 0 0.08em var(--ember-glow), 0 0 0.3em var(--ember-hot), 0 0 0.7em var(--ember);
-  will-change: opacity, transform;
+  will-change: opacity;
 }
 
 .splash__forge {
@@ -92,7 +106,7 @@
 .splash__skip {
   position: fixed; left: 0; right: 0; bottom: max(20px, env(safe-area-inset-bottom));
   font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase;
-  color: var(--mute-2);
+  color: var(--mute);
 }
 
 @media (max-width: 420px) {

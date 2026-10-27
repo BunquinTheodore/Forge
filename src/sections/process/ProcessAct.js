@@ -2,6 +2,7 @@ import {
   BufferGeometry, BufferAttribute, Points, ShaderMaterial, AdditiveBlending, Color, Vector2, Vector3,
 } from 'three';
 import { GLAct } from '../../gl/GLAct.js';
+import { moltenHeads } from './moltenHeads.js';
 
 const BASE_SPARKS = 260;   // at detail 1
 const DEPTH = 0;           // sparks sit on the DOM plane so they meet the molten head
@@ -110,15 +111,18 @@ export default class ProcessAct extends GLAct {
     const k = 1 - Math.exp(-dt * 4);
     this.live += (target - this.live) * k;
 
-    const v = this.stage.viewSize(DEPTH);
-    const hx = (Number(ds.hx) - 0.5) * v.width;
-    const hy = -(Number(ds.hy) - 0.5) * v.height;
-    if (!this.headReady) { this.head.set(hx, hy, DEPTH); this.headReady = true; }
-    this.head.x += (hx - this.head.x) * Math.min(1, k * 4);
-    this.head.y += (hy - this.head.y) * Math.min(1, k * 4);
-
+    // head position comes from cached track geometry, so this frame reads no layout
+    const pt = moltenHeads.get(this.section)?.headPoint();
     const u = this.material.uniforms;
-    const vertical = ds.dir === 'v';
+    if (pt) {
+      const v = this.stage.viewSize(DEPTH);
+      const hx = (pt.x - 0.5) * v.width;
+      const hy = -(pt.y - 0.5) * v.height;
+      if (!this.headReady) { this.head.set(hx, hy, DEPTH); this.headReady = true; }
+      this.head.x += (hx - this.head.x) * Math.min(1, k * 4);
+      this.head.y += (hy - this.head.y) * Math.min(1, k * 4);
+    }
+    const vertical = pt ? pt.vertical : true;
     u.uDir.value.x = vertical ? 0 : 1;
     u.uDir.value.y = vertical ? -1 : 0;
     u.uTime.value = time;

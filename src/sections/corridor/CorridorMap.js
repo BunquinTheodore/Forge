@@ -87,12 +87,12 @@ export class CorridorMap {
 
     const cities = el('g', { class: 'cmap__cities' }, this.svg);
     this.cityEls = Object.entries(CITIES).map(([key, c]) => {
-      const g = el('g', { class: 'cmap__city', 'data-city': key }, cities);
+      const g = el('g', { class: 'cmap__city', 'data-city': key, 'data-city-region': c.region }, cities);
       el('circle', { r: 7, class: 'cmap__ring' }, g);
       el('circle', { r: 2.6, class: 'cmap__core' }, g);
-      if (key !== 'kl') {
-        const t = el('text', { x: c.dx, y: (c.dy || 0) + 3.5, 'text-anchor': c.anchor, class: 'cmap__label' }, g);
-        t.textContent = c.name;
+      if (c.label) {
+        const t = el('text', { x: c.dx || 0, y: (c.dy || 0) + 3.5, 'text-anchor': c.anchor || 'start', class: 'cmap__label' }, g);
+        t.textContent = c.label;
       }
       const unit = latLonToUnit(c.lat, c.lon, new Float32Array(3));
       return { g, unit };

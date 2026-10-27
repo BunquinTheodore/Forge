@@ -49,7 +49,7 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
 }
 .sec--footer .footer__link {
-  display: flex; align-items: baseline; gap: 12px; min-height: 40px; padding: 9px 0; text-decoration: none;
+  display: flex; align-items: baseline; gap: 12px; min-height: 44px; padding: 11px 0; text-decoration: none;
   color: var(--bone); font-size: var(--fs-small); transition: color var(--dur-fast);
 }
 .sec--footer .footer__link-num {

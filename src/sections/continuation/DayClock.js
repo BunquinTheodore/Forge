@@ -31,6 +31,7 @@ export class DayClock {
     this.axis = axis;
     gsap.set(this.fill, { clearProps: 'transform' });
     gsap.set(this.head, { clearProps: 'transform' });
+    this.head.style.removeProperty('--p');
     this.#bindSetters();
     this.day = -1;
   }
@@ -38,7 +39,10 @@ export class DayClock {
   #bindSetters() {
     const vertical = this.axis === 'y';
     this.setFill = gsap.quickSetter(this.fill, vertical ? 'scaleY' : 'scaleX');
-    this.setHead = gsap.quickSetter(this.head, vertical ? 'yPercent' : 'xPercent');
+    // Film: the head is a zero-width box moved by --p (in cqi of the ruler) so it never overhangs the ruler.
+    this.setHead = vertical
+      ? gsap.quickSetter(this.head, 'yPercent')
+      : (v) => this.head.style.setProperty('--p', (v / 100).toFixed(4));
   }
 
   /** p: 0..1 position along the ruler (ruler distance), day derived from dayAt. */

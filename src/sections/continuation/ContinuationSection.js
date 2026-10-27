@@ -34,7 +34,6 @@ export default class ContinuationSection extends BaseSection {
       this.mm.add(FILM_QUERY, () => this.#withOrder(this.scenes.buildFilm()));
       this.mm.add(FLOW_QUERY, () => this.#withOrder(this.scenes.buildFlow()));
     });
-    this.app.on('ready', () => TriggerOrder.apply(true));
   }
 
   /** Keep triggers in page order whenever a breakpoint rebuilds the scenes. */

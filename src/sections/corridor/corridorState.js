@@ -11,4 +11,5 @@ export const corridorState = {
   reveal: 0,        // 0..1 arcs draw themselves
   animate: true,    // false under reduced motion: no pulses or drift
   glActive: false,  // set by the act once it renders
+  geo: null,        // GlobeGeometry (set by the section): layout-free anchor rect per frame
 };

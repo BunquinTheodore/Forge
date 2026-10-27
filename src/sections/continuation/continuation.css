@@ -122,7 +122,7 @@
 .sec--continuation .ms__btn:hover .ms__day { color: var(--ember-glow); }
 
 /* Live (JS) unlit state */
-.sec--continuation.is-live .ms { opacity: 0.32; }
+.sec--continuation.is-live .ms { opacity: 0.75; }
 .sec--continuation.is-live .ms::after { transform: scaleX(0); }
 .sec--continuation.is-live .ms__detail { opacity: 0; transform: translate3d(0, 8px, 0); }
 .sec--continuation.is-live .ms.is-lit { opacity: 1; }
@@ -131,10 +131,17 @@
 .sec--continuation .ms[aria-current='step'] .ms__day { color: var(--ember-glow); text-shadow: 0 0 24px rgba(255, 122, 47, 0.55); }
 
 /* OVERGROUND rising from its ground line */
-.sec--continuation .cont__og { position: relative; overflow: hidden; padding-top: 0.1em; border-bottom: 2px solid var(--ember); box-shadow: 0 14px 30px -18px rgba(232, 91, 34, 0.9); }
+/* Sized from the container (cqi), not 100vw, so the scrollbar never pushes the final D past the edge.
+   The word measures about 8.6em in Archivo expanded heavy: 11.2cqi leaves a small margin.
+   Clip only vertically (rising letter mask); the x axis stays visible as a safety net. */
+.sec--continuation .cont__og {
+  position: relative; container-type: inline-size; overflow: hidden; overflow: visible clip;
+  padding-top: 0.1em; border-bottom: 2px solid var(--ember); box-shadow: 0 14px 30px -18px rgba(232, 91, 34, 0.9);
+}
 .sec--continuation .cont__og-word {
   display: block; white-space: nowrap; line-height: 0.86; color: var(--ember);
-  font-size: min(11rem, calc((min(100vw, var(--maxw)) - 2 * var(--gutter)) / 8.4));
+  font-size: min(11rem, calc((min(100vw, var(--maxw)) - 2 * var(--gutter)) / 9));
+  font-size: min(11rem, 11.2cqi);
 }
 .sec--continuation .cont__og-word span { display: inline-block; will-change: transform; }
 
@@ -176,6 +183,8 @@
     linear-gradient(var(--line), var(--line)) 0 50% / 100% 2px no-repeat;
 }
 .sec--continuation.is-film .cont__ruler-fill { transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--ember-deep), var(--ember) 40%, var(--ember-hot) 90%, var(--ember-glow)); }
+.sec--continuation.is-film .cont__ruler { container-type: inline-size; }
+.sec--continuation.is-film .cont__ruler-head { right: auto; width: 0; transform: translate3d(calc(var(--p, 0) * 100cqi), 0, 0); }
 .sec--continuation.is-film .cont__ruler-head i { left: 0; top: 50%; margin: -7px 0 0 -7px; }
 .sec--continuation.is-film .cont__tick {
   display: block; position: absolute; top: 50%; left: calc(var(--at) * 100%); width: 44px; height: 44px; margin: -22px 0 0 -22px;

@@ -85,7 +85,7 @@ html.tier-low .sec--audience .aud__glow { opacity: 1; }
 }
 .sec--audience .ring__btn:hover { border-color: var(--ember); color: var(--ember); }
 .sec--audience .ring__btn:active { background: rgba(232, 91, 34, 0.15); }
-.sec--audience .ring__hint { font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute); }
+.sec--audience .ring__hint { font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--fog); }
 .sec--audience .ring__hint-touch { display: none; }
 .sec--audience .is-stack .ring__hint-fine { display: none; }
 .sec--audience .is-stack .ring__hint-touch { display: inline; }
@@ -95,8 +95,14 @@ html.tier-low .sec--audience .aud__glow { opacity: 1; }
 .sec--audience .is-stack .ring__spin { width: min(86vw, 340px); height: var(--card-h); }
 .sec--audience .is-stack .role { transition: transform 0.55s var(--ease-out), opacity 0.4s var(--ease-out); transform-origin: 50% 100%; }
 .sec--audience .is-stack.is-dragging .role { transition: none; }
+/* Plate composition: number on top, title and description grouped at the foot */
+.sec--audience .is-stack .role__n { margin-bottom: auto; }
+.sec--audience .is-stack .role__p { margin-top: 0; }
+/* Cards waiting in the deck show only their edges, never ghost text in the peeking strips */
+.sec--audience .is-stack .role__pick > * { transition: opacity 0.35s var(--ease-out); }
+.sec--audience .is-stack .role:not(.is-active) .role__pick > * { opacity: 0; }
 @media (max-width: 767px) {
-  .sec--audience { --card-w: min(86vw, 340px); --card-h: clamp(230px, 64vw, 280px); }
+  .sec--audience { --card-w: min(86vw, 340px); --card-h: clamp(220px, 60vw, 264px); }
 }
 
 /* Flow map */
@@ -132,7 +138,10 @@ html.tier-low .sec--audience .aud__glow { opacity: 1; }
 .sec--audience .map__line--draw {
   stroke: var(--fog); stroke-dasharray: 0.02 0.022; opacity: 0;
   animation: aud-fade 0.6s var(--ease-out) forwards, aud-flow 2.4s linear infinite;
+  animation-play-state: running, paused;
 }
+.sec--audience.is-visible .map__line--draw { animation-play-state: running, running; }
+html.tier-low .sec--audience .map__line--draw { animation: aud-fade 0.6s var(--ease-out) forwards; }
 .sec--audience .map__tip--give { fill: var(--ember); }
 .sec--audience .map__tip--draw { fill: var(--fog); }
 @keyframes aud-draw { to { stroke-dashoffset: 0; } }
@@ -155,6 +164,7 @@ html.tier-low .sec--audience .aud__glow { opacity: 1; }
 .sec--audience .flows__list li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .sec--audience .flows__what { color: var(--cream); font-weight: 600; }
 .sec--audience .flows__peer { color: var(--fog); font-size: var(--fs-small); }
+.sec--audience .flows__note { margin-top: 18px; color: var(--fog); font-size: var(--fs-small); font-style: italic; }
 .sec--audience .flows__list .flows__empty { color: var(--fog); font-size: var(--fs-small); font-style: italic; }
 
 /* Closing rule */

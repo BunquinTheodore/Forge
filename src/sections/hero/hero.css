@@ -12,7 +12,7 @@
 
 .sec--hero .hero__stage { position: relative; min-height: 100svh; display: flex; }
 
-/* Background: fallback ribbon image + legibility haze */
+/* Background: fallback ribbon (no GL / no JS only, so GL devices never download it) + legibility haze */
 .sec--hero .hero__bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .sec--hero .hero__fallback {
   position: absolute; left: -38vw; bottom: -2svh; width: 175vw; aspect-ratio: 1280 / 950;
@@ -22,7 +22,9 @@
   mask-image: linear-gradient(90deg, transparent 18%, black 34%), linear-gradient(0deg, transparent 9%, black 26%);
   mask-composite: intersect;
 }
-.sec--hero .hero__ribbon { width: 100%; height: 100%; object-fit: cover; opacity: 0.62; }
+.sec--hero .hero__ribbon { width: 100%; height: 100%; opacity: 0.62; background: center / cover no-repeat; }
+.no-gl .sec--hero .hero__ribbon,
+.no-js .sec--hero .hero__ribbon { background-image: url('/img/ribbon-1280.webp'); }
 .sec--hero.has-gl .hero__fallback { opacity: 0; }
 
 .sec--hero .hero__haze {
@@ -42,7 +44,11 @@
 }
 
 .sec--hero .hero__presents { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.sec--hero .hero__logo { width: clamp(38px, 4.2vw, 54px); height: auto; }
+/* The logo file has a solid black matte: seat it on a dark tile so it reads as a badge, not a hole */
+.sec--hero .hero__logo {
+  width: clamp(38px, 4.2vw, 54px); height: auto; box-sizing: content-box; padding: 4px;
+  background: var(--ink-0); border-radius: var(--radius-sm, 4px); box-shadow: 0 0 0 1px var(--line);
+}
 .sec--hero .hero__presents-text {
   font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--fog);
 }
@@ -64,10 +70,21 @@
   background-size: 520% 100%, 520% 100%, 100% 100%;
   background-position: calc(var(--i) * 25%) 0, calc(var(--i) * 25%) 0, 0 0;
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: brightness(calc(1 + var(--hot, 0) * 1.7)) saturate(calc(1 - var(--hot, 0) * 0.5))
-    drop-shadow(0 0 0.012em var(--ember-hot)) drop-shadow(0 0.03em calc(0.1em + var(--hot, 0) * 0.25em) rgba(232, 91, 34, 0.38));
-  will-change: transform;
+  /* Static filter: rasterised once. Intro heat is the ::before layer's opacity, never a filter tween. */
+  filter: drop-shadow(0 0 0.012em var(--ember-hot)) drop-shadow(0 0.03em 0.1em rgba(232, 91, 34, 0.38));
 }
+/* White-hot duplicate for the hammer strike; cools via opacity (--hot, 1 to 0) */
+.sec--hero .hero__l::before {
+  content: attr(data-l);
+  position: absolute; inset: 0;
+  color: var(--cream);
+  text-shadow: 0 0 0.04em var(--ember-glow), 0 0 0.14em var(--ember-hot), 0 0.03em 0.32em var(--ember);
+  opacity: var(--hot, 0);
+  pointer-events: none;
+}
+/* Layers only while transforms actually run: during the intro, and on the sticky scroll stage */
+.sec--hero .hero__mark.is-forging .hero__l { will-change: transform; }
+.sec--hero .hero__mark.is-forging .hero__l::before { will-change: opacity; }
 .sec--hero .hero__l::after {
   content: attr(data-l);
   position: absolute; inset: 0;
@@ -159,6 +176,7 @@
 @media (min-width: 600px) and (min-height: 620px) {
   .sec.sec--hero { height: 175svh; overflow: visible; }
   .sec--hero .hero__stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+  .sec--hero .hero__l { will-change: transform; }
   .sec--hero .hero__grid { justify-content: center; }
 }
 

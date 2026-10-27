@@ -15,7 +15,7 @@ const HALO_SCALE = 1.5;
 const DEG = Math.PI / 180;
 
 /**
- * CorridorAct: a dotted globe with glowing arcs Milan/Rome to Manila and Manila to ASEAN capitals.
+ * CorridorAct: a dotted globe with glowing arcs from Italy / Europe to Manila, then fanning out across ASEAN.
  * View direction comes from corridorState (written by CorridorSection), so tabs, drag, keys and
  * scroll all steer the same globe. Five draw calls: shell, halo, dots, arc lines, arc dots.
  */
@@ -37,7 +37,7 @@ export default class CorridorAct extends GLAct {
     this.radiusPx = 1;
 
     this.#buildShell();
-    this.#buildDots();
+    await this.#buildDots();
     this.#buildArcs();
     this.#flag(true);
   }
@@ -67,8 +67,9 @@ export default class CorridorAct extends GLAct {
     this.root.add(halo);
   }
 
-  #buildDots() {
-    const data = buildDots(Math.round(DOTS_HIGH * this.detail));
+  async #buildDots() {
+    // Built in chunks that yield to the main thread, so the lazy load is not one long task.
+    const data = await buildDots(Math.round(DOTS_HIGH * this.detail));
     const geo = this.track(new BufferGeometry());
     geo.setAttribute('position', new BufferAttribute(data.position, 3));
     geo.setAttribute('aLand', new BufferAttribute(data.land, 1));
@@ -122,8 +123,10 @@ export default class CorridorAct extends GLAct {
     this.section.classList.toggle('has-globe', on);
   }
 
-  #place() {
-    const rect = this.anchor.getBoundingClientRect();
+  /** Anchor rect derived from scroll by the section's GlobeGeometry: no per-frame layout read. */
+  #place(scrollY) {
+    const geo = corridorState.geo;
+    const rect = geo?.valid ? geo.compute(scrollY) : this.anchor.getBoundingClientRect();
     const box = this.stage.rectToWorld(rect, 0);
     const r = Math.min(box.w, box.h) * 0.5 * GLOBE_FILL;
     this.root.position.set(box.x, box.y, 0);
@@ -135,7 +138,7 @@ export default class CorridorAct extends GLAct {
     const s = corridorState;
     const vis = state.visibility;
     if (s.animate) this.time += dt;
-    this.#place();
+    this.#place(state.scrollY);
 
     // Same rotation order as CorridorMap, so the DOM city labels sit exactly on the dots.
     this.spin.rotation.y = -Math.PI / 2 - s.lon * DEG;

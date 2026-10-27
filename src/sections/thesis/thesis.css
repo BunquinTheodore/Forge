@@ -27,9 +27,20 @@
 }
 .sec--thesis .thesis__statement em { color: var(--ember); }
 .sec--thesis .thesis__statement .w { position: relative; }
+/* Heat-up dimming: the glyphs keep their full colour (real contrast for assistive tech and audits)
+   and are dimmed by an alpha mask driven by --lit. The mask box is grown with padding, cancelled by
+   negative margin, so italic overhangs and the ember glow are never clipped. */
+.sec--thesis .thesis__statement.is-heating .w {
+  --px: 0.6em;
+  --py: 0.5em;
+  padding: var(--py) var(--px);
+  margin: 0 calc(-1 * var(--px));
+  -webkit-mask-image: linear-gradient(rgb(0 0 0 / var(--lit, 1)), rgb(0 0 0 / var(--lit, 1)));
+  mask-image: linear-gradient(rgb(0 0 0 / var(--lit, 1)), rgb(0 0 0 / var(--lit, 1)));
+}
 .sec--thesis .thesis__statement .w--key::after {
   content: attr(data-text);
-  position: absolute; left: 0; top: 0;
+  position: absolute; left: var(--px, 0); top: var(--py, 0);
   color: var(--ember-glow);
   text-shadow: 0 0 0.18em var(--ember-hot), 0 0 0.5em var(--ember);
   opacity: var(--glow, 1);

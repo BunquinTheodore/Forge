@@ -63,7 +63,8 @@ html.js:not(.reduced-motion) .sec--learning .learning__rail-fill { transform: sc
 .sec--learning .learning__stage.is-lit::before { background: var(--ember); border-color: var(--ember-deep); }
 .sec--learning .learning__stage--interval { border-left-color: var(--gold); }
 .sec--learning .learning__stage:last-child { border-left-color: var(--ink-3); }
-html.js:not(.reduced-motion) .sec--learning .learning__stage:not(.is-lit) { opacity: 0.35; transform: translateY(16px); }
+/* Unlit stages dim but keep readable contrast (ink-3 and steel stay above 4.5:1 at 0.72). */
+html.js:not(.reduced-motion) .sec--learning .learning__stage:not(.is-lit) { opacity: 0.88; transform: translateY(16px); }
 
 .sec--learning .learning__stage-k {
   font-family: var(--font-serif); font-weight: 700; font-size: var(--fs-h3); line-height: 1.15; color: var(--ink-3);
@@ -105,13 +106,17 @@ html.js:not(.reduced-motion) .sec--learning .learning__stage:not(.is-lit) { opac
   position: absolute; left: clamp(16px, 2.4vw, 32px); right: clamp(16px, 2.4vw, 32px); bottom: clamp(14px, 2vw, 26px);
   font-family: var(--font-serif); font-size: var(--fs-lead); line-height: 1.35; color: var(--ink-3); max-width: 48ch;
 }
+/* The ghost lays out the full caption up front so typing never reflows the box; the typed
+   text overlays it and the caret moves by transform only (no layout shift per character). */
+.sec--learning .recap__caption-ghost { visibility: hidden; }
+.sec--learning .recap__caption-text { position: absolute; inset: 0 0 auto 0; }
 .sec--learning .recap__caret {
-  display: inline-block; width: 0.55em; height: 1.05em; margin-left: 2px; vertical-align: -0.15em;
-  background: var(--ember); opacity: 0;
+  position: absolute; left: 2px; top: 0; width: 0.55em; height: 1.05em;
+  background: var(--ember); opacity: 0; will-change: transform;
 }
 .sec--learning .recap.is-running .recap__caret { opacity: 1; animation: recap-blink 0.9s steps(1) infinite; }
 @keyframes recap-blink { 50% { opacity: 0; } }
-.sec--learning .recap__demo { font-size: var(--fs-micro); color: var(--mute-2); }
+.sec--learning .recap__demo { font-size: var(--fs-micro); color: var(--steel); }
 
 .sec--learning .recap__board { margin-top: clamp(16px, 2vw, 24px); }
 .sec--learning .recap__pile {
@@ -119,11 +124,10 @@ html.js:not(.reduced-motion) .sec--learning .learning__stage:not(.is-lit) { opac
   border: 1.5px dashed var(--bone); border-radius: var(--radius);
   background: color-mix(in srgb, var(--cream) 70%, var(--bone));
 }
-.sec--learning .recap__pile::after {
-  content: 'Notes from the room'; position: absolute; left: clamp(16px, 2.4vw, 32px); top: 14px;
-  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute);
+.sec--learning .recap__pile-k {
+  position: absolute; left: clamp(16px, 2.4vw, 32px); top: 14px;
+  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--steel);
 }
-.sec--learning .recap.is-sorted .recap__pile::after { content: 'Recap sorted'; }
 html.no-js .sec--learning .recap__pile { display: none; }
 html.no-js .sec--learning .recap__controls { display: none; }
 
@@ -164,3 +168,5 @@ html.no-js .sec--learning .recap__controls { display: none; }
 @media (min-width: 1800px) {
   .sec--learning .learning__rings { right: -10vw; }
 }
+
+.sec--learning :focus-visible { outline-color: var(--ember-deep); }
