@@ -1,0 +1,100 @@
+/* Splash: full-screen ink overlay that forges the wordmark, then splits open along the ember seam. */
+.splash {
+  position: fixed; inset: 0; z-index: var(--z-splash);
+  display: grid; place-items: center;
+  color: var(--cream); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+}
+.no-js .splash { display: none; }
+
+.splash__panel {
+  position: absolute; left: 0; right: 0; height: 50.5%;
+  background: var(--ink);
+  will-change: transform;
+}
+.splash__panel--top { top: 0; }
+.splash__panel--bottom { bottom: 0; }
+.splash__panel--top::after,
+.splash__panel--bottom::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ember-hot) 30%, var(--ember-glow) 50%, var(--ember-hot) 70%, transparent);
+  opacity: 0; transition: opacity 0.2s;
+}
+.splash__panel--top::after { bottom: 0; }
+.splash__panel--bottom::before { top: 0; }
+.splash.is-opening .splash__panel--top::after,
+.splash.is-opening .splash__panel--bottom::before { opacity: 1; }
+
+.splash__stage {
+  position: relative; z-index: 1;
+  width: min(100% - 32px, 980px);
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(18px, 3.2vh, 34px);
+  text-align: center;
+}
+
+.splash__presents { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.splash__logo { width: clamp(40px, 5vw, 56px); height: auto; }
+.splash__by {
+  font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label);
+  text-transform: uppercase; color: var(--fog);
+}
+
+.splash__mark { position: relative; display: grid; }
+.splash__word {
+  grid-area: 1 / 1;
+  font-family: var(--font-sans); font-weight: 900; font-stretch: 125%;
+  font-size: clamp(3.4rem, 1rem + 13vw, 12rem); line-height: 0.86; letter-spacing: -0.01em;
+}
+.splash__word--steel {
+  background:
+    repeating-linear-gradient(0deg, rgba(245, 240, 232, 0.07) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--cream) 0%, var(--bone) 34%, var(--mute) 52%, var(--fog) 64%, var(--steel-2) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 0.02em var(--ember-hot)) drop-shadow(0 0.04em 0.12em rgba(232, 91, 34, 0.35));
+}
+.splash__word--hot {
+  color: var(--cream);
+  text-shadow: 0 0 0.08em var(--ember-glow), 0 0 0.3em var(--ember-hot), 0 0 0.7em var(--ember);
+  will-change: opacity, transform;
+}
+
+.splash__forge {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
+  width: min(100%, 560px);
+}
+.splash__line {
+  position: relative; height: 2px; background: rgba(174, 183, 196, 0.12); overflow: visible;
+}
+.splash__line::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow));
+  box-shadow: 0 0 12px var(--ember), 0 0 2px var(--ember-glow);
+  transform-origin: left center; transform: scaleX(var(--p, 0));
+}
+.splash__spark {
+  position: absolute; top: 50%; left: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px;
+  border-radius: 50%; background: var(--ember-glow);
+  box-shadow: 0 0 10px 3px var(--ember-hot), 0 0 26px 8px rgba(232, 91, 34, 0.5);
+  transform: translateX(calc(var(--p, 0) * var(--w, 0px)));
+}
+.splash__heat {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  font-variant-numeric: tabular-nums; font-weight: 700; font-size: var(--fs-small);
+  color: var(--ember-glow); min-width: 7ch; justify-content: flex-end;
+}
+.splash__unit {
+  font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-wide);
+  text-transform: uppercase; color: var(--mute);
+}
+
+.splash__skip {
+  position: fixed; left: 0; right: 0; bottom: max(20px, env(safe-area-inset-bottom));
+  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase;
+  color: var(--mute-2);
+}
+
+@media (max-width: 420px) {
+  .splash__forge { gap: 10px; }
+}

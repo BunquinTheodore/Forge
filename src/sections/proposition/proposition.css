@@ -1,0 +1,199 @@
+/* PROPOSITION: cream programme sheet sliding over the dark page. */
+.sec.sec--proposition {
+  --edge: clamp(10px, 1.6vw, 26px);
+  --paper-ink: var(--ink);
+  --paper-navy: var(--ink-3);
+  --paper-line: color-mix(in srgb, var(--ink) 14%, transparent);
+  --paper-soft: color-mix(in srgb, var(--ink) 62%, var(--cream));
+  position: relative;
+  padding: 0;
+  background: var(--ink);
+  overflow: clip;
+}
+
+.sec--proposition .prop__sheet {
+  position: relative;
+  background: var(--cream);
+  color: var(--paper-ink);
+  padding: var(--section-pad) 0;
+  transform-origin: 50% 0%;
+  will-change: transform;
+}
+html.reduced-motion .sec--proposition .prop__sheet { will-change: auto; }
+
+/* Programme document edge: navy band with an ember strip that fills with scroll */
+.sec--proposition .prop__edge {
+  position: absolute; left: 0; top: 0; bottom: 0; width: var(--edge);
+  background: var(--paper-navy);
+}
+.sec--proposition .prop__edge::after {
+  content: ''; position: absolute; top: 0; bottom: 0; right: -4px; width: 4px;
+  background: color-mix(in srgb, var(--ember) 22%, transparent);
+}
+.sec--proposition .prop__edge-fill {
+  position: absolute; top: 0; bottom: 0; right: -4px; width: 4px; z-index: 1;
+  background: linear-gradient(180deg, var(--gold), var(--ember));
+  transform-origin: 50% 0;
+}
+.sec--proposition .prop__inner { padding-left: calc(var(--gutter) + var(--edge) + 4px); }
+
+/* Header */
+.sec--proposition .prop__label { color: var(--paper-soft); }
+.sec--proposition .prop__title {
+  margin-top: 14px; font-family: var(--font-serif); font-weight: 700; color: var(--paper-navy);
+  font-size: var(--fs-h2); line-height: 1.04; letter-spacing: -0.02em; max-width: 18ch;
+}
+.sec--proposition .prop__rule {
+  display: block; height: 3px; margin: clamp(22px, 3vh, 36px) 0; max-width: 980px;
+  background: var(--paper-line); transform-origin: 0 50%;
+}
+.sec--proposition .prop__intro {
+  font-size: var(--fs-lead); line-height: 1.5; max-width: 52ch; color: var(--paper-ink);
+}
+
+/* Pillars: three programme cards, each with its own coloured stripe */
+.sec--proposition .prop__pillars {
+  list-style: none; margin: clamp(40px, 7vh, 80px) 0 0; padding: 0;
+  display: grid; gap: clamp(14px, 2vw, 28px);
+}
+.sec--proposition .prop__pillar {
+  --stripe: var(--ember);
+  position: relative; padding: clamp(22px, 2.4vw, 34px) clamp(20px, 2.2vw, 32px) clamp(24px, 3vw, 40px) clamp(28px, 2.8vw, 40px);
+  background: var(--cream-2); border: 1px solid var(--paper-line); border-radius: var(--radius);
+  box-shadow: 0 18px 40px -28px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.sec--proposition .prop__pillar--gold { --stripe: var(--gold); }
+.sec--proposition .prop__pillar--navy { --stripe: var(--paper-navy); }
+.sec--proposition .prop__stripe {
+  position: absolute; left: -1px; top: -1px; bottom: -1px; width: 5px; border-radius: 5px 0 0 5px;
+  background: var(--stripe); transform-origin: 50% 0;
+}
+.sec--proposition .prop__pillar-title {
+  font-family: var(--font-serif); font-weight: 700; text-transform: uppercase; color: var(--paper-navy);
+  font-size: clamp(1.02rem, 0.92rem + 0.45vw, 1.3rem); line-height: 1.2; letter-spacing: 0.01em;
+}
+.sec--proposition .prop__pillar-text { margin-top: 12px; color: var(--paper-soft); font-size: var(--fs-small); line-height: 1.6; max-width: 42ch; }
+
+/* The claim with its strike-through */
+.sec--proposition .prop__claim {
+  margin-top: clamp(56px, 10vh, 120px); max-width: 30ch;
+  font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.3; color: var(--paper-ink);
+}
+.sec--proposition .prop__strike { position: relative; display: inline-block; white-space: nowrap; }
+.sec--proposition .prop__strike-text { color: var(--paper-soft); }
+.sec--proposition .prop__strike-line {
+  position: absolute; left: -0.08em; right: -0.08em; top: 52%; height: 0.09em; min-height: 2px;
+  background: var(--ember); border-radius: 2px; transform-origin: 0 50%;
+}
+.sec--proposition .prop__claim-b { display: block; margin-top: 0.3em; font-style: italic; color: var(--paper-navy); }
+
+/* Pre-forum preparation stepper */
+.sec--proposition .prop__prep {
+  margin-top: clamp(80px, 13vh, 160px); padding-top: clamp(36px, 5vh, 56px);
+  border-top: 3px solid var(--paper-line);
+}
+.sec--proposition .prop__prep-title {
+  margin-top: 12px; font-family: var(--font-serif); font-weight: 700; color: var(--paper-navy);
+  font-size: var(--fs-h3); line-height: 1.15;
+}
+.sec--proposition .prop__stepper { margin-top: clamp(28px, 5vh, 56px); }
+.sec--proposition .prop__steps { list-style: none; margin: 0; padding: 0; display: grid; }
+.sec--proposition .prop__step { position: relative; padding-bottom: 22px; }
+.sec--proposition .prop__step:last-child { padding-bottom: 0; }
+
+/* Connector segment from this node to the next one (vertical on small screens) */
+.sec--proposition .prop__seg {
+  position: absolute; left: 21px; top: 48px; bottom: 4px; width: 2px;
+  background: var(--paper-line); overflow: hidden;
+}
+.sec--proposition .prop__seg-fill {
+  position: absolute; inset: 0; background: var(--ember);
+  transform: scaleY(0); transform-origin: 50% 0;
+  transition: transform 0.55s var(--ease-in-out);
+}
+.sec--proposition .prop__step.is-done .prop__seg-fill { transform: scaleY(1); }
+
+.sec--proposition .prop__step-h { margin: 0; font: inherit; }
+.sec--proposition .prop__step-btn {
+  display: flex; align-items: center; gap: 16px; width: 100%; min-height: 48px; text-align: left;
+  color: var(--paper-ink); border-radius: 999px;
+}
+.sec--proposition .prop__step-num {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--paper-line); background: var(--cream); color: var(--paper-soft);
+  font-size: var(--fs-small);
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out), border-color var(--dur), transform var(--dur) var(--ease-out);
+}
+.sec--proposition .prop__step-name {
+  font-weight: 800; font-stretch: 112%; text-transform: uppercase; letter-spacing: var(--track-wide);
+  font-size: var(--fs-small); color: var(--paper-soft); transition: color var(--dur);
+}
+.sec--proposition .is-done .prop__step-num { background: var(--paper-navy); border-color: var(--paper-navy); color: var(--cream); }
+.sec--proposition .is-active .prop__step-num {
+  background: var(--ember); border-color: var(--ember); color: var(--ink); transform: scale(1.08);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--ember) 18%, transparent);
+}
+.sec--proposition .is-active .prop__step-name,
+.sec--proposition .is-done .prop__step-name { color: var(--paper-ink); }
+@media (hover: hover) {
+  .sec--proposition .prop__step-btn:hover .prop__step-num { border-color: var(--ember); }
+}
+
+.sec--proposition .prop__panel {
+  display: grid; grid-template-rows: 0fr; visibility: hidden; padding-left: 60px;
+  transition: grid-template-rows 0.45s var(--ease-out), visibility 0s linear 0.45s;
+}
+.sec--proposition .prop__panel-inner { overflow: hidden; }
+.sec--proposition .prop__panel p {
+  padding-top: 10px; max-width: 40ch; color: var(--paper-soft); font-size: var(--fs-body); line-height: 1.6;
+}
+.sec--proposition .is-active .prop__panel { grid-template-rows: 1fr; visibility: visible; transition-delay: 0s; }
+.sec--proposition .is-active .prop__panel p { color: var(--paper-ink); }
+
+.sec--proposition .prop__nav { display: flex; align-items: center; gap: 18px; margin-top: 28px; }
+.sec--proposition .prop__nav-btn {
+  min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1.5px solid var(--paper-line);
+  font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--track-wide); text-transform: uppercase;
+  color: var(--paper-ink); transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+}
+.sec--proposition .prop__nav-btn:disabled { opacity: 0.35; cursor: default; }
+@media (hover: hover) {
+  .sec--proposition .prop__nav-btn:not(:disabled):hover { background: var(--paper-navy); border-color: var(--paper-navy); color: var(--cream); }
+}
+.sec--proposition .prop__nav-pos { font-size: var(--fs-small); color: var(--paper-soft); }
+
+.sec--proposition .prop__objective {
+  margin-top: clamp(36px, 6vh, 64px); padding: 18px 0 18px 22px; max-width: 64ch;
+  border-left: 4px solid var(--gold); font-size: var(--fs-body); line-height: 1.6; color: var(--paper-ink);
+}
+.sec--proposition .prop__objective strong { color: var(--paper-navy); }
+.sec--proposition :focus-visible { outline-color: var(--ember-deep); }
+
+/* Tablet and up: three pillars in a row, horizontal stepper with every description readable */
+@media (min-width: 900px) {
+  .sec--proposition .prop__pillars { grid-template-columns: repeat(3, 1fr); }
+  .sec--proposition .prop__pillar { min-height: 200px; }
+  .sec--proposition .prop__steps { grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2vw, 32px); }
+  .sec--proposition .prop__step { padding-bottom: 0; }
+  .sec--proposition .prop__seg {
+    left: calc(44px + 12px); right: calc(-1 * clamp(16px, 2vw, 32px) + 8px); top: 23px; bottom: auto; width: auto; height: 2px;
+  }
+  .sec--proposition .prop__seg-fill { transform: scaleX(0); transform-origin: 0 50%; }
+  .sec--proposition .prop__step.is-done .prop__seg-fill { transform: scaleX(1); }
+  .sec--proposition .prop__step-btn { flex-direction: column; align-items: flex-start; gap: 18px; border-radius: var(--radius-sm); }
+  .sec--proposition .prop__panel { grid-template-rows: 1fr; visibility: visible; padding-left: 0; transition: none; }
+  .sec--proposition .prop__panel-inner { opacity: 0.72; transition: opacity var(--dur) var(--ease-out); }
+  .sec--proposition .is-active .prop__panel-inner { opacity: 1; }
+  .sec--proposition .prop__nav { display: none; }
+}
+@media (min-width: 900px) and (max-width: 1100px) {
+  .sec--proposition .prop__step-name { font-size: var(--fs-micro); }
+}
+@media (min-width: 1100px) {
+  .sec--proposition .prop__head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 64px; align-items: end; }
+  .sec--proposition .prop__head .prop__label,
+  .sec--proposition .prop__head .prop__title { grid-column: 1; }
+  .sec--proposition .prop__rule { grid-column: 1 / -1; grid-row: 3; }
+  .sec--proposition .prop__intro { grid-column: 2; grid-row: 1 / 3; align-self: end; }
+  .sec--proposition .prop__claim { max-width: 34ch; }
+}

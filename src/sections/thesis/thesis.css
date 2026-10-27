@@ -1,0 +1,188 @@
+/* THESIS. Dark, transparent so the configuration core (ThesisAct) shows through. */
+.sec--thesis {
+  --th-gap: clamp(56px, 9vw, 140px);
+  overflow-x: clip;
+  isolation: isolate;
+}
+.sec--thesis .thesis__wrap { position: relative; display: grid; gap: var(--th-gap); }
+
+/* Head */
+.sec--thesis .thesis__head { display: grid; gap: 18px; }
+.sec--thesis .thesis__eyebrow { display: inline-flex; gap: 14px; align-items: baseline; }
+.sec--thesis .thesis__eyebrow .num { color: var(--cream); letter-spacing: 0.08em; }
+.sec--thesis .thesis__title {
+  font-size: clamp(1.7rem, 0.9rem + 3.4vw, 4.2rem);
+  color: var(--cream);
+  max-width: 16ch;
+}
+
+/* Statement: the heat-up */
+.sec--thesis .thesis__statement {
+  font-size: clamp(1.95rem, 0.85rem + 4.7vw, 6.6rem);
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+  max-width: 17ch;
+  color: var(--cream);
+  text-wrap: balance;
+}
+.sec--thesis .thesis__statement em { color: var(--ember); }
+.sec--thesis .thesis__statement .w { position: relative; }
+.sec--thesis .thesis__statement .w--key::after {
+  content: attr(data-text);
+  position: absolute; left: 0; top: 0;
+  color: var(--ember-glow);
+  text-shadow: 0 0 0.18em var(--ember-hot), 0 0 0.5em var(--ember);
+  opacity: var(--glow, 1);
+  pointer-events: none;
+}
+
+/* Comparison row and diagram */
+.sec--thesis .thesis__compare { display: grid; gap: clamp(20px, 3vw, 36px); }
+.sec--thesis .thesis__compare-head { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; }
+.sec--thesis .thesis__compare-hint { font-size: var(--fs-small); }
+.sec--thesis .thesis__tabs {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.sec--thesis .thesis__tab {
+  position: relative; min-height: 64px; padding: 14px 4px;
+  text-align: left; font-family: var(--font-serif); font-size: var(--fs-lead);
+  color: var(--mute); transition: color var(--dur) var(--ease-out);
+}
+.sec--thesis .thesis__tab::after {
+  content: ''; position: absolute; left: 0; right: 12px; bottom: -1px; height: 2px;
+  background: var(--ember); transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 600ms var(--ease-out);
+}
+.sec--thesis .thesis__tab:hover { color: var(--bone); }
+.sec--thesis .thesis__tab[aria-selected='true'] { color: var(--cream); }
+.sec--thesis .thesis__tab[aria-selected='true']::after { transform: scaleX(1); }
+.sec--thesis .thesis__tab--forge {
+  font-family: var(--font-sans); font-weight: 850; font-stretch: 115%; letter-spacing: 0.02em;
+}
+.sec--thesis .thesis__tab--forge[aria-selected='true'] { color: var(--ember-hot); }
+
+.sec--thesis .thesis__panel { display: grid; gap: clamp(20px, 4vw, 56px); align-items: center; }
+.sec--thesis .thesis__diagram { margin: 0; width: min(100%, 360px); justify-self: center; aspect-ratio: 1; }
+.sec--thesis .thesis__diagram svg { width: 100%; height: 100%; overflow: visible; }
+.sec--thesis .thesis__readout { display: grid; gap: 18px; }
+.sec--thesis .thesis__verb { font-family: var(--font-serif); font-size: var(--fs-h3); line-height: 1.2; max-width: 26ch; }
+.sec--thesis .thesis__verb-who { color: var(--ember-hot); font-style: italic; }
+.sec--thesis .thesis__verb.is-swapping { animation: th-swap 620ms var(--ease-out); }
+.sec--thesis .thesis__core-full { font-size: var(--fs-small); max-width: 56ch; line-height: 1.6; }
+@keyframes th-swap { from { opacity: 0; transform: translateY(0.4em); } to { opacity: 1; transform: none; } }
+
+/* Diagram states: transforms only, driven by data-mode */
+.sec--thesis .dg__sat, .sec--thesis .dg__arm, .sec--thesis .dg__node, .sec--thesis .dg__core,
+.sec--thesis .dg__orbit, .sec--thesis .dg__frame, .sec--thesis .dg__halo {
+  transform-box: view-box; transform-origin: 0 0;
+  transition: transform 800ms var(--ease-out), opacity 600ms var(--ease-out);
+}
+.sec--thesis .dg__sat { --r: 96px; --s: 1; --arm: 1; transform: rotate(var(--a)); }
+.sec--thesis .dg__arm { transform: scaleX(var(--arm)); }
+.sec--thesis .dg__arm line { stroke: var(--ember); stroke-width: 1.4; stroke-dasharray: 3 5; }
+.sec--thesis .dg__node { transform: translateX(var(--r)) scale(var(--s)); }
+.sec--thesis .dg__node rect { fill: var(--ink-2); stroke: var(--fog); stroke-width: 1.2; transition: stroke var(--dur); }
+.sec--thesis .dg__startup { fill: var(--cream); }
+.sec--thesis .dg__halo { fill: var(--ember); opacity: 0.18; }
+.sec--thesis .dg__frame { fill: none; stroke: var(--line-strong); stroke-width: 1; }
+.sec--thesis .dg__orbit { fill: none; stroke: var(--ember); stroke-width: 1; stroke-dasharray: 2 9; opacity: 0.7; }
+
+.sec--thesis .thesis__diagram[data-mode='forge'] .dg__node rect { stroke: var(--ember); }
+.sec--thesis .thesis__diagram[data-mode='forge'] .dg__halo { opacity: 0.4; transform: scale(1.15); }
+.sec--thesis .thesis__diagram[data-mode='forge'] .dg__orbit { animation: th-orbit 26s linear infinite; }
+
+.sec--thesis .thesis__diagram[data-mode='acc'] .dg__sat { --r: 138px; --s: 0.45; --arm: 0; }
+.sec--thesis .thesis__diagram[data-mode='acc'] .dg__node { opacity: 0.35; }
+.sec--thesis .thesis__diagram[data-mode='acc'] .dg__core { transform: scale(1.45); }
+.sec--thesis .thesis__diagram[data-mode='acc'] .dg__orbit,
+.sec--thesis .thesis__diagram[data-mode='acc'] .dg__frame { opacity: 0; transform: scale(0.8); }
+
+.sec--thesis .thesis__diagram[data-mode='studio'] .dg__sat { --r: 22px; --s: 1.25; --arm: 0; }
+.sec--thesis .thesis__diagram[data-mode='studio'] .dg__core { transform: scale(0.55); }
+.sec--thesis .thesis__diagram[data-mode='studio'] .dg__halo { opacity: 0; }
+.sec--thesis .thesis__diagram[data-mode='studio'] .dg__orbit { opacity: 0; transform: scale(0.6); }
+.sec--thesis .thesis__diagram[data-mode='studio'] .dg__frame { transform: scale(0.62); }
+
+.sec--thesis .thesis__diagram[data-mode='vc'] .dg__sat { --r: 120px; --s: 0.4; --arm: 0; }
+.sec--thesis .thesis__diagram[data-mode='vc'] .dg__sat .dg__node { opacity: 0; }
+.sec--thesis .thesis__diagram[data-mode='vc'] .dg__sat:first-child { --r: 110px; --s: 1.3; --arm: 1.15; }
+.sec--thesis .thesis__diagram[data-mode='vc'] .dg__sat:first-child .dg__node { opacity: 1; }
+.sec--thesis .thesis__diagram[data-mode='vc'] .dg__sat:first-child rect { stroke: var(--gold); }
+.sec--thesis .thesis__diagram[data-mode='vc'] .dg__orbit { opacity: 0; }
+@keyframes th-orbit { to { transform: rotate(360deg); } }
+
+/* Thesis points: a staircase of struck plates */
+.sec--thesis .thesis__points {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 16px; perspective: 1000px;
+}
+.sec--thesis .thesis__card {
+  --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 0%; --lit: 0;
+  position: relative; display: grid; gap: clamp(18px, 3vw, 40px); align-content: space-between;
+  min-height: clamp(180px, 22vw, 300px);
+  padding: clamp(20px, 2.2vw, 32px);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(17, 37, 58, 0.62), rgba(8, 11, 14, 0.82));
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 500ms var(--ease-out), border-color var(--dur);
+}
+.sec--thesis .thesis__card::before {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+  background: radial-gradient(260px circle at var(--mx) var(--my), var(--ember-glow), var(--ember) 30%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: var(--lit); transition: opacity var(--dur) var(--ease-out); pointer-events: none;
+}
+.sec--thesis .thesis__card::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(320px circle at var(--mx) var(--my), rgba(232, 91, 34, 0.14), transparent 65%);
+  opacity: var(--lit); transition: opacity var(--dur) var(--ease-out);
+}
+.sec--thesis .thesis__card.is-active { border-color: var(--line-ember); }
+.sec--thesis .thesis__card-num {
+  font-size: clamp(2.4rem, 1.6rem + 2.6vw, 4.4rem); font-stretch: 115%; font-weight: 850; line-height: 0.85;
+  color: transparent; -webkit-text-stroke: 1px var(--steel-2); transition: -webkit-text-stroke-color var(--dur);
+}
+.sec--thesis .thesis__card.is-active .thesis__card-num { -webkit-text-stroke-color: var(--ember); }
+.sec--thesis .thesis__card-text { font-family: var(--font-serif); font-size: clamp(1.08rem, 0.95rem + 0.55vw, 1.42rem); line-height: 1.32; color: var(--bone); max-width: 30ch; transform: translateZ(24px); }
+
+/* Fallback core when there is no WebGL (or low tier) */
+.sec--thesis .thesis__fallback { display: none; }
+html.no-gl .sec--thesis .thesis__fallback,
+html.tier-low .sec--thesis .thesis__fallback {
+  display: block; position: absolute; z-index: -1; pointer-events: none;
+  top: clamp(120px, 18vh, 260px); right: max(-120px, calc(50% - 760px));
+  width: clamp(280px, 48vw, 760px); aspect-ratio: 1; opacity: 0.55; color: var(--fog);
+}
+.sec--thesis .thesis__fallback-core { width: 100%; height: 100%; overflow: visible; }
+
+/* Larger screens */
+@media (min-width: 640px) {
+  .sec--thesis .thesis__tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sec--thesis .thesis__points { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .sec--thesis .thesis__card:nth-child(even) { margin-top: clamp(40px, 8vw, 96px); }
+}
+@media (min-width: 900px) {
+  .sec--thesis .thesis__panel { grid-template-columns: minmax(260px, 360px) 1fr; }
+  .sec--thesis .thesis__diagram { justify-self: start; }
+}
+@media (min-width: 1100px) {
+  .sec--thesis .thesis__points { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sec--thesis .thesis__card:nth-child(even) { margin-top: 0; }
+  .sec--thesis .thesis__card:nth-child(2) { margin-top: 9vh; }
+  .sec--thesis .thesis__card:nth-child(3) { margin-top: 18vh; }
+  .sec--thesis .thesis__card:nth-child(4) { margin-top: 27vh; }
+}
+@media (min-width: 1800px) {
+  .sec--thesis .thesis__statement { max-width: 19ch; }
+}
+
+/* Reduced motion: everything in its final state */
+.sec--thesis.is-static .thesis__card { transform: none; transition: none; }
+.sec--thesis.is-static .dg__orbit { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sec--thesis .thesis__card { transform: none; }
+  .sec--thesis .thesis__diagram .dg__orbit { animation: none; }
+}

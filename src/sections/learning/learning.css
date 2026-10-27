@@ -1,0 +1,166 @@
+/* LEARNING: cream programme paper. Loop from FORGE 01 to FORGE 02, then the Generative Recap demo. */
+.sec--learning {
+  background: var(--cream);
+  color: var(--ink);
+  overflow: clip;
+  isolation: isolate;
+}
+.sec--learning .label { color: var(--ember-deep); }
+.sec--learning .wrap { position: relative; z-index: 1; }
+
+/* Background growth rings */
+.sec--learning .learning__rings {
+  position: absolute; z-index: 0; pointer-events: none;
+  top: clamp(40px, 6vw, 120px); right: -28vw;
+  width: min(110vw, 980px); aspect-ratio: 1;
+}
+.sec--learning .learning__rings svg { width: 100%; height: 100%; will-change: transform; }
+.sec--learning .learning__rings circle,
+.sec--learning .learning__rings path { fill: none; stroke: var(--steel-2); stroke-width: 1; opacity: 0.16; }
+.sec--learning .learning__rings circle:nth-child(odd) { stroke-dasharray: 2 7; }
+.sec--learning .learning__rings path { stroke: var(--ember); opacity: 0.4; }
+
+/* Head */
+.sec--learning .learning__title { margin-top: 18px; color: var(--ink); max-width: 14ch; }
+.sec--learning .learning__title em { color: var(--ember-deep); }
+
+/* Loop */
+.sec--learning .learning__loop { position: relative; margin-top: clamp(40px, 6vw, 80px); }
+.sec--learning .learning__path { display: none; width: 100%; height: auto; overflow: visible; }
+.sec--learning .learning__path path { fill: none; stroke-linecap: round; }
+.sec--learning .learning__path-ghost { stroke: var(--bone); stroke-width: 2; stroke-dasharray: 2 8; }
+.sec--learning .learning__path-line { stroke: var(--ember); stroke-width: 3.5; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+.sec--learning .learning__node { fill: var(--cream); stroke: var(--steel-2); stroke-width: 2.5; transition: fill var(--dur) var(--ease-out), stroke var(--dur); }
+.sec--learning .learning__node.is-lit { fill: var(--ember); stroke: var(--ember-deep); }
+.sec--learning .learning__spark { fill: var(--ember-glow); stroke: var(--ember); stroke-width: 2; }
+html.js:not(.reduced-motion) .sec--learning .learning__path-line { stroke-dashoffset: 1; }
+
+.sec--learning .learning__rail {
+  position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--bone);
+}
+.sec--learning .learning__rail-fill {
+  position: absolute; inset: 0; background: var(--ember); transform-origin: 50% 0;
+}
+html.js:not(.reduced-motion) .sec--learning .learning__rail-fill { transform: scaleY(0); }
+
+.sec--learning .learning__stages {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(20px, 3vw, 32px);
+}
+.sec--learning .learning__stage {
+  position: relative; margin-left: 34px;
+  padding: clamp(18px, 2.2vw, 28px);
+  background: var(--cream); background: color-mix(in srgb, var(--cream) 45%, white);
+  border-left: 4px solid var(--ember);
+  border-radius: 4px 22px 22px 4px;
+  box-shadow: 0 1px 0 var(--bone), 0 18px 40px -28px rgba(8, 11, 14, 0.45);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.sec--learning .learning__stage::before {
+  content: ''; position: absolute; left: -34px; top: 26px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--cream); border: 2.5px solid var(--steel-2);
+  transform: translateX(0);
+}
+.sec--learning .learning__stage.is-lit::before { background: var(--ember); border-color: var(--ember-deep); }
+.sec--learning .learning__stage--interval { border-left-color: var(--gold); }
+.sec--learning .learning__stage:last-child { border-left-color: var(--ink-3); }
+html.js:not(.reduced-motion) .sec--learning .learning__stage:not(.is-lit) { opacity: 0.35; transform: translateY(16px); }
+
+.sec--learning .learning__stage-k {
+  font-family: var(--font-serif); font-weight: 700; font-size: var(--fs-h3); line-height: 1.15; color: var(--ink-3);
+}
+.sec--learning .learning__stage-k .num { display: block; font-size: var(--fs-micro); letter-spacing: var(--track-label); color: var(--ember-deep); margin-bottom: 6px; }
+.sec--learning .learning__stage-p { margin-top: 10px; color: var(--steel); font-size: var(--fs-small); line-height: 1.6; max-width: 34ch; }
+
+.sec--learning .learning__statement {
+  margin-top: clamp(40px, 6vw, 88px); max-width: 32ch;
+  font-family: var(--font-serif); font-size: clamp(1.4rem, 1rem + 1.8vw, 2.6rem); line-height: 1.22; color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .sec--learning .learning__path { display: block; margin-bottom: clamp(-40px, -2vw, -16px); }
+  .sec--learning .learning__rail { display: none; }
+  .sec--learning .learning__stages { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sec--learning .learning__stage { margin-left: 0; }
+  .sec--learning .learning__stage::before { display: none; }
+  .sec--learning .learning__stage--interval { transform: translateY(28px); }
+  html.js:not(.reduced-motion) .sec--learning .learning__stage--interval:not(.is-lit) { transform: translateY(44px); }
+}
+
+/* Generative Recap */
+.sec--learning .recap { margin-top: clamp(96px, 14vw, 200px); }
+.sec--learning .recap__title {
+  margin-top: 16px; font-family: var(--font-serif); font-weight: 400;
+  font-size: var(--fs-h2); line-height: 1.04; letter-spacing: -0.02em;
+}
+.sec--learning .recap__lead { margin-top: 18px; font-size: var(--fs-lead); line-height: 1.45; color: var(--steel); max-width: 52ch; }
+
+.sec--learning .recap__controls {
+  margin-top: clamp(28px, 4vw, 48px);
+  display: grid; gap: 14px 24px; align-items: center;
+}
+.sec--learning .recap__run { justify-self: start; }
+.sec--learning .recap__run:hover,
+.sec--learning .recap__run:focus-visible { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.sec--learning .recap__caption {
+  position: absolute; left: clamp(16px, 2.4vw, 32px); right: clamp(16px, 2.4vw, 32px); bottom: clamp(14px, 2vw, 26px);
+  font-family: var(--font-serif); font-size: var(--fs-lead); line-height: 1.35; color: var(--ink-3); max-width: 48ch;
+}
+.sec--learning .recap__caret {
+  display: inline-block; width: 0.55em; height: 1.05em; margin-left: 2px; vertical-align: -0.15em;
+  background: var(--ember); opacity: 0;
+}
+.sec--learning .recap.is-running .recap__caret { opacity: 1; animation: recap-blink 0.9s steps(1) infinite; }
+@keyframes recap-blink { 50% { opacity: 0; } }
+.sec--learning .recap__demo { font-size: var(--fs-micro); color: var(--mute-2); }
+
+.sec--learning .recap__board { margin-top: clamp(16px, 2vw, 24px); }
+.sec--learning .recap__pile {
+  position: relative; height: clamp(230px, 24vw, 260px);
+  border: 1.5px dashed var(--bone); border-radius: var(--radius);
+  background: color-mix(in srgb, var(--cream) 70%, var(--bone));
+}
+.sec--learning .recap__pile::after {
+  content: 'Notes from the room'; position: absolute; left: clamp(16px, 2.4vw, 32px); top: 14px;
+  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute);
+}
+.sec--learning .recap.is-sorted .recap__pile::after { content: 'Recap sorted'; }
+html.no-js .sec--learning .recap__pile { display: none; }
+html.no-js .sec--learning .recap__controls { display: none; }
+
+.sec--learning .recap__cols {
+  list-style: none; margin: clamp(24px, 3vw, 36px) 0 0; padding: 0;
+  display: grid; gap: clamp(28px, 3vw, 36px) clamp(18px, 2.4vw, 32px);
+}
+.sec--learning .recap__col { border-top: 2px solid var(--bone); padding-top: 16px; transition: border-color var(--dur) var(--ease-out); }
+.sec--learning .recap__col.is-on { border-top-color: var(--ember); }
+.sec--learning .recap__col-k {
+  font-family: var(--font-sans); font-size: var(--fs-small); font-weight: 800; font-stretch: 112%;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+}
+.sec--learning .recap__col-k .num { color: var(--ember-deep); margin-right: 8px; }
+.sec--learning .recap__col-p { margin-top: 8px; font-size: var(--fs-small); line-height: 1.55; color: var(--steel); max-width: 36ch; }
+.sec--learning .recap__chips { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.sec--learning .recap__chip {
+  position: relative; z-index: 2;
+  padding: 7px 12px; border-radius: 999px;
+  background: var(--ink); color: var(--cream);
+  font-size: var(--fs-micro); font-weight: 600; letter-spacing: 0.04em; line-height: 1.2;
+  box-shadow: 0 10px 24px -16px rgba(8, 11, 14, 0.9);
+}
+.sec--learning .recap__col.is-on .recap__chip { background: var(--ink-3); }
+
+.sec--learning .recap__boundary {
+  margin-top: clamp(40px, 5vw, 72px); padding-top: 20px; border-top: 1px solid var(--bone);
+  font-family: var(--font-serif); font-size: var(--fs-lead); line-height: 1.4; max-width: 46ch; color: var(--ink);
+}
+
+@media (min-width: 600px) {
+  .sec--learning .recap__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1000px) {
+  .sec--learning .recap__cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sec--learning .recap__controls { grid-template-columns: auto minmax(0, 1fr); }
+}
+@media (min-width: 1800px) {
+  .sec--learning .learning__rings { right: -10vw; }
+}

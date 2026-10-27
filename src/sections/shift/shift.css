@@ -1,0 +1,203 @@
+/* SHIFT: the unit of value. Dark chapter, forged rail, configuration builder. */
+.sec--shift {
+  --shift-node: 18px;
+  position: relative;
+  overflow: clip;
+  background: transparent;
+  isolation: isolate;
+}
+
+/* Scroll reactive background (works with or without GL) */
+.sec--shift .shift__bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.sec--shift .shift__glow {
+  position: absolute; border-radius: 50%; will-change: transform;
+  background: radial-gradient(closest-side, var(--ember-deep), transparent);
+  opacity: 0.35;
+}
+.sec--shift .shift__glow--a { width: 70vmax; height: 70vmax; left: -25vmax; top: 6%; }
+.sec--shift .shift__glow--b {
+  width: 55vmax; height: 55vmax; right: -22vmax; bottom: 4%; opacity: 0.22;
+  background: radial-gradient(closest-side, var(--ember), transparent);
+}
+.sec--shift .shift__grid {
+  position: absolute; inset: 0; opacity: 0.5;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 80px 80px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 70%);
+}
+html:not(.no-gl):not(.tier-low) .sec--shift .shift__glow--a { opacity: 0.22; }
+
+/* Header */
+.sec--shift .shift__pin { position: relative; }
+.sec--shift .shift__head { display: grid; gap: 18px; margin-bottom: clamp(40px, 7vh, 88px); }
+.sec--shift .shift__title { max-width: 16ch; }
+.sec--shift .shift__lead { max-width: 40ch; color: var(--fog); }
+
+/* Rail: vertical on small screens */
+.sec--shift .shift__rail { position: relative; padding-left: 40px; }
+.sec--shift .shift__track {
+  position: absolute; left: 8px; top: 12px; bottom: 12px; width: 2px;
+  background: var(--line-strong); border-radius: 2px; overflow: hidden;
+}
+.sec--shift .shift__fill {
+  position: absolute; inset: 0; transform-origin: 50% 0;
+  background: linear-gradient(180deg, var(--ember-glow), var(--ember), var(--ember-deep));
+  box-shadow: 0 0 16px var(--ember);
+}
+.sec--shift .shift__runner { display: none; }
+.sec--shift .shift__stages { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(18px, 3vh, 28px); }
+.sec--shift .shift__stage { position: relative; }
+.sec--shift .shift__node {
+  position: absolute; left: -40px; top: 22px; width: var(--shift-node); height: var(--shift-node);
+  border-radius: 50%; border: 1px solid var(--line-strong); background: var(--ink);
+  display: grid; place-items: center;
+}
+.sec--shift .shift__node-core {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--ember-glow);
+  box-shadow: 0 0 12px 3px var(--ember);
+}
+.sec--shift .shift__card {
+  position: relative; overflow: hidden;
+  padding: clamp(18px, 2vw, 26px); border-radius: var(--radius-sm);
+  border: 1px solid var(--line); background: linear-gradient(180deg, var(--ink-2), var(--ink));
+  transition: border-color var(--dur) var(--ease-out);
+}
+.sec--shift .shift__card-heat {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(140deg, var(--ember-hot), var(--ember) 55%, var(--ember-deep));
+}
+.sec--shift .shift__card > :not(.shift__card-heat) { position: relative; z-index: 1; }
+.sec--shift .shift__num { font-size: var(--fs-micro); color: var(--ember); letter-spacing: var(--track-wide); }
+.sec--shift .shift__name {
+  margin-top: 10px; font-size: var(--fs-small); font-weight: 800; font-stretch: 112%;
+  letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--cream);
+}
+.sec--shift .shift__desc { margin-top: 8px; color: var(--fog); font-size: var(--fs-small); line-height: 1.5; }
+.sec--shift .shift__stage--key .shift__num,
+.sec--shift .shift__stage--key .shift__desc { color: var(--ink); }
+.sec--shift .shift__stage--key .shift__name { color: var(--ink); }
+
+/* Mobile lighting state (class driven by ScrollTrigger) */
+.sec--shift .shift__rail.is-stepped .shift__card { opacity: 0.4; transform: translateY(14px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), border-color var(--dur); }
+.sec--shift .shift__rail.is-stepped .shift__node-core { opacity: 0; transform: scale(0.3); transition: opacity 0.5s, transform 0.5s var(--ease-out); }
+.sec--shift .shift__rail.is-stepped .shift__card-heat { opacity: 0; transition: opacity 0.7s var(--ease-out); }
+.sec--shift .shift__rail.is-stepped .shift__stage--key:not(.is-lit) .shift__num { color: var(--ember); }
+.sec--shift .shift__rail.is-stepped .shift__stage--key:not(.is-lit) .shift__name,
+.sec--shift .shift__rail.is-stepped .shift__stage--key:not(.is-lit) .shift__desc { color: var(--cream); }
+.sec--shift .shift__rail.is-stepped .is-lit .shift__card { opacity: 1; transform: none; border-color: var(--line-ember); }
+.sec--shift .shift__rail.is-stepped .is-lit .shift__node-core { opacity: 1; transform: none; }
+.sec--shift .shift__rail.is-stepped .is-lit .shift__card-heat { opacity: 1; }
+
+/* Desktop: horizontal forged rail, pinned */
+@media (min-width: 900px) {
+  .sec--shift .shift__pin { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 6vh 0; }
+  .sec--shift .shift__rail { padding-left: 0; padding-top: 48px; }
+  .sec--shift .shift__track { left: 12.5%; right: 12.5%; top: 16px; bottom: auto; width: auto; height: 2px; overflow: visible; }
+  .sec--shift .shift__fill { transform-origin: 0 50%; }
+  .sec--shift .shift__runner {
+    display: block; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; will-change: transform;
+  }
+  .sec--shift .shift__spark {
+    position: absolute; right: -7px; top: -6px; width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle, var(--cream), var(--ember-glow) 35%, var(--ember) 60%, transparent 72%);
+    box-shadow: 0 0 24px 8px var(--ember), 0 0 60px 18px var(--ember-deep);
+  }
+  .sec--shift .shift__stages { grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 1.6vw, 28px); }
+  .sec--shift .shift__node { left: calc(50% - var(--shift-node) / 2); top: -41px; }
+  .sec--shift .shift__card { min-height: clamp(150px, 20vh, 220px); }
+  .sec--shift .shift__name { font-size: var(--fs-body); }
+  .sec--shift .shift__rail.is-stepped .shift__card { transform: translateY(22px); }
+  .sec--shift .shift__rail.is-stepped .is-lit .shift__card { transform: none; }
+}
+
+/* Configuration builder */
+.sec--shift .shift__builder {
+  display: grid; gap: clamp(28px, 4vw, 64px); align-items: center;
+  margin-top: clamp(80px, 14vh, 180px);
+}
+.sec--shift .shift__builder-copy { display: grid; gap: 16px; align-content: start; }
+.sec--shift .shift__builder-title { font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.18; max-width: 24ch; }
+.sec--shift .shift__builder-hint { color: var(--fog); font-size: var(--fs-small); max-width: 44ch; }
+.sec--shift .shift__controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.sec--shift .shift__toggle {
+  min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line-strong);
+  font-size: var(--fs-small); font-weight: 650; letter-spacing: 0.06em; color: var(--bone);
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.sec--shift .shift__toggle::before {
+  content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%;
+  border: 1px solid currentColor; vertical-align: 1px;
+}
+.sec--shift .shift__toggle[aria-pressed='true'] { background: var(--ember); border-color: var(--ember); color: var(--ink); }
+.sec--shift .shift__toggle[aria-pressed='true']::before { background: currentColor; }
+@media (hover: hover) {
+  .sec--shift .shift__toggle:hover { border-color: var(--ember); color: var(--cream); }
+  .sec--shift .shift__toggle[aria-pressed='true']:hover { color: var(--ink); }
+}
+.sec--shift .shift__status { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; min-height: 44px; }
+.sec--shift .shift__done { order: 3; flex-basis: 100%; }
+.sec--shift .shift__count { color: var(--fog); font-size: var(--fs-small); }
+.sec--shift .shift__count-n { color: var(--cream); }
+.sec--shift .shift__done {
+  font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--track-label); text-transform: uppercase;
+  color: var(--ember-glow); opacity: 0; transform: translateY(6px);
+  transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+}
+.sec--shift .shift__builder[data-complete='true'] .shift__done { opacity: 1; transform: none; }
+.sec--shift .shift__reset {
+  min-height: 44px; padding: 0 4px; font-size: var(--fs-small); color: var(--mute);
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.sec--shift .shift__reset:hover { color: var(--cream); }
+
+.sec--shift .shift__graph {
+  position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 640px; margin-inline: auto;
+  border-radius: var(--radius); border: 1px solid var(--line);
+  background: radial-gradient(circle at 50% 50%, var(--ink-3), transparent 70%);
+}
+.sec--shift .shift__canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+.sec--shift .shift__canvas.is-dragging { cursor: grabbing; }
+.sec--shift .shift__graph-fallback { display: none; }
+html.no-js .sec--shift .shift__canvas { display: none; }
+html.no-js .sec--shift .shift__graph-fallback {
+  position: absolute; inset: 0; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); place-items: center;
+  font-size: var(--fs-small); color: var(--fog); letter-spacing: var(--track-wide); text-transform: uppercase;
+}
+html.no-js .sec--shift .shift__graph-fallback span:nth-child(2) { grid-column: 3; }
+html.no-js .sec--shift .shift__graph-fallback span:nth-child(3) { grid-column: 2; color: var(--ember); }
+html.no-js .sec--shift .shift__graph-fallback span:nth-child(4) { grid-column: 1; grid-row: 3; }
+html.no-js .sec--shift .shift__graph-fallback span:nth-child(5) { grid-column: 3; grid-row: 3; }
+html.no-js .sec--shift .shift__controls,
+html.no-js .sec--shift .shift__status { display: none; }
+
+@media (min-width: 900px) {
+  .sec--shift .shift__builder { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .sec--shift .shift__graph { aspect-ratio: 5 / 4; }
+}
+@media (min-width: 1800px) {
+  .sec--shift .shift__graph { max-height: 760px; }
+}
+
+/* The FORGE answer */
+.sec--shift .shift__answer { margin-top: clamp(96px, 16vh, 220px); display: grid; gap: clamp(18px, 3vh, 32px); }
+.sec--shift .shift__verdict { font-size: clamp(2rem, 1.1rem + 3.3vw, 4.4rem); max-width: 24ch; text-wrap: balance; }
+.sec--shift .shift__verdict-a > span { color: var(--cream); }
+.sec--shift .shift__bar {
+  display: block; width: min(320px, 50%); height: 2px; transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--ember), transparent);
+}
+.sec--shift .shift__note { color: var(--bone); font-size: var(--fs-lead); line-height: 1.45; max-width: 44ch; }
+
+@media (min-width: 1100px) {
+  .sec--shift .shift__answer { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: 64px; align-items: end; }
+  .sec--shift .shift__answer > .label,
+  .sec--shift .shift__answer > .shift__verdict { grid-column: 1; }
+  .sec--shift .shift__bar { grid-column: 2; grid-row: 2; align-self: start; margin-top: 0.6em; }
+  .sec--shift .shift__note { grid-column: 2; grid-row: 2; align-self: end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sec--shift .shift__glow { will-change: auto; }
+  .sec--shift .shift__runner { display: none; }
+}

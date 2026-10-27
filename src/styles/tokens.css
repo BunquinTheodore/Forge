@@ -1,0 +1,80 @@
+/* FORGE PH design tokens. Source: pitch deck v1.1, programme v6, poster. */
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-latin-wdth.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+
+:root {
+  /* Surfaces */
+  --ink-0: #050709;
+  --ink: #080b0e;          /* page background, deck background */
+  --ink-2: #101925;        /* raised navy */
+  --ink-3: #11253a;        /* deep navy panel */
+  --steel: #293342;
+  --steel-2: #3a4656;
+
+  /* Text */
+  --cream: #f5f0e8;        /* programme paper */
+  --cream-2: #efece4;
+  --bone: #d8d0c5;
+  --fog: #aeb7c4;
+  --mute: #7f8996;
+  --mute-2: #667080;
+
+  /* Accent: forge ember */
+  --ember: #e85b22;
+  --ember-hot: #ff7a2f;
+  --ember-glow: #ffb36b;
+  --ember-deep: #a8340f;
+  --gold: #e9a43b;         /* programme amber stripe */
+
+  /* ICCPI tricolour accents, use sparingly */
+  --it-green: #5fb346;
+  --it-red: #e2342b;
+  --it-blue: #2f8fd8;
+
+  /* Type */
+  --font-serif: Georgia, 'Times New Roman', 'Iowan Old Style', serif;
+  --font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --fs-micro: clamp(0.66rem, 0.62rem + 0.15vw, 0.75rem);
+  --fs-small: clamp(0.8rem, 0.76rem + 0.2vw, 0.9rem);
+  --fs-body: clamp(0.98rem, 0.92rem + 0.3vw, 1.14rem);
+  --fs-lead: clamp(1.15rem, 1rem + 0.7vw, 1.6rem);
+  --fs-h3: clamp(1.3rem, 1.05rem + 1.1vw, 2rem);
+  --fs-h2: clamp(2.1rem, 1.3rem + 3.6vw, 4.6rem);
+  --fs-h1: clamp(3.2rem, 1.4rem + 8vw, 10.5rem);
+  --fs-mega: clamp(4.5rem, 1rem + 15vw, 18rem);
+
+  --track-label: 0.32em;
+  --track-wide: 0.18em;
+
+  /* Space and layout */
+  --gutter: clamp(16px, 4vw, 64px);
+  --maxw: 1360px;
+  --section-pad: clamp(96px, 14vh, 200px);
+  --radius: 14px;
+  --radius-sm: 8px;
+
+  /* Lines */
+  --line: rgba(174, 183, 196, 0.16);
+  --line-strong: rgba(174, 183, 196, 0.32);
+  --line-ember: rgba(232, 91, 34, 0.55);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur: 420ms;
+
+  /* Layers */
+  --z-gl: 0;
+  --z-content: 2;
+  --z-chrome: 50;
+  --z-menu: 60;
+  --z-cursor: 90;
+  --z-splash: 100;
+}

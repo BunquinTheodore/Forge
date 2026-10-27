@@ -1,0 +1,104 @@
+<section class="sec sec--audience" id="audience" data-section="audience" data-role="0" data-angle="0" aria-labelledby="audience-title">
+  <div class="aud__glow" aria-hidden="true"></div>
+  <div class="wrap aud__head">
+    <p class="label">Cross-industry participation</p>
+    <h2 class="h-display aud__title" id="audience-title">
+      <span class="line"><span>Who FORGE</span></span>
+      <span class="line"><span>is <em>for.</em></span></span>
+    </h2>
+    <p class="lead aud__lead">Six kinds of participants enter the room. Turn the ring to choose one and see what it brings and what it draws on.</p>
+  </div>
+
+  <div class="aud__ring" data-ring>
+    <div class="ring__stage" data-ring-stage role="group" aria-roledescription="carousel" aria-label="Participant roles. Use the left and right arrow keys to turn.">
+      <ul class="ring__spin" data-ring-spin>
+        <li class="role" data-role-id="founders">
+          <button class="role__pick" type="button" aria-pressed="true">
+            <span class="role__n num">01</span>
+            <span class="role__k">Founders &amp; startups</span>
+            <span class="role__p">From credible early-stage ideas to operating startups seeking growth, capital, capabilities or market access.</span>
+          </button>
+        </li>
+        <li class="role" data-role-id="investors">
+          <button class="role__pick" type="button" aria-pressed="false">
+            <span class="role__n num">02</span>
+            <span class="role__k">Investors &amp; finance</span>
+            <span class="role__p">Angels, family offices, VCs, banks and corporate investors looking for better-prepared opportunities.</span>
+          </button>
+        </li>
+        <li class="role" data-role-id="corporates">
+          <button class="role__pick" type="button" aria-pressed="false">
+            <span class="role__n num">03</span>
+            <span class="role__k">Corporates</span>
+            <span class="role__p">Companies offering market access, technology, distribution, pilots, procurement or strategic partnership.</span>
+          </button>
+        </li>
+        <li class="role" data-role-id="capability">
+          <button class="role__pick" type="button" aria-pressed="false">
+            <span class="role__n num">04</span>
+            <span class="role__k">Capability providers</span>
+            <span class="role__p">Digital, AI/data, legal, IP, finance, talent, marketing and business-development expertise.</span>
+          </button>
+        </li>
+        <li class="role" data-role-id="academia">
+          <button class="role__pick" type="button" aria-pressed="false">
+            <span class="role__n num">05</span>
+            <span class="role__k">Accelerators &amp; universities</span>
+            <span class="role__p">Pipelines of founders, research, mentors, incubated ventures and entrepreneurial talent.</span>
+          </button>
+        </li>
+        <li class="role" data-role-id="institutions">
+          <button class="role__pick" type="button" aria-pressed="false">
+            <span class="role__n num">06</span>
+            <span class="role__k">Institutions</span>
+            <span class="role__p">Public agencies and ecosystem actors supporting innovation, enterprise development and responsible finance.</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="ring__ctrl">
+      <button class="ring__btn" type="button" data-ring-prev aria-label="Previous role">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <p class="ring__hint" aria-hidden="true"><span class="ring__hint-fine">Drag to turn the ring</span><span class="ring__hint-touch">Swipe to change role</span></p>
+      <button class="ring__btn" type="button" data-ring-next aria-label="Next role">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="wrap aud__map">
+    <figure class="map" aria-hidden="true">
+      <svg class="map__svg" viewBox="-70 -16 540 432" data-map focusable="false">
+        <defs>
+          <marker id="aud-arrow-give" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path class="map__tip map__tip--give" d="M0 0L10 5L0 10z"/>
+          </marker>
+          <marker id="aud-arrow-draw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path class="map__tip map__tip--draw" d="M0 0L10 5L0 10z"/>
+          </marker>
+        </defs>
+        <circle class="map__orbit" cx="200" cy="200" r="140"/>
+        <g data-map-lines></g>
+        <g data-map-nodes></g>
+      </svg>
+    </figure>
+    <div class="flows" aria-live="polite">
+      <p class="flows__now"><span class="flows__now-k">Selected</span> <strong data-flow-name>Founders &amp; startups</strong></p>
+      <div class="flows__cols">
+        <div class="flows__col flows__col--give">
+          <h3 class="flows__h"><i class="flows__key flows__key--give" aria-hidden="true"></i>Provides</h3>
+          <ul class="flows__list" data-flow-give></ul>
+        </div>
+        <div class="flows__col flows__col--draw">
+          <h3 class="flows__h"><i class="flows__key flows__key--draw" aria-hidden="true"></i>Draws on</h3>
+          <ul class="flows__list" data-flow-draw></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <p class="aud__rule">Participants are not locked into one role: a company may need one capability while providing another.</p>
+  </div>
+</section>
