@@ -86,7 +86,7 @@ Section backgrounds: transparent where the GL act should show through; cream "pa
 | process | Deck p6 How FORGE works: Recruit, Profile, Qualify, Configure, De-risk, Convert. Deck p5 architecture FORGE PH / FORGE DAY / FORGE NEXT + product hypothesis |
 | corridor | Deck p7: Italy/Europe, Philippines, ASEAN corridor; imports capability, not merely services |
 | programme | Programme p5 morning agenda (09:00..11:25) + p8 afternoon Adaptive Startup Workshop: Form, Test, Reconfigure, Next step |
-| ask | Deck p11 the ask (what FORGE needs now, partner types) + Programme p14 Public Promise + final CTA (date/venue). CTA links: `mailto:forge@iccpi.com.ph` placeholder marked with `data-placeholder` attribute |
+| ask | Deck p11 the ask (what FORGE needs now, partner types) + Programme p14 Public Promise + final CTA (date/venue). CTA links: `mailto:gnclub.contactus@gmail.com` |
 | footer | footer: ICCPI logo, event facts, nav, legal line "FORGE does not guarantee investment..." |
 
 Every section needs: (1) a distinctive scroll-driven entrance animation (not the same fade-up everywhere),
