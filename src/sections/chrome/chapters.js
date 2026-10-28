@@ -7,7 +7,6 @@ const NAMES = [
   ['problem', 'The problem'],
   ['audience', 'Who it is for'],
   ['process', 'How it works'],
-  ['corridor', 'The corridor'],
   ['programme', 'The programme'],
   ['ask', 'The ask'],
 ];

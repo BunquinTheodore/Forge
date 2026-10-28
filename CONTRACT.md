@@ -84,7 +84,6 @@ Section backgrounds: transparent where the GL act should show through; cream "pa
 | problem | Deck p3: gap between opportunity and investability, 4 problem cards, problem in one line |
 | audience | Programme p3: who FORGE is for, 6 roles; participants not locked into one role |
 | process | Deck p6 How FORGE works: Recruit, Profile, Qualify, Configure, De-risk, Convert. Deck p5 architecture FORGE PH / FORGE DAY / FORGE NEXT + product hypothesis |
-| corridor | Deck p7: Italy/Europe, Philippines, ASEAN corridor; imports capability, not merely services |
 | programme | Programme p5 morning agenda (09:00..11:25) + p8 afternoon Adaptive Startup Workshop: Form, Test, Reconfigure, Next step |
 | ask | Deck p11 the ask (what FORGE needs now, partner types) + Programme p14 Public Promise + final CTA (date/venue). CTA links: `mailto:gnclub.contactus@gmail.com` |
 | footer | footer: ICCPI logo, event facts, nav, legal line "FORGE does not guarantee investment..." |
