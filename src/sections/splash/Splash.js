@@ -7,8 +7,8 @@ const SEEN_KEY = 'forge:splash-seen';
  * gets the grace that fits inside the cap and finishes warming up behind the hero if it is late.
  */
 const TIMING = {
-  first: { intro: 0.95, cap: 1.35, outro: 0.4 },
-  repeat: { intro: 0.4, cap: 0.8, outro: 0.32 },
+  first: { intro: 1.5, cap: 2.1, outro: 0.6 },
+  repeat: { intro: 0.7, cap: 1.2, outro: 0.45 },
   reduced: { intro: 0, cap: 0.45, outro: 0.35 },
 };
 const SKIP_KEYS_IGNORED = new Set(['Shift', 'Control', 'Alt', 'Meta', 'Tab']);
