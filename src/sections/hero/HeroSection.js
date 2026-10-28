@@ -1,16 +1,13 @@
 import { BaseSection } from '../../core/BaseSection.js';
-import { Countdown } from './Countdown.js';
 import { HeroMotion } from './HeroMotion.js';
 
 /**
- * Hero: the poster as a live forge. The GL act (HeroAct.js) forges the ribbon as the page scrolls,
- * and a countdown runs to the doors opening.
+ * Hero: the poster as a live forge. The GL act (HeroAct.js) forges the ribbon as the page scrolls.
  */
 export default class HeroSection extends BaseSection {
   static id = 'hero';
 
   init() {
-    this.countdown = new Countdown(this.$('[data-countdown]'));
     this.motion = new HeroMotion(this);
     this.parallax = null;
 
@@ -69,10 +66,6 @@ export default class HeroSection extends BaseSection {
         this.app.scroll.to(target);
       }, { passive: false });
     }
-  }
-
-  update(dt) {
-    this.countdown.tick(dt);
   }
 
   destroy() {

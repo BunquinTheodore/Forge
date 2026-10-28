@@ -112,7 +112,7 @@
 .sec--hero .hero__tag em { font-style: italic; color: var(--ember); font-weight: 500; }
 .sec--hero .hero__tag-line { display: block; }
 
-/* Base: date strip, countdown, actions */
+/* Base: event facts */
 .sec--hero .hero__base { display: flex; flex-direction: column; align-items: center; gap: clamp(16px, 2.4svh, 24px); width: 100%; }
 .sec--hero .hero__strip {
   display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 6px 18px;
@@ -122,16 +122,6 @@
 }
 .sec--hero .hero__fact:last-child { grid-column: 1 / -1; color: var(--fog); }
 
-.sec--hero .hero__count { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.sec--hero .hero__count-label {
-  font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ember);
-}
-.sec--hero .hero__count-units { display: flex; gap: clamp(14px, 2.4vw, 26px); }
-.sec--hero .hero__unit { display: flex; flex-direction: column; align-items: center; min-width: 2.6ch; }
-.sec--hero .hero__num { font-size: var(--fs-h3); line-height: 1; color: var(--cream); font-stretch: 112%; }
-.sec--hero .hero__unit-k { margin-top: 4px; font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute); }
-.sec--hero .hero__count-done { max-width: 36ch; color: var(--bone); font-size: var(--fs-small); }
-.sec--hero .hero__count.is-live .hero__count-units { display: none; }
 
 .sec--hero .hero__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .sec--hero .hero__cta--ghost { background: rgba(8, 11, 14, 0.4); }
@@ -183,17 +173,15 @@
     flex-direction: row; align-items: flex-end; justify-content: space-between; gap: clamp(16px, 2.4vw, 40px);
     margin-top: auto; padding-top: clamp(20px, 4svh, 48px);
   }
-  /* Facts box hugs its text: three facts on one row, the venue beneath */
-  .sec--hero .hero__strip { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; row-gap: 6px; }
+  /* Facts box hugs its text: city and date on one row, the venue beneath */
+  .sec--hero .hero__strip { display: grid; grid-template-columns: auto 1fr; justify-content: start; row-gap: 6px; }
   .sec--hero .hero__fact:last-child { grid-column: 1 / -1; text-align: left; }
-  .sec--hero .hero__count { align-items: flex-end; }
   .sec--hero .hero__fallback { left: auto; right: -12vw; bottom: auto; top: 50%; width: min(82vw, 150svh); translate: 0 -46%; }
   .sec--hero .hero__haze {
     background:
       radial-gradient(70% 70% at 18% 45%, rgba(8, 11, 14, 0.78), transparent 72%),
       linear-gradient(0deg, var(--ink) 0%, rgba(8, 11, 14, 0) 20%);
   }
-  .sec--hero .hero__num { font-size: min(var(--fs-h3), 4.4svh); }
 }
 
 @media (min-width: 2000px) {

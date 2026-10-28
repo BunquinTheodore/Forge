@@ -22,7 +22,6 @@ export class HeroMotion {
       ...section.$$('.hero__tag-line'),
       section.$('.hero__ctas'),
       section.$('.hero__strip'),
-      section.$('.hero__count'),
     ].filter(Boolean);
   }
 
