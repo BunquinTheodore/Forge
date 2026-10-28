@@ -1,4 +1,4 @@
-/* PROCESS: how FORGE works, architecture, Working Cell rule (lit by scroll). */
+/* PROCESS: how FORGE works, architecture. */
 .sec--process {
   --line-top: 22px;      /* molten line offset inside the horizontal track */
   --steps-top: 64px;     /* step content below the line */
@@ -140,33 +140,3 @@ html.no-js .sec--process .step .step__p { opacity: 1; }
   .sec--process .hypo__t { border-left: 1px solid var(--ember); padding-left: clamp(24px, 3vw, 48px); }
 }
 
-/* Working Cell rule: the four arcs light as the reader scrolls (static markup is the lit state) */
-.sec--process .cell { margin-top: var(--section-pad); display: grid; gap: clamp(40px, 6vw, 96px); align-items: center; }
-@media (min-width: 900px) { .sec--process .cell { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
-.sec--process .cell__copy { display: grid; gap: clamp(16px, 2vw, 24px); }
-.sec--process .cell__title { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.6rem, 1.1rem + 2.2vw, 3.2rem); line-height: 1.12; max-width: 22ch; }
-.sec--process .core { justify-self: center; position: relative; width: min(78vw, 400px); aspect-ratio: 1; display: grid; place-items: center; }
-.sec--process .core__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.sec--process .core__ring { fill: none; stroke: var(--line); stroke-width: 1; }
-.sec--process .core__arc {
-  fill: none; stroke: var(--steel); stroke-width: 7; stroke-linecap: round;
-  stroke-dasharray: 0.84 1; stroke-dashoffset: -0.08;
-  transition: stroke 0.45s var(--ease-out);
-}
-.sec--process .core__arc.is-on { stroke: var(--ember); }
-.sec--process .is-ignited .core__arc { stroke: var(--ember-glow); }
-.sec--process .core__ignite {
-  position: absolute; inset: 8%; border-radius: 50%;
-  background: radial-gradient(closest-side, var(--ember-glow), var(--ember) 40%, rgba(232, 91, 34, 0.2) 70%, transparent);
-  opacity: calc(var(--charge, 0) * 0.28); transform: scale(0.7);
-  transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out);
-}
-.sec--process .is-ignited .core__ignite { opacity: 1; transform: scale(1); animation: prc-pulse 2.6s ease-in-out 0.8s infinite; }
-@keyframes prc-pulse { 50% { transform: scale(1.06); opacity: 0.85; } }
-.sec--process .core__count { position: relative; font-family: var(--font-serif); font-weight: 400; font-size: clamp(2.4rem, 1.6rem + 3vw, 4rem); color: var(--fog); }
-.sec--process .cell__status { font-family: var(--font-serif); font-style: italic; font-size: var(--fs-lead); color: var(--fog); transition: color var(--dur); }
-.sec--process .is-ignited .cell__status { color: var(--ember-glow); font-style: normal; }
-
-@media (prefers-reduced-motion: reduce) {
-  .sec--process .is-ignited .core__ignite { animation: none; }
-}

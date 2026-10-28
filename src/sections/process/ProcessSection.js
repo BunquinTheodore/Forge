@@ -1,9 +1,9 @@
-import { BaseSection, gsap, ScrollTrigger } from '../../core/BaseSection.js';
+import { BaseSection, gsap } from '../../core/BaseSection.js';
 import { MoltenTrack } from './MoltenTrack.js';
 
 /**
  * How FORGE works: six steps heated by a molten line, the solution architecture,
- * and the Working Cell rule, whose four arcs light one by one as the reader scrolls.
+ * and the product hypothesis lit word by word.
  * Publishes data-hot on the section and the line head through moltenHeads for ProcessAct.
  */
 export default class ProcessSection extends BaseSection {
@@ -21,7 +21,6 @@ export default class ProcessSection extends BaseSection {
     this.gsap(() => {
       this.#headEntrance();
       this.#archEntrance();
-      this.#cellEntrance();
     });
   }
 
@@ -73,34 +72,6 @@ export default class ProcessSection extends BaseSection {
     gsap.fromTo(this.$$('.hypo__w'), { opacity: 0.6 }, {
       opacity: 1, stagger: 0.08, ease: 'none',
       scrollTrigger: { trigger: this.$('.hypo'), start: 'top 82%', end: 'bottom 55%', scrub: true },
-    });
-  }
-
-  #cellEntrance() {
-    const cell = this.$('[data-cell]');
-    gsap.from(this.$('.core'), {
-      opacity: 0, rotate: -140, scale: 0.6, duration: 1.4, ease: 'expo.out',
-      scrollTrigger: { trigger: cell, start: 'top 75%', once: true },
-    });
-    // the markup ships lit (no-JS and reduced motion); here the arcs fill with scroll instead
-    const arcs = this.$$('.core__arc');
-    const count = this.$('[data-count]');
-    let lit = -1;
-    const light = (n) => {
-      if (n === lit) return;
-      lit = n;
-      const done = n === arcs.length;
-      arcs.forEach((a, i) => a.classList.toggle('is-on', i < n));
-      cell.classList.toggle('is-ignited', done);
-      cell.style.setProperty('--charge', String(n / arcs.length));
-      count.textContent = done ? '' : `${n}/${arcs.length}`;
-    };
-    const byProgress = (st) => light(Math.min(arcs.length, Math.floor(st.progress * arcs.length + 0.001)));
-    light(0);
-    ScrollTrigger.create({
-      trigger: cell, start: 'top 70%', end: 'center 45%',
-      onUpdate: byProgress,
-      onRefresh: byProgress,
     });
   }
 }

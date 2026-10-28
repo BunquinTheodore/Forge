@@ -81,10 +81,9 @@ Section backgrounds: transparent where the GL act should show through; cream "pa
 | splash | `src/sections/splash/Splash.js` (NOT a BaseSection) default export class with `constructor(app)` and `async play(glPromise)`; resolves when the splash is gone. Markup in `splash.html` (root `.splash`, hidden when `html.no-js`). |
 | chrome | header/nav, full-screen menu, scroll progress, section indicator, custom cursor (fine pointers only), ambient GL (`AmbientAct.js`, `static global = true`) |
 | hero | Poster: ICCPI presents, FORGE PH, The Cross-Industry Startup Forum, People / Smart Capital / Capabilities / Real Outcomes, Manila Thu Oct 29 2026 9:00 AM, Dusit Thani Manila Makati, "Your startup. A day before Overground." |
-| thesis | Deck p1-2: "An event built like a startup." Core idea + 4 thesis points |
 | problem | Deck p3: gap between opportunity and investability, 4 problem cards, problem in one line |
 | audience | Programme p3: who FORGE is for, 6 roles; participants not locked into one role |
-| process | Deck p6 How FORGE works: Recruit, Profile, Qualify, Configure, De-risk, Convert; Working Cell rule. Deck p5 architecture FORGE PH / FORGE DAY / FORGE NEXT + product hypothesis |
+| process | Deck p6 How FORGE works: Recruit, Profile, Qualify, Configure, De-risk, Convert. Deck p5 architecture FORGE PH / FORGE DAY / FORGE NEXT + product hypothesis |
 | corridor | Deck p7: Italy/Europe, Philippines, ASEAN corridor; imports capability, not merely services |
 | programme | Programme p5 morning agenda (09:00..11:25) + p8 afternoon Adaptive Startup Workshop: Form, Test, Reconfigure, Next step |
 | ask | Deck p11 the ask (what FORGE needs now, partner types) + Programme p14 Public Promise + final CTA (date/venue). CTA links: `mailto:forge@iccpi.com.ph` placeholder marked with `data-placeholder` attribute |

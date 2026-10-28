@@ -4,7 +4,6 @@
  */
 const NAMES = [
   ['hero', 'The forum'],
-  ['thesis', 'The thesis'],
   ['problem', 'The problem'],
   ['audience', 'Who it is for'],
   ['process', 'How it works'],
