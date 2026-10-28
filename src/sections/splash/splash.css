@@ -81,17 +81,19 @@
 .splash__line {
   position: relative; height: 2px; background: rgba(174, 183, 196, 0.12); overflow: visible;
 }
-.splash__line::before {
-  content: ''; position: absolute; inset: 0;
+.splash__fill {
+  position: absolute; inset: 0;
   background: linear-gradient(90deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow));
   box-shadow: 0 0 12px var(--ember), 0 0 2px var(--ember-glow);
-  transform-origin: left center; transform: scaleX(var(--p, 0));
+  transform-origin: left center;
 }
+/* The rail spans the line and carries the spark on its right end, so translating it by -100% to 0
+   keeps the spark exactly on the fill edge with a compositor-only transform. */
+.splash__rail { position: absolute; inset: 0; }
 .splash__spark {
-  position: absolute; top: 50%; left: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px;
+  position: absolute; top: 50%; right: 0; width: 10px; height: 10px; margin: -5px -5px 0 0;
   border-radius: 50%; background: var(--ember-glow);
   box-shadow: 0 0 10px 3px var(--ember-hot), 0 0 26px 8px rgba(232, 91, 34, 0.5);
-  transform: translateX(calc(var(--p, 0) * var(--w, 0px)));
 }
 .splash__heat {
   display: inline-flex; align-items: baseline; gap: 6px;
@@ -107,6 +109,43 @@
   position: fixed; left: 0; right: 0; bottom: max(20px, env(safe-area-inset-bottom));
   font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase;
   color: var(--mute);
+}
+
+/* Intro. Runs as CSS animations on transform and opacity only, so it stays smooth on the compositor
+   while the page boots underneath. The inline head script adds html.splash-go once the wordmark font
+   is ready (or after 700ms); html.splash-repeat halves the pace for return visits in a session.
+   Static styles above are the final state, which is what skip and reduced motion show. */
+.splash { --sd: 1; }
+.splash-repeat .splash { --sd: 0.45; }
+@media (prefers-reduced-motion: no-preference) {
+  .js:not(.splash-go) .splash__stage { opacity: 0; }
+  .splash-go .splash__presents { animation: splash-rise calc(0.6s * var(--sd)) var(--ease-out) both; }
+  .splash-go .splash__fill { animation: splash-fill calc(1.2s * var(--sd)) var(--ease-in-out) calc(0.15s * var(--sd)) both; }
+  .splash-go .splash__rail { animation: splash-rail calc(1.2s * var(--sd)) var(--ease-in-out) calc(0.15s * var(--sd)) both; }
+  .splash-go .splash__mark {
+    animation:
+      splash-show calc(0.25s * var(--sd)) linear calc(0.55s * var(--sd)) both,
+      splash-settle calc(0.9s * var(--sd)) var(--ease-out) calc(0.55s * var(--sd)) both;
+  }
+  .splash-go .splash__shutter--l { animation: splash-open-l calc(0.8s * var(--sd)) var(--ease-out) calc(0.55s * var(--sd)) both; }
+  .splash-go .splash__shutter--r { animation: splash-open-r calc(0.8s * var(--sd)) var(--ease-out) calc(0.55s * var(--sd)) both; }
+  .splash-go .splash__word--hot { animation: splash-cool calc(0.6s * var(--sd)) ease-in calc(1s * var(--sd)) both; }
+  .splash-go .splash__skip { animation: splash-show calc(0.4s * var(--sd)) linear calc(0.4s * var(--sd)) both; }
+  .splash.is-skipped * { animation: none !important; }
+}
+@keyframes splash-rise { from { opacity: 0; transform: translateY(14px); } }
+@keyframes splash-fill { from { transform: scaleX(0); } }
+@keyframes splash-rail { from { transform: translateX(-100%); } }
+@keyframes splash-show { from { opacity: 0; } }
+@keyframes splash-settle { from { transform: scale(1.06); } }
+@keyframes splash-open-l { to { transform: translateX(-101%); } }
+@keyframes splash-open-r { to { transform: translateX(101%); } }
+@keyframes splash-cool { to { opacity: 0; } }
+/* Final state for skip and reduced motion: shutters gone, wordmark cooled */
+.splash.is-skipped .splash__shutter,
+.splash.is-skipped .splash__word--hot { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .splash__shutter, .splash__word--hot { visibility: hidden; }
 }
 
 @media (max-width: 420px) {
