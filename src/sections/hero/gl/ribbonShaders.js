@@ -2,7 +2,7 @@ import { NOISE, EMBER_RAMP } from './glsl.js';
 
 /**
  * Ribbon vertex shader. Geometry stores the strand spine (position) and its parallel-transport
- * frame; the strip is built here so twist, unravel, pointer heat and burst all stay on the GPU.
+ * frame; the strip is built here so twist and unravel stay on the GPU.
  * GLOW define: thin additive strip riding one edge of each strand.
  */
 export const ribbonVertex = /* glsl */ `
@@ -11,11 +11,6 @@ export const ribbonVertex = /* glsl */ `
   uniform float uUnravel;
   uniform float uWidth;
   uniform float uGlowWidth;
-  uniform vec3 uPointer;
-  uniform float uPointerAmt;
-  uniform float uHeatRadius;
-  uniform vec3 uBurst;
-  uniform float uBurstAge;
 
   attribute vec3 aFrameN;
   attribute vec3 aFrameB;
@@ -26,7 +21,6 @@ export const ribbonVertex = /* glsl */ `
   varying float vT;
   varying float vS;
   varying float vSeed;
-  varying float vHeat;
   varying vec3 vNormalV;
   varying vec3 vViewDir;
 
@@ -52,20 +46,9 @@ export const ribbonVertex = /* glsl */ `
     vec3 c = p + side * aS * w;
   #endif
 
-    vec2 dp = c.xy - uPointer.xy;
-    float d2 = dot(dp, dp);
-    float infl = exp(-d2 / (uHeatRadius * uHeatRadius)) * uPointerAmt;
-    c.z += infl * 0.85;
-    c.xy += dp * inversesqrt(d2 + 1e-4) * infl * 0.16;
-
-    float bd = length(c.xy - uBurst.xy);
-    float ring = exp(-pow(bd - uBurstAge * 4.5, 2.0) * 2.5) * exp(-uBurstAge * 1.8);
-    c += nrm * ring * 0.22;
-
     vT = aT;
     vS = aS;
     vSeed = seed;
-    vHeat = infl + ring * 1.4;
 
     vec4 mv = modelViewMatrix * vec4(c, 1.0);
     vNormalV = normalize(normalMatrix * nrm);
@@ -84,7 +67,6 @@ const COMMON_FRAG = /* glsl */ `
   varying float vT;
   varying float vS;
   varying float vSeed;
-  varying float vHeat;
   varying vec3 vNormalV;
   varying vec3 vViewDir;
   ${NOISE}
@@ -125,12 +107,12 @@ export const bodyFragment = /* glsl */ `
   #else
     float n = fbm(vec2(vT * 16.0 - uTime * 0.11, vS * 1.4 + vSeed * 13.0));
   #endif
-    float crack = 1.0 - smoothstep(0.0, 0.03 + vHeat * 0.05, abs(n - 0.5));
+    float crack = 1.0 - smoothstep(0.0, 0.03, abs(n - 0.5));
     float flow = smoothstep(0.38, 0.85, vnoise(vec2(vT * 3.5 - uTime * 0.22, vSeed * 5.0)));
     float edge = smoothstep(0.86, 1.0, abs(vS));
 
-    float hot = crack * (flow * 0.85 + 0.12) + vHeat * 0.45 + edge * (0.35 + flow * 0.4);
-    vec3 col = metal * (1.0 - vHeat * 0.3) + emberRamp(clamp(hot + vHeat * 0.4, 0.0, 1.0)) * hot * 1.8;
+    float hot = crack * (flow * 0.85 + 0.12) + edge * (0.35 + flow * 0.4);
+    vec3 col = metal + emberRamp(clamp(hot, 0.0, 1.0)) * hot * 1.8;
 
     float fade = smoothstep(0.0, 0.07, vT) * smoothstep(1.0, 0.9, vT);
     gl_FragColor = vec4(col, uOpacity * fade);
@@ -148,8 +130,8 @@ export const glowFragment = /* glsl */ `
     float wave = sin(vT * 24.0 - uTime * 2.2 + vSeed * 9.0) * 0.5 + 0.5;
     float pulse = 0.3 + 0.7 * smoothstep(0.55, 1.0, wave);
     float fade = smoothstep(0.0, 0.1, vT) * smoothstep(1.0, 0.85, vT);
-    float k = clamp(core * (0.55 + vHeat), 0.0, 1.0);
-    vec3 col = emberRamp(k) * core * pulse * (1.0 + vHeat * 2.0);
+    float k = clamp(core * 0.55, 0.0, 1.0);
+    vec3 col = emberRamp(k) * core * pulse;
     gl_FragColor = vec4(col, uOpacity * fade * core);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>

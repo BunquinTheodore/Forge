@@ -13,18 +13,11 @@ const CLOUD = { x: [2.2, 8.4], y: [0.6, 4.4], z: [-1.2, 0.6] };
 const head = /* glsl */ `
   uniform float uTime;
   uniform float uUnravel;
-  uniform vec3 uPointer;
-  uniform float uPointerAmt;
-  uniform float uHeatRadius;
   vec3 drift(vec3 p, float seed) {
     vec3 c = vec3(5.0, 2.4, 0.0);
     p += (p - c) * uUnravel * 0.35;
     p += vec3(sin(uTime * 0.4 + seed * 9.0), cos(uTime * 0.33 + seed * 7.0), 0.0) * 0.06;
     return p;
-  }
-  float near(vec3 p) {
-    vec2 d = p.xy - uPointer.xy;
-    return exp(-dot(d, d) / (uHeatRadius * uHeatRadius * 1.6)) * uPointerAmt;
   }
 `;
 
@@ -36,9 +29,9 @@ const nodeVertex = /* glsl */ `
   void main() {
     vec3 p = drift(position, aSeed);
     float pulse = 0.6 + 0.4 * sin(uTime * (1.2 + aSeed) + aSeed * 30.0);
-    vGlow = pulse + near(p) * 1.4;
+    vGlow = pulse;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
-    gl_PointSize = (0.07 + aSeed * 0.1) * (1.0 + near(p)) * uScale / -mv.z;
+    gl_PointSize = (0.07 + aSeed * 0.1) * uScale / -mv.z;
     gl_Position = projectionMatrix * mv;
   }
 `;
@@ -49,12 +42,10 @@ const lineVertex = /* glsl */ `
   attribute float aEnd;
   varying float vEnd;
   varying float vSeed;
-  varying float vNear;
   void main() {
     vec3 p = drift(position, aSeed);
     vEnd = aEnd;
     vSeed = aSeed;
-    vNear = near(p);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
   }
 `;
@@ -87,11 +78,10 @@ const lineFragment = /* glsl */ `
   ${fragHead}
   varying float vEnd;
   varying float vSeed;
-  varying float vNear;
   void main() {
     float head = fract(uTime * (0.18 + vSeed * 0.25) + vSeed * 7.0);
     float pulse = exp(-pow((vEnd - head) * 7.0, 2.0));
-    float a = (0.16 + pulse * 0.8 + vNear * 0.5) * uOpacity;
+    float a = (0.16 + pulse * 0.8) * uOpacity;
     gl_FragColor = vec4(emberRamp(0.4 + pulse * 0.5), a);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>

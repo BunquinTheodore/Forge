@@ -1,10 +1,9 @@
 import { BaseSection, gsap, ScrollTrigger } from '../../core/BaseSection.js';
 import { MoltenTrack } from './MoltenTrack.js';
-import { WorkingCell } from './WorkingCell.js';
 
 /**
  * How FORGE works: six steps heated by a molten line, the solution architecture,
- * and the Working Cell rule as an interactive ignition.
+ * and the Working Cell rule, whose four arcs light one by one as the reader scrolls.
  * Publishes data-hot on the section and the line head through moltenHeads for ProcessAct.
  */
 export default class ProcessSection extends BaseSection {
@@ -12,8 +11,6 @@ export default class ProcessSection extends BaseSection {
 
   init() {
     this.track = new MoltenTrack(this.el, this.scroll);
-    this.cell = new WorkingCell(this.$('[data-cell]'), { listen: this.listen.bind(this) });
-    this.cell.render();
 
     this.gsap(() => this.track.build());
     if (this.reducedMotion) {
@@ -85,9 +82,25 @@ export default class ProcessSection extends BaseSection {
       opacity: 0, rotate: -140, scale: 0.6, duration: 1.4, ease: 'expo.out',
       scrollTrigger: { trigger: cell, start: 'top 75%', once: true },
     });
-    gsap.from(this.$$('.tog'), {
-      opacity: 0, x: 48, duration: 0.8, ease: 'power3.out', stagger: 0.1,
-      scrollTrigger: { trigger: cell, start: 'top 72%', once: true },
+    // the markup ships lit (no-JS and reduced motion); here the arcs fill with scroll instead
+    const arcs = this.$$('.core__arc');
+    const count = this.$('[data-count]');
+    let lit = -1;
+    const light = (n) => {
+      if (n === lit) return;
+      lit = n;
+      const done = n === arcs.length;
+      arcs.forEach((a, i) => a.classList.toggle('is-on', i < n));
+      cell.classList.toggle('is-ignited', done);
+      cell.style.setProperty('--charge', String(n / arcs.length));
+      count.textContent = done ? '' : `${n}/${arcs.length}`;
+    };
+    const byProgress = (st) => light(Math.min(arcs.length, Math.floor(st.progress * arcs.length + 0.001)));
+    light(0);
+    ScrollTrigger.create({
+      trigger: cell, start: 'top 70%', end: 'center 45%',
+      onUpdate: byProgress,
+      onRefresh: byProgress,
     });
   }
 }

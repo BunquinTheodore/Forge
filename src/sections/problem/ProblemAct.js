@@ -5,7 +5,7 @@ import { CLOUD, SPARK } from './chasmShaders.js';
 /**
  * ProblemAct: two particle clouds (opportunity, cool steel / investability, ember) on either side
  * of a dark chasm. Sparse sparks try to cross and die midway. The chasm opens with scroll and
- * narrows as the visitor closes the bridge (section data-bridge, 0..1); sparks then make it across.
+ * narrows as the one-line statement scrolls into view (section data-bridge, 0..1); sparks then make it across.
  * Two draw calls in total.
  */
 const BASE_CLOUD = 2600;
@@ -90,7 +90,7 @@ export default class ProblemAct extends GLAct {
     const k = 1 - Math.exp(-dt * SMOOTH);
     this.bridge += (target - this.bridge) * k;
 
-    // The chasm opens as the section scrolls in, and narrows (slightly) as the bridge closes.
+    // The chasm opens as the section scrolls in, and narrows (slightly) as the statement closes the gap.
     const scrollOpen = MathUtils.smoothstep(state.progress, 0.12, 0.45);
     const u = this.shared;
     u.uOpen.value = (0.25 + scrollOpen * 0.75) * (1 - this.bridge * 0.7);

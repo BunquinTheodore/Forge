@@ -1,11 +1,9 @@
 import { BaseSection, gsap } from '../../core/BaseSection.js';
-import { PartnerSelector } from './PartnerSelector.js';
 import { PromiseFinale } from './PromiseFinale.js';
 
 /**
  * The ask + the public promise + final CTA.
  * Entrance: a molten heat bar sweeps across each need and leaves the text forged behind it.
- * Signature: partner-type selector rewriting the pre-filled mailto CTA.
  * Finale: pinned promise (desktop) over the AskAct forge core; CSS glow fallback without GL.
  */
 export default class AskSection extends BaseSection {
@@ -20,8 +18,6 @@ export default class AskSection extends BaseSection {
   }
 
   init() {
-    this.selector = new PartnerSelector(this);
-    this.selector.init();
     if (this.reducedMotion) return;
 
     this.gsap(() => {
@@ -63,7 +59,7 @@ export default class AskSection extends BaseSection {
   }
 
   #offer() {
-    gsap.from(this.$$('.ask__offer-copy, .ask__picker, .ask__readout, .ask__offer .ask__send'), {
+    gsap.from(this.$$('.ask__offer-copy, .ask__offer .ask__send'), {
       opacity: 0, y: 24, duration: 0.9, ease: 'power3.out', stagger: 0.1,
       scrollTrigger: { refreshPriority: this.prio, trigger: this.$('.ask__offer'), start: 'top 82%', once: true },
     });

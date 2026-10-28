@@ -1,4 +1,4 @@
-/* ASK: what FORGE needs now, partner selector, public promise finale. Scoped under .sec--ask */
+/* ASK: what FORGE needs now, public promise finale. Scoped under .sec--ask */
 .sec--ask {
   position: relative;
   padding-bottom: 0;
@@ -19,15 +19,11 @@
   padding: clamp(16px, 2vw, 24px) 0 clamp(16px, 2vw, 24px) 30px;
   border-bottom: 1px solid var(--line);
   font-size: var(--fs-lead); line-height: 1.35; color: var(--fog);
-  transition: color var(--dur) var(--ease-out);
 }
 .sec--ask .ask__need::before {
   content: ''; position: absolute; left: 4px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px;
   border-radius: 50%; border: 1.5px solid var(--steel-2);
-  transition: background-color var(--dur), border-color var(--dur), box-shadow var(--dur);
 }
-.sec--ask .ask__need.is-lit { color: var(--cream); }
-.sec--ask .ask__need.is-lit::before { background: var(--ember); border-color: var(--ember); box-shadow: 0 0 14px 2px rgba(232, 91, 34, 0.6); }
 .sec--ask .ask__heat {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, var(--ember-deep), var(--ember) 55%, var(--ember-glow));
@@ -35,7 +31,7 @@
 }
 .sec--ask .ask__need-t { position: relative; display: block; max-width: 52ch; }
 
-/* Offer + selector */
+/* Offer */
 .sec--ask .ask__offer {
   margin-top: clamp(48px, 8vh, 96px);
   padding: clamp(22px, 3vw, 40px);
@@ -43,35 +39,10 @@
   background: linear-gradient(160deg, rgba(17, 37, 58, 0.78), rgba(8, 11, 14, 0.86));
 }
 .sec--ask .ask__offer-copy { font-family: var(--font-serif); font-size: var(--fs-h3); line-height: 1.22; max-width: 30ch; }
-.sec--ask .ask__picker { margin: 28px 0 0; padding: 0; border: 0; min-width: 0; }
-.sec--ask .ask__picker legend { padding: 0; margin-bottom: 14px; }
-.sec--ask .ask__options { display: flex; flex-wrap: wrap; gap: 10px; }
-.sec--ask .ask__opt { position: relative; display: inline-flex; cursor: pointer; }
-.sec--ask .ask__opt input {
-  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer;
-}
-.sec--ask .ask__opt span {
-  display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px;
-  border-radius: 999px; border: 1px solid var(--line-strong);
-  font-size: var(--fs-small); font-weight: 650; letter-spacing: 0.04em; color: var(--bone);
-  transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
-}
-.sec--ask .ask__opt:hover span { border-color: var(--ember); color: var(--cream); }
-.sec--ask .ask__opt input:checked + span { background: var(--ember); border-color: var(--ember); color: var(--ink); }
-.sec--ask .ask__opt input:active + span { transform: scale(0.96); }
-.sec--ask .ask__opt input:focus-visible + span { outline: 2px solid var(--ember-glow); outline-offset: 3px; }
-
-.sec--ask .ask__readout { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
-.sec--ask .ask__readout.is-swap { animation: ask-swap 0.5s var(--ease-out); }
-.sec--ask .ask__role { font-family: var(--font-sans); font-weight: 850; font-stretch: 112%; text-transform: uppercase; font-size: var(--fs-h3); line-height: 1; letter-spacing: -0.01em; }
-.sec--ask .ask__role-need { margin-top: 10px; color: var(--fog); font-size: var(--fs-small); max-width: 52ch; }
-.sec--ask .ask__role-need-t { color: var(--bone); }
 
 .sec--ask .ask__send { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
 .sec--ask .ask__mail { text-align: center; line-height: 1.2; padding-top: 12px; padding-bottom: 12px; }
 .sec--ask .ask__addr { color: var(--fog); font-size: var(--fs-small); overflow-wrap: anywhere; }
-
-@keyframes ask-swap { from { opacity: 0.2; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* Finale */
 .sec--ask .ask__finale { position: relative; margin-top: var(--section-pad); }
@@ -110,13 +81,7 @@
   padding-top: clamp(80px, 16vh, 200px); padding-bottom: clamp(96px, 18vh, 220px);
   display: flex; flex-direction: column; align-items: center;
 }
-.sec--ask .ask__triad {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 26px;
-  font-size: var(--fs-small); font-weight: 650; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--fog);
-}
-.sec--ask .ask__triad span { display: inline-block; }
 .sec--ask .ask__close {
-  margin-top: clamp(28px, 5vh, 56px);
   font-size: clamp(1.7rem, 0.6rem + 6.2vw, 8rem);
   max-width: 100%;
 }
@@ -157,7 +122,6 @@
 }
 
 @media (max-width: 380px) {
-  .sec--ask .ask__opt span { padding: 0 16px; }
   .sec--ask .ask__need { padding-left: 24px; }
 }
 

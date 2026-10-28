@@ -1,12 +1,10 @@
 /* PROBLEM. Dark, transparent for ProblemAct (two particle clouds over a chasm). */
 .sec--problem {
-  --pb-handle: 56px;
   overflow-x: clip;
   isolation: isolate;
 }
 .sec--problem .problem__wrap { position: relative; display: grid; gap: clamp(48px, 8vw, 120px); }
 .sec--problem .problem__eyebrow { display: inline-flex; gap: 14px; align-items: baseline; }
-.sec--problem .problem__eyebrow .num { color: var(--cream); letter-spacing: 0.08em; }
 
 /* Headline and the split */
 .sec--problem .problem__title { display: grid; gap: 0.2em; font-weight: 400; }
@@ -51,58 +49,8 @@
   opacity: calc(1 - var(--b));
 }
 
-/* Bridge control */
-.sec--problem .problem__bridge { display: grid; gap: 14px; max-width: 880px; width: 100%; justify-self: center; }
-.sec--problem .problem__bridge-ends {
-  display: flex; justify-content: space-between; gap: 16px;
-  font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--fog);
-}
-.sec--problem .problem__track {
-  --b: 0;
-  position: relative; height: 72px; container-type: inline-size;
-  touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none;
-}
-.sec--problem .problem__track.is-dragging { cursor: grabbing; }
-.sec--problem .problem__cliff {
-  position: absolute; top: 50%; height: 18px; width: 22%; margin-top: -9px;
-  background: linear-gradient(180deg, var(--steel-2), var(--ink-2));
-  border: 1px solid var(--line-strong);
-}
-.sec--problem .problem__cliff--l { left: 0; border-radius: 6px 2px 2px 6px; clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%); }
-.sec--problem .problem__cliff--r { right: 0; border-radius: 2px 6px 6px 2px; clip-path: polygon(0 0, 100% 0, 100% 100%, 12% 100%); }
-.sec--problem .problem__span {
-  position: absolute; left: calc(var(--pb-handle) / 2); right: calc(var(--pb-handle) / 2); top: 50%;
-  height: 4px; margin-top: -2px; border-radius: 2px;
-  background: repeating-linear-gradient(90deg, rgba(174, 183, 196, 0.22) 0 6px, transparent 6px 12px);
-}
-.sec--problem .problem__span-fill {
-  position: absolute; inset: 0; border-radius: inherit;
-  background: linear-gradient(90deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow));
-  box-shadow: 0 0 18px rgba(255, 122, 47, 0.6);
-  transform: scaleX(var(--b)); transform-origin: 0 50%;
-}
-.sec--problem .problem__handle {
-  position: absolute; left: 0; top: 50%; width: var(--pb-handle); height: var(--pb-handle);
-  margin-top: calc(var(--pb-handle) / -2); border-radius: 50%;
-  display: grid; place-items: center;
-  background: radial-gradient(circle at 40% 35%, var(--ink-3), var(--ink));
-  border: 1px solid var(--line-ember);
-  box-shadow: 0 0 0 6px rgba(232, 91, 34, 0.08), 0 10px 30px rgba(0, 0, 0, 0.5);
-  transform: translateX(calc(var(--b) * (100cqw - var(--pb-handle))));
-  touch-action: none;
-}
-.sec--problem .problem__handle-core {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--ember-hot); box-shadow: 0 0 14px var(--ember-hot), 0 0 32px var(--ember);
-  animation: pb-pulse 2.2s var(--ease-in-out) infinite;
-}
-.sec--problem .problem__handle:focus-visible { outline-offset: 4px; border-radius: 50%; }
-.sec--problem.is-bridged .problem__handle-core { animation: none; transform: scale(1.25); }
-.sec--problem .problem__hint { font-size: var(--fs-small); text-align: center; }
-@keyframes pb-pulse { 50% { transform: scale(0.7); opacity: 0.7; } }
-
 /* The problem in one line */
-.sec--problem .problem__oneline { display: grid; gap: 20px; max-width: 1100px; }
+.sec--problem .problem__oneline { max-width: 1100px; }
 .sec--problem .problem__oneline-p { font-size: clamp(1.5rem, 0.9rem + 2.6vw, 3.6rem); line-height: 1.12; color: var(--cream); text-wrap: pretty; }
 .sec--problem .problem__oneline-p .pw { opacity: 0.45; transition: opacity 500ms var(--ease-out); }
 .sec--problem .problem__oneline-p em .pw { opacity: 0.7; }
@@ -128,7 +76,7 @@
 .sec--problem .problem__card-p { color: var(--fog); font-size: var(--fs-body); line-height: 1.55; max-width: 40ch; }
 .sec--problem .problem__but { font-family: var(--font-serif); font-style: italic; color: var(--ember-glow); }
 
-/* No-GL fallback: two warm clouds, the chasm narrows as the bridge closes */
+/* No-GL fallback: two warm clouds, the chasm narrows as the statement scrolls into view */
 .sec--problem .problem__fallback { display: none; }
 html.no-gl .sec--problem .problem__fallback,
 html.tier-low .sec--problem .problem__fallback {
@@ -157,6 +105,5 @@ html.tier-low .sec--problem .problem__fallback {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sec--problem .problem__handle-core { animation: none; }
   .sec--problem .problem__word { will-change: auto; }
 }

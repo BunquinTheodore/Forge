@@ -1,7 +1,5 @@
 import { BaseSection, gsap } from '../../core/BaseSection.js';
 import { WordSplit } from '../../core/WordSplit.js';
-import { CompareTabs } from './CompareTabs.js';
-import { TiltCards } from './TiltCards.js';
 
 /** Visual brightness of a word before the scroll heat-up reaches it. */
 const MIN_LIT = 0.35;
@@ -10,8 +8,7 @@ const MIN_LIT = 0.35;
  * THESIS. Deck pages 1 and 2.
  * Entrance: the serif thesis statement heats up word by word as it is scrubbed through the viewport
  * (dim steel to cream), and "the configuration" / "investable." ignite in ember.
- * Interactive: comparison tablist that morphs a diagram, and four tilt cards with an ember edge light.
- * GL: ThesisAct reads data-point (active card) and data-mode (selected model) from the section.
+ * GL: ThesisAct reads data-point (the card nearest the viewport centre) from the section.
  */
 export default class ThesisSection extends BaseSection {
   static id = 'thesis';
@@ -21,16 +18,11 @@ export default class ThesisSection extends BaseSection {
     this.split = new WordSplit(statement, 'w');
     statement.classList.add('is-split');
 
-    this.tabs = new CompareTabs(this.el, (...a) => this.listen(...a));
     this.cards = this.$$('.thesis__card');
-    this.tilt = new TiltCards(this.cards, (...a) => this.listen(...a), { reducedMotion: this.reducedMotion });
 
     this.#trackPoints();
 
-    if (this.reducedMotion) {
-      this.el.classList.add('is-static');
-      return;
-    }
+    if (this.reducedMotion) return;
     this.gsap(() => {
       this.#heatUp(statement);
       this.#titleIn();
@@ -118,7 +110,6 @@ export default class ThesisSection extends BaseSection {
   }
 
   destroy() {
-    this.tilt?.destroy();
     super.destroy();
     this.$('[data-heat]')?.classList.remove('is-heating');
   }

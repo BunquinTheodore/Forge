@@ -3,16 +3,12 @@
  * Plain data only: no three.js here so the section bundle stays light.
  */
 
-/** Regions the visitor can focus. lon/lat = where the globe turns to. */
+/** Corridor regions the scroll walks through. lon/lat = where the globe turns to. */
 export const REGIONS = [
   { id: 'europe', name: 'Italy / Europe', lon: 12.5, lat: 41.9 },
   { id: 'philippines', name: 'Philippines', lon: 121, lat: 14.6 },
   { id: 'asean', name: 'ASEAN', lon: 104, lat: 5 },
 ];
-
-export const REGION_INDEX = Object.freeze(
-  Object.fromEntries(REGIONS.map((r, i) => [r.id, i])),
-);
 
 /**
  * Corridor nodes: [lon, lat] arc endpoints, grouped by region. The source names regions only

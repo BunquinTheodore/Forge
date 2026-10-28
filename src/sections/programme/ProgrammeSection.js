@@ -1,6 +1,5 @@
 import { BaseSection, gsap, ScrollTrigger } from '../../core/BaseSection.js';
 import { AgendaClock } from './AgendaClock.js';
-import { AgendaAccordion } from './AgendaAccordion.js';
 import { WorkshopLoop } from './WorkshopLoop.js';
 import { SplitFlap } from './SplitFlap.js';
 
@@ -28,8 +27,7 @@ export default class ProgrammeSection extends BaseSection {
       slots,
       this.reducedMotion,
     );
-    this.accordion = new AgendaAccordion(this, this.items, (i, open) => { if (open) this.clock.focusSlot(i); });
-    this.loop = new WorkshopLoop(this, this.$('.programme__loop'), this.reducedMotion);
+    this.loop = new WorkshopLoop(this.$('.programme__loop'), this.reducedMotion);
     this.flaps = this.$$('[data-flap]').map((el) => new SplitFlap(el));
     this.#buildDial();
     this.clock.setActive(0, { animate: false });
@@ -113,7 +111,7 @@ export default class ProgrammeSection extends BaseSection {
   /** Loop draws itself around once as it arrives. */
   #loopEntrance() {
     const track = this.$('.loop__track');
-    const steps = this.$$('.programme__step-btn');
+    const steps = this.$$('.programme__step');
     const tl = gsap.timeline({
       scrollTrigger: { trigger: this.$('.programme__loop'), start: 'top 80%', end: 'top 35%', scrub: 0.6 },
     });

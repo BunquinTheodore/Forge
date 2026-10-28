@@ -19,7 +19,6 @@ export class HeroMotion {
     this.supporting = [
       section.$('.hero__presents'),
       ...section.$$('.hero__pillars li'),
-      section.$('.hero__lede'),
       ...section.$$('.hero__tag-line'),
       section.$('.hero__strip'),
       section.$('.hero__count'),
@@ -82,7 +81,7 @@ export class HeroMotion {
         .to(this.ph, { xPercent: 120, yPercent: -40, duration: 1 }, 0)
         .to(this.section.$('.hero__sub'), { yPercent: -60, autoAlpha: 0, duration: 0.55 }, 0.3)
         .to(this.section.$$('.hero__pillars, .hero__presents'), { y: -40, autoAlpha: 0, duration: 0.5, stagger: 0.05 }, 0.25)
-        .to(this.section.$$('.hero__lede, .hero__tag'), { y: -60, autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.4)
+        .to(this.section.$('.hero__tag'), { y: -60, autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.4)
         .to(this.section.$('.hero__base'), { y: 40, autoAlpha: 0, duration: 0.45 }, 0.5);
     });
     this.mm = mm;
@@ -90,25 +89,21 @@ export class HeroMotion {
   }
 
   /**
-   * Fallback ribbon parallax (no GL only): scroll drift on the image, pointer drift on its frame.
-   * Returns { x, y, kill }; kill() reverts every tween and its ScrollTrigger.
+   * Fallback ribbon parallax (no GL only): scroll drift on the image.
+   * Returns { kill }; kill() reverts the tween and its ScrollTrigger.
    */
-  fallbackParallax(frame, img) {
-    if (!frame || !img) return null;
+  fallbackParallax(img) {
+    if (!img) return null;
     const drift = gsap.to(img, {
       yPercent: -14, scale: 1.08, ease: 'none',
       scrollTrigger: { trigger: this.el, start: 'top top', end: 'bottom top', scrub: true },
     });
-    const x = gsap.quickTo(frame, 'x', { duration: 1.1, ease: 'power3.out' });
-    const y = gsap.quickTo(frame, 'y', { duration: 1.1, ease: 'power3.out' });
     const kill = () => {
       drift.scrollTrigger?.kill();
       drift.kill();
-      x.tween.kill();
-      y.tween.kill();
-      gsap.set([frame, img], { clearProps: 'transform' });
+      gsap.set(img, { clearProps: 'transform' });
     };
-    return { x, y, kill };
+    return { kill };
   }
 
   destroy() { this.mm?.revert(); }

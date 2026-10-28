@@ -87,12 +87,6 @@ export class AgendaClock {
     this.titleEl.textContent = this.slots[i].title;
   }
 
-  /** Jump the hands straight to a slot (accordion click). */
-  focusSlot(i) {
-    this.target = this.slots[i].min;
-    this.setActive(i);
-  }
-
   update(dt) {
     const k = this.reduced ? 1 : 1 - Math.exp(-FOLLOW * dt);
     this.minutes += (this.target - this.minutes) * k;

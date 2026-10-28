@@ -10,7 +10,6 @@ import { WIRE, CORE, GLOW, SPARKS } from './coreShaders.js';
  * A faceted icosahedron wireframe around a molten inner core, with a shell of orbiting sparks.
  * As the four thesis points scroll by (section data-point) the wireframe breaks apart and
  * reassembles into a new configuration: faceted, sequenced, measured (geodesic), corridor (stretched).
- * Selecting a model in the comparison row (section data-mode) cools the core unless FORGE is chosen.
  */
 const POINT_STATES = [
   { round: 0.0, stretch: 0.0, scale: 1.0, core: 0.8 },
@@ -28,7 +27,6 @@ export default class ThesisAct extends GLAct {
   async init() {
     this.point = 0;
     this.pointSmooth = 0;
-    this.heat = 1;
     this.layout = { x: 0, y: 0, s: 1, o: 1 };
     this.still = this.device.reducedMotion;
 
@@ -140,14 +138,12 @@ export default class ThesisAct extends GLAct {
   #readSection() {
     const p = Number(this.section.dataset.point);
     if (p >= 0 && p < POINT_STATES.length) this.point = p;
-    this.heatTarget = this.section.dataset.mode === 'forge' ? 1 : 0.3;
   }
 
   update(dt, time, state) {
     this.#readSection();
     const k = 1 - Math.exp(-dt * SMOOTH);
     this.pointSmooth += (this.point - this.pointSmooth) * k;
-    this.heat += (this.heatTarget - this.heat) * k;
 
     const i0 = Math.floor(this.pointSmooth);
     const i1 = Math.min(i0 + 1, POINT_STATES.length - 1);
@@ -161,16 +157,16 @@ export default class ThesisAct extends GLAct {
     wu.uRound.value = MathUtils.lerp(a.round, b.round, f);
     wu.uStretch.value = MathUtils.lerp(a.stretch, b.stretch, f);
     wu.uExplode.value = Math.sin(travel * Math.PI * 0.5) * 1.1 + Math.abs(state.velocity) * 0.004;
-    wu.uHeat.value = this.heat;
+    wu.uHeat.value = 1;
 
     const o = state.visibility * this.layout.o;
     wu.uOpacity.value = o * 0.9;
-    const power = MathUtils.lerp(a.core, b.core, f) * (0.55 + this.heat * 0.45);
+    const power = MathUtils.lerp(a.core, b.core, f);
     this.coreMat.uniforms.uPower.value = power;
     this.coreMat.uniforms.uOpacity.value = o;
     this.coreMat.uniforms.uTime.value = t;
     this.glowMat.uniforms.uOpacity.value = o * 0.55 * power;
-    this.sparkMat.uniforms.uOpacity.value = o * (0.4 + this.heat * 0.6);
+    this.sparkMat.uniforms.uOpacity.value = o;
     this.sparkMat.uniforms.uTime.value = t;
     this.sparkMat.uniforms.uSpread.value = 1 + travel * 0.8;
 

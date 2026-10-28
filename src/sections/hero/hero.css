@@ -58,12 +58,10 @@
 /* Wordmark */
 .sec--hero .hero__title { display: flex; flex-direction: column; align-items: inherit; gap: clamp(10px, 1.6svh, 18px); }
 .sec--hero .hero__mark {
-  --hx: -9999px; --hy: -9999px; --heat: 0;
   position: relative; display: inline-flex; align-items: flex-start;
   font-family: var(--font-sans); font-weight: 900; font-stretch: 125%;
   font-size: clamp(3.1rem, 0.3rem + 15vw, 17rem);
   line-height: 0.84; letter-spacing: -0.012em;
-  touch-action: pan-y;
 }
 .sec--hero .hero__word { display: inline-flex; }
 .sec--hero .hero__l {
@@ -87,16 +85,6 @@
 /* Layers only while transforms actually run: during the intro, and on the sticky scroll stage */
 .sec--hero .hero__mark.is-forging .hero__l { will-change: transform; }
 .sec--hero .hero__mark.is-forging .hero__l::before { will-change: opacity; }
-.sec--hero .hero__l::after {
-  content: attr(data-l);
-  position: absolute; inset: 0;
-  color: var(--ember-glow);
-  text-shadow: 0 0 0.06em var(--ember-hot), 0 0 0.22em var(--ember);
-  opacity: var(--heat);
-  -webkit-mask-image: radial-gradient(circle 0.95em at calc(var(--hx) - var(--ox, 0px)) calc(var(--hy) - var(--oy, 0px)), black, transparent 72%);
-  mask-image: radial-gradient(circle 0.95em at calc(var(--hx) - var(--ox, 0px)) calc(var(--hy) - var(--oy, 0px)), black, transparent 72%);
-  pointer-events: none;
-}
 .sec--hero .hero__ph {
   font-size: 0.27em; font-style: italic; font-weight: 850; font-stretch: 110%; line-height: 1;
   color: var(--ember); margin: 0.06em 0 0 0.1em;
@@ -114,11 +102,6 @@
   list-style: none; margin: 0; padding: 0;
   display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 8px 22px;
   font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--fog);
-}
-
-.sec--hero .hero__lede { display: flex; flex-direction: column; align-items: inherit; }
-.sec--hero .hero__intro {
-  max-width: 34ch; color: var(--bone); font-size: var(--fs-body); line-height: 1.55; letter-spacing: 0.02em;
 }
 
 .sec--hero .hero__tag {
@@ -152,12 +135,6 @@
 
 .sec--hero .hero__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .sec--hero .hero__cta--ghost { background: rgba(8, 11, 14, 0.4); }
-
-.sec--hero .hero__hint {
-  display: none; margin-top: 14px;
-  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute);
-}
-.sec--hero .hero__hint-coarse { display: none; }
 
 @media (min-width: 560px) {
   .sec--hero .hero__pillars { display: flex; flex-wrap: wrap; gap: 0; }
@@ -193,11 +170,8 @@
   .sec--hero .hero__title { grid-column: 1 / span 10; align-items: flex-start; }
   .sec--hero .hero__mark { font-size: min(11.5vw, 17svh, 15rem); }
   .sec--hero .hero__logo { width: clamp(34px, 5svh, 54px); }
-  .sec--hero .hero__intro { font-size: min(var(--fs-body), 2.4svh); }
   .sec--hero .hero__sub { font-size: min(2.6vw, 4.6svh, 2.6rem); }
   .sec--hero .hero__pillars { grid-column: 1 / span 9; justify-content: flex-start; }
-  .sec--hero .hero__lede { grid-column: 1 / span 4; align-self: center; text-align: left; }
-  .sec--hero .hero__intro { max-width: 30ch; }
   .sec--hero .hero__tag { font-size: min(1.9vw, 3.4svh, 1.9rem); }
   .sec--hero .hero__tag { grid-column: 7 / -1; align-self: end; text-align: right; }
   .sec--hero .hero__strip { justify-content: flex-start; }
@@ -213,7 +187,6 @@
       radial-gradient(70% 70% at 18% 28%, rgba(8, 11, 14, 0.78), transparent 72%),
       linear-gradient(0deg, var(--ink) 0%, rgba(8, 11, 14, 0) 20%);
   }
-  .sec--hero .hero__hint { display: block; }
   .sec--hero .hero__num { font-size: min(var(--fs-h3), 4.4svh); }
 }
 
@@ -223,21 +196,9 @@
   .sec--hero .hero__count { justify-self: start; }
 }
 
-@media (min-width: 960px) and (min-aspect-ratio: 1/1) and (max-height: 820px) {
-  .sec--hero .hero__hint { display: none; }
-}
-
 @media (min-width: 2000px) {
   .sec--hero .hero__grid { max-width: 1840px; }
 }
-
-@media (hover: none), (pointer: coarse) {
-  .sec--hero .hero__hint-fine { display: none; }
-  .sec--hero .hero__hint-coarse { display: inline; }
-}
-
-.no-gl .sec--hero .hero__hint,
-.tier-low .sec--hero .hero__hint { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .sec.sec--hero { height: auto; }

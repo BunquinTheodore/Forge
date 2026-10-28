@@ -1,47 +1,37 @@
-import { BaseSection, gsap } from '../../core/BaseSection.js';
-import { RoleRing } from './RoleRing.js';
-import { RoleMap } from './RoleMap.js';
+import { BaseSection, gsap, ScrollTrigger } from '../../core/BaseSection.js';
+
+const STEP = 60;   // degrees the GL constellation turns per role
 
 /**
- * Who FORGE is for. Six roles on a draggable 3D ring; the selected role draws its flows on a hex map.
- * Writes data-role (active index) and data-angle (ring rotation, degrees) for AudienceAct.
+ * Who FORGE is for. Six static role cards; scrolling through them highlights each in turn.
+ * Writes data-role (highlighted index) and data-angle (constellation rotation, degrees) for AudienceAct.
  */
 export default class AudienceSection extends BaseSection {
   static id = 'audience';
 
   init() {
-    const listen = this.listen.bind(this);
-    this.map = new RoleMap(this.$('.aud__map'), {
-      listen,
-      onPick: (i) => this.ring.go(i),
-    });
-    this.ring = new RoleRing(this.$('[data-ring]'), {
-      listen,
-      reducedMotion: this.reducedMotion,
-      onChange: (i) => this.#select(i),
-      onTurn: (deg) => { this.el.dataset.angle = deg.toFixed(1); },
-    });
-    this.#select(0);
+    this.cards = this.$$('.role');
+    this.index = -1;
+    this.#highlight(0);
 
     if (this.reducedMotion) {
-      this.ring.setAssembly(1);
       this.el.classList.add('is-in');
       return;
     }
     this.gsap(() => this.#entrance());
   }
 
-  /** Ambient CSS loops (flow-line dashes) only run while the section is on screen. */
-  onEnter() { this.el.classList.add('is-visible'); }
-  onLeave() { this.el.classList.remove('is-visible'); }
-
-  #select(i) {
+  #highlight(i) {
+    if (i === this.index) return;
+    this.index = i;
     this.el.dataset.role = String(i);
-    this.map.select(i);
+    this.cards.forEach((card, k) => card.classList.toggle('is-active', k === i));
   }
 
   #entrance() {
-    const proxy = { a: 0 };
+    const n = this.cards.length;
+    const grid = this.$('.aud__roles');
+
     // Headline: lines rise out of their masks with a slight skew settling to zero
     gsap.from(this.$$('.aud__title .line > span'), {
       yPercent: 115, skewY: 6, duration: 1.1, ease: 'expo.out', stagger: 0.12,
@@ -52,17 +42,20 @@ export default class AudienceSection extends BaseSection {
       scrollTrigger: { trigger: this.$('.aud__head'), start: 'top 75%', once: true },
     });
 
-    // Signature entrance: the collapsed, tilted pile of plates opens into a ring as you scroll
-    gsap.to(proxy, {
-      a: 1, ease: 'none',
-      onUpdate: () => this.ring.setAssembly(proxy.a),
-      scrollTrigger: { trigger: this.$('[data-ring]'), start: 'top 95%', end: 'center 55%', scrub: 0.6 },
+    gsap.from(this.cards, {
+      opacity: 0, y: 40, duration: 1, ease: 'power3.out', stagger: 0.08,
+      scrollTrigger: { trigger: grid, start: 'top 82%', once: true },
     });
 
-    gsap.from(this.$('.map'), {
-      opacity: 0, rotate: -30, scale: 0.85, duration: 1.4, ease: 'expo.out',
-      scrollTrigger: { trigger: this.$('.aud__map'), start: 'top 80%', once: true },
+    // Scroll walks the highlight across the roles and turns the GL constellation with it
+    ScrollTrigger.create({
+      trigger: grid, start: 'top 70%', end: 'bottom 40%',
+      onUpdate: (st) => {
+        this.el.dataset.angle = (-st.progress * (n - 1) * STEP).toFixed(1);
+        this.#highlight(Math.min(n - 1, Math.floor(st.progress * n)));
+      },
     });
+
     gsap.from(this.$('.aud__rule'), {
       opacity: 0, y: 18, duration: 1.2, ease: 'power2.out',
       scrollTrigger: { trigger: this.$('.aud__rule'), start: 'top 90%', once: true },

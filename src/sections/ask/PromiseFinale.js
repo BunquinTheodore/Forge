@@ -6,10 +6,10 @@ const HOLD = 0.6;   // timeline units each vow holds the stage
 
 /**
  * The Public Promise as a cinematic finale.
- * Desktop: the stage pins and the five vows take the screen one at a time, each rising out of
- * darkness and settling, while a meter counts 1 to 5.
+ * Desktop: the stage pins and the vows take the screen one at a time, each rising out of
+ * darkness and settling, while a meter counts the vows.
  * Mobile / short screens: no pin, vows stack and ignite one by one as they scroll in.
- * Then the coda: triad, closing statement and CTA, with an ember glow that heats up.
+ * Then the coda: closing statement and CTA, with an ember glow that heats up.
  */
 export class PromiseFinale {
   constructor(section) {
@@ -92,10 +92,6 @@ export class PromiseFinale {
   #coda() {
     const coda = this.section.$('.ask__coda');
     if (!coda) return;
-    gsap.from(this.section.$$('.ask__triad span'), {
-      opacity: 0, x: -30, duration: 0.9, ease: 'expo.out', stagger: 0.15,
-      scrollTrigger: { refreshPriority: this.section.prio, trigger: coda, start: 'top 80%', once: true },
-    });
     gsap.from(this.section.$$('.ask__close .line > span'), {
       yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.12,
       scrollTrigger: { refreshPriority: this.section.prio, trigger: this.section.$('.ask__close'), start: 'top 85%', once: true },

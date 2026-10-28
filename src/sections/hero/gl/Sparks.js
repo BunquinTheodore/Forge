@@ -5,16 +5,12 @@ import { EMBER_RAMP } from './glsl.js';
 import { emberUniforms } from './palette.js';
 import { seeded } from './Ribbon.js';
 
-const BURST_SHARE = 0.38;   // fraction of sparks that join a click burst
-
 const vertex = /* glsl */ `
   uniform float uTime;
   uniform float uScale;
   uniform float uSize;
   uniform float uStream;
   uniform float uUnravel;
-  uniform vec3 uBurst;
-  uniform float uBurstAge;
   attribute vec3 aOrigin;
   attribute vec4 aRand;
   varying float vAlpha;
@@ -32,18 +28,8 @@ const vertex = /* glsl */ `
     float alpha = sin(life * 3.14159) * (0.35 + aRand.z * 0.65);
     float heat = 0.4 + aRand.z * 0.4;
 
-    float burstOn = step(aRand.w, ${BURST_SHARE}) * step(0.0, uBurstAge) * step(uBurstAge, 1.8);
-    float th = aRand.x * 6.2832;
-    float ph = acos(aRand.y * 2.0 - 1.0);
-    vec3 bdir = vec3(sin(ph) * cos(th), sin(ph) * sin(th) * 0.8 + 0.25, cos(ph));
-    float reach = (1.0 - exp(-uBurstAge * 3.2)) * (0.6 + aRand.z * 1.9);
-    vec3 bp = uBurst + bdir * reach + vec3(0.0, -uBurstAge * uBurstAge * 0.45, 0.0);
-    p = mix(p, bp, burstOn);
-    alpha = mix(alpha, 1.0 - smoothstep(0.3, 1.6 + aRand.z * 0.2, uBurstAge), burstOn);
-    heat = mix(heat, 1.0 - uBurstAge * 0.4, burstOn);
-
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
-    gl_PointSize = uSize * (0.45 + aRand.z) * (1.0 + burstOn * 0.6) * uScale / -mv.z;
+    gl_PointSize = uSize * (0.45 + aRand.z) * uScale / -mv.z;
     gl_Position = projectionMatrix * mv;
     vAlpha = alpha;
     vHeat = clamp(heat, 0.0, 1.0);
@@ -71,7 +57,7 @@ const fragment = /* glsl */ `
   }
 `;
 
-/** Ember sparks lifting off the ribbon; streams with scroll velocity; a share of them answers a click burst. */
+/** Ember sparks lifting off the ribbon; streams with scroll velocity. */
 export class Sparks {
   constructor({ count, ribbon, palette, shared }) {
     this.count = count;

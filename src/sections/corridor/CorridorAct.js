@@ -16,8 +16,8 @@ const DEG = Math.PI / 180;
 
 /**
  * CorridorAct: a dotted globe with glowing arcs from Italy / Europe to Manila, then fanning out across ASEAN.
- * View direction comes from corridorState (written by CorridorSection), so tabs, drag, keys and
- * scroll all steer the same globe. Five draw calls: shell, halo, dots, arc lines, arc dots.
+ * View direction comes from corridorState (written by CorridorSection), so scroll steers both
+ * this and the SVG fallback. Five draw calls: shell, halo, dots, arc lines, arc dots.
  */
 export default class CorridorAct extends GLAct {
   static order = 2;

@@ -83,19 +83,10 @@ Section backgrounds: transparent where the GL act should show through; cream "pa
 | hero | Poster: ICCPI presents, FORGE PH, The Cross-Industry Startup Forum, People / Smart Capital / Capabilities / Real Outcomes, Manila Thu Oct 29 2026 9:00 AM, Dusit Thani Manila Makati, "Your startup. A day before Overground." |
 | thesis | Deck p1-2: "An event built like a startup." Core idea + 4 thesis points |
 | problem | Deck p3: gap between opportunity and investability, 4 problem cards, problem in one line |
-| shift | Deck p4: changes the unit of value; Opportunity, Configuration, Risk intelligence, Conversion; "Do not fund the whole risk. Fund what changes the risk." |
-| proposition | Programme p2 (+p4 pre-forum preparation): what FORGE brings; not another pitch day |
 | audience | Programme p3: who FORGE is for, 6 roles; participants not locked into one role |
 | process | Deck p6 How FORGE works: Recruit, Profile, Qualify, Configure, De-risk, Convert; Working Cell rule. Deck p5 architecture FORGE PH / FORGE DAY / FORGE NEXT + product hypothesis |
 | corridor | Deck p7: Italy/Europe, Philippines, ASEAN corridor; imports capability, not merely services |
 | programme | Programme p5 morning agenda (09:00..11:25) + p8 afternoon Adaptive Startup Workshop: Form, Test, Reconfigure, Next step |
-| room | Programme p9 FORGE Environment: 7 zones |
-| capital | Programme p6 + p7: Smart capital, Risk intelligence, Risk sharing; risk intelligence partner Before / In the room / After |
-| continuation | Programme p10 + deck p10: D+0, D+10, D+45, D+90; Overground definition; validation question |
-| model | Deck p8: business model 4 layers; capital logic |
-| moat | Deck p9: dataset on how investability changes; 4 scores; configuration intelligence |
-| learning | Programme p11 FORGE 01 to FORGE 02 + p12 Generative Recap (Capture, Structure, Surface, Return) |
-| trust | Programme p13 Trust & Governance roles + principles line |
 | ask | Deck p11 the ask (what FORGE needs now, partner types) + Programme p14 Public Promise + final CTA (date/venue). CTA links: `mailto:forge@iccpi.com.ph` placeholder marked with `data-placeholder` attribute |
 | footer | footer: ICCPI logo, event facts, nav, legal line "FORGE does not guarantee investment..." |
 
