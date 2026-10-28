@@ -1,10 +1,11 @@
 import { BaseSection, gsap, ScrollTrigger } from '../../core/BaseSection.js';
 
 const STEP = 60;   // degrees the GL constellation turns per role
+const SECONDS_PER_CARD = 8;   // marquee pace
 
 /**
- * Who FORGE is for. Six static role cards; scrolling through them highlights each in turn.
- * Writes data-role (highlighted index) and data-angle (constellation rotation, degrees) for AudienceAct.
+ * Who FORGE is for. Six role cards drift sideways in an endless marquee.
+ * Scroll writes data-role (lit cluster) and data-angle (constellation rotation, degrees) for AudienceAct.
  */
 export default class AudienceSection extends BaseSection {
   static id = 'audience';
@@ -18,14 +19,27 @@ export default class AudienceSection extends BaseSection {
       this.el.classList.add('is-in');
       return;
     }
+    this.#startMarquee();
     this.gsap(() => this.#entrance());
+  }
+
+  /** Append one hidden copy of the cards so the track can loop seamlessly by half its width. */
+  #startMarquee() {
+    const track = this.$('.aud__roles');
+    this.cards.forEach((card) => {
+      const copy = card.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      copy.inert = true;
+      track.append(copy);
+    });
+    track.style.setProperty('--aud-loop', `${this.cards.length * SECONDS_PER_CARD}s`);
+    this.$('.aud__marquee').classList.add('is-running');
   }
 
   #highlight(i) {
     if (i === this.index) return;
     this.index = i;
     this.el.dataset.role = String(i);
-    this.cards.forEach((card, k) => card.classList.toggle('is-active', k === i));
   }
 
   #entrance() {
@@ -42,14 +56,14 @@ export default class AudienceSection extends BaseSection {
       scrollTrigger: { trigger: this.$('.aud__head'), start: 'top 75%', once: true },
     });
 
-    gsap.from(this.cards, {
-      opacity: 0, y: 40, duration: 1, ease: 'power3.out', stagger: 0.08,
-      scrollTrigger: { trigger: grid, start: 'top 82%', once: true },
+    gsap.from(this.$('.aud__marquee'), {
+      opacity: 0, x: 80, duration: 1.2, ease: 'power3.out',
+      scrollTrigger: { trigger: grid, start: 'top 85%', once: true },
     });
 
-    // Scroll walks the highlight across the roles and turns the GL constellation with it
+    // Scroll turns the GL constellation and lights its clusters one by one
     ScrollTrigger.create({
-      trigger: grid, start: 'top 70%', end: 'bottom 40%',
+      trigger: this.el, start: 'top 60%', end: 'bottom 40%',
       onUpdate: (st) => {
         this.el.dataset.angle = (-st.progress * (n - 1) * STEP).toFixed(1);
         this.#highlight(Math.min(n - 1, Math.floor(st.progress * n)));

@@ -20,9 +20,9 @@ export class HeroMotion {
       section.$('.hero__presents'),
       ...section.$$('.hero__pillars li'),
       ...section.$$('.hero__tag-line'),
+      section.$('.hero__ctas'),
       section.$('.hero__strip'),
       section.$('.hero__count'),
-      section.$('.hero__ctas'),
     ].filter(Boolean);
   }
 
@@ -81,7 +81,7 @@ export class HeroMotion {
         .to(this.ph, { xPercent: 120, yPercent: -40, duration: 1 }, 0)
         .to(this.section.$('.hero__sub'), { yPercent: -60, autoAlpha: 0, duration: 0.55 }, 0.3)
         .to(this.section.$$('.hero__pillars, .hero__presents'), { y: -40, autoAlpha: 0, duration: 0.5, stagger: 0.05 }, 0.25)
-        .to(this.section.$('.hero__tag'), { y: -60, autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.4)
+        .to(this.section.$$('.hero__tag, .hero__ctas'), { y: -60, autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.4)
         .to(this.section.$('.hero__base'), { y: 40, autoAlpha: 0, duration: 0.45 }, 0.5);
     });
     this.mm = mm;

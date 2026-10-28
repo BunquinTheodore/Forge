@@ -50,15 +50,35 @@ html.tier-low .sec--audience .aud__glow { opacity: 1; }
   background: radial-gradient(closest-side, rgba(232, 91, 34, 0.35), transparent);
   opacity: 0; transition: opacity var(--dur) var(--ease-out);
 }
-.sec--audience .role.is-active { border-color: var(--line-ember); }
-.sec--audience .role.is-active::before,
-.sec--audience .role.is-active::after { opacity: 1; }
+.sec--audience .role:hover { border-color: var(--line-ember); }
+.sec--audience .role:hover::before,
+.sec--audience .role:hover::after { opacity: 1; }
 .sec--audience .role__n { font-size: var(--fs-micro); color: var(--ember); letter-spacing: var(--track-wide); }
 .sec--audience .role__k {
   margin: 0; font-weight: 800; font-stretch: 112%; text-transform: uppercase; letter-spacing: 0.01em;
   font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.4rem); line-height: 1.05; color: var(--cream);
 }
 .sec--audience .role__p { margin: auto 0 0; color: var(--fog); font-size: var(--fs-small); line-height: 1.5; }
+
+/* Marquee: JS duplicates the cards once and the track loops by half its width. Without JS or with
+   reduced motion the static grid above is shown instead. */
+.sec--audience .aud__marquee { margin-top: clamp(40px, 7vw, 96px); }
+.sec--audience .aud__marquee.is-running {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.sec--audience .aud__marquee .aud__roles { margin-top: 0; }
+.sec--audience .is-running .aud__roles {
+  display: flex; gap: 0; width: max-content; max-width: none; padding: 0;
+  animation: aud-marquee var(--aud-loop, 48s) linear infinite;
+}
+.sec--audience .is-running .role {
+  flex: 0 0 auto; width: clamp(240px, 24vw, 320px); margin-right: clamp(12px, 1.6vw, 20px);
+}
+.sec--audience .is-running:hover .aud__roles,
+.sec--audience .is-running:focus-within .aud__roles { animation-play-state: paused; }
+@keyframes aud-marquee { to { transform: translate3d(-50%, 0, 0); } }
 
 /* Closing rule */
 .sec--audience .aud__rule {

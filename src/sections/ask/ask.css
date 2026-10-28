@@ -82,10 +82,12 @@
   display: flex; flex-direction: column; align-items: center;
 }
 .sec--ask .ask__close {
-  font-size: clamp(1.7rem, 0.6rem + 6.2vw, 8rem);
+  font-size: clamp(0.85rem, 3.4vw, 4.4rem);
+  line-height: 1.08;
   max-width: 100%;
 }
-.sec--ask .ask__close .line > span { display: inline-block; max-width: 100%; }
+/* One sentence per line, sized so the longest line fits the viewport */
+.sec--ask .ask__close .line > span { display: inline-block; max-width: 100%; white-space: nowrap; }
 .sec--ask .ask__close em { font-style: normal; color: var(--ember); }
 .sec--ask .ask__when {
   margin-top: clamp(28px, 5vh, 52px); display: grid; gap: 4px;
