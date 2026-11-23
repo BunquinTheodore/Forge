@@ -5,3 +5,9 @@ dist/
 _source/
 .claude/
 .build/
+.env
+.env.*
+.vercel/
+
+.vercel
+.env*.local

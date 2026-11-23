@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -8,19 +8,22 @@ import { resolve } from 'node:path';
  * static (fast LCP, crawlable) while every section stays in its own file.
  */
 function sectionPartials() {
-  const INCLUDE = /<!--@include ([a-z0-9-]+)-->/g;
-  const partialPath = (id) => resolve(__dirname, 'src/sections', id, `${id}.html`);
+  // <!--@include id-->  loads src/sections/<id>/<id>.html
+  // <!--@include dir/name-->  loads src/sections/<dir>/<name>.html (extra partials owned by one section)
+  const INCLUDE = /<!--@include ([a-z0-9-]+)(?:\/([a-z0-9-]+))?-->/g;
+  const MAX_DEPTH = 4;
+  const partialPath = (dir, name) => resolve(__dirname, 'src/sections', dir, `${name || dir}.html`);
+  const expand = (html, depth = 0) => html.replace(INCLUDE, (_, dir, name) => {
+    const file = partialPath(dir, name);
+    if (!existsSync(file)) return `<!-- missing partial: ${dir}${name ? `/${name}` : ''} -->`;
+    const body = readFileSync(file, 'utf8');
+    return depth < MAX_DEPTH ? expand(body, depth + 1) : body;
+  });
   return {
     name: 'forge-section-partials',
     transformIndexHtml: {
       order: 'pre',
-      handler(html) {
-        return html.replace(INCLUDE, (_, id) => {
-          const file = partialPath(id);
-          if (!existsSync(file)) return `<!-- missing partial: ${id} -->`;
-          return readFileSync(file, 'utf8');
-        });
-      },
+      handler: (html) => expand(html),
     },
     handleHotUpdate({ file, server }) {
       if (file.endsWith('.html') && file.includes('sections')) server.ws.send({ type: 'full-reload' });
@@ -34,7 +37,7 @@ function sectionPartials() {
  * main.js excludes these files from its CSS glob. Keep CRITICAL_SECTIONS in sync with
  * App.js (CRITICAL_SECTIONS) and main.js (the glob exclusions).
  */
-const CRITICAL_SECTIONS = ['splash', 'chrome', 'hero'];
+const CRITICAL_SECTIONS = ['splash', 'chrome', 'hero', 'pagehead', 'partners'];
 const CRITICAL_FILES = [
   'src/styles/tokens.css',
   'src/styles/base.css',
@@ -95,13 +98,59 @@ function asyncStylesheet() {
   };
 }
 
+/**
+ * Dev only: serve the Vercel function api/register.js at /api/register so the registration forms
+ * can be exercised end to end locally. In production Vercel runs the same file.
+ */
+function devApi() {
+  return {
+    name: 'forge-dev-api',
+    apply: 'serve',
+    configureServer(server) {
+      // Vite keeps .env values out of process.env: expose them to the function exactly as Vercel would.
+      Object.assign(process.env, loadEnv(server.config.mode, process.cwd(), ''));
+      server.middlewares.use('/api/register', async (req, res) => {
+        const chunks = [];
+        for await (const chunk of req) chunks.push(chunk);
+        const raw = Buffer.concat(chunks).toString('utf8');
+        try { req.body = raw ? JSON.parse(raw) : {}; } catch { req.body = undefined; }
+        Object.assign(res, {
+          status(code) { res.statusCode = code; return res; },
+          json(obj) { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(obj)); return res; },
+        });
+        try {
+          const mod = await server.ssrLoadModule('/api/register.js');
+          await mod.default(req, res);
+        } catch (err) {
+          server.config.logger.error(`[dev-api] ${err.message}`);
+          if (!res.writableEnded) res.status(500).json({ ok: false, code: 'server' });
+        }
+      });
+    },
+  };
+}
+
+/** Every page of the site. Each folder is a static page (clean URL with a trailing slash). */
+const PAGES = [
+  'index.html',
+  'programme/index.html',
+  'how-forge-works/index.html',
+  'workshop-fd90/index.html',
+  'international-forge/index.html',
+  'partners/index.html',
+  'register/conference/index.html',
+  'register/booth/index.html',
+  'register/workshop/index.html',
+];
+
 export default defineConfig({
-  plugins: [sectionPartials(), criticalCss(), asyncStylesheet()],
+  plugins: [sectionPartials(), criticalCss(), asyncStylesheet(), devApi()],
   build: {
     target: 'es2020',
     cssCodeSplit: false,
     assetsInlineLimit: 2048,
     rollupOptions: {
+      input: Object.fromEntries(PAGES.map((p) => [p.replace(/\/?index\.html$/, '').replace(/\//g, '-') || 'index', resolve(__dirname, p)])),
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/three')) return 'three';

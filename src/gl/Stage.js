@@ -76,6 +76,7 @@ export class Stage {
     for (const [path, loader] of Object.entries(ACT_MODULES)) {
       const id = path.split('/').at(-2);
       const el = document.querySelector(`[data-section="${id}"]`);
+      if (!el) continue; // this page has no such section (the site has several pages): never load its act
       this.slots.push({ id, el, loader, act: null, loading: false, queued: false, top: 0, height: 0, visibility: 0 });
     }
     this.#measure();

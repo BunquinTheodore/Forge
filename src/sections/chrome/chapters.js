@@ -1,14 +1,13 @@
 /**
  * Chapter map shared by the chrome (menu, rail) and the footer nav.
- * Ids match the data-section attributes in index.html, in page order.
+ * Ids match the data-section attributes on the homepage, in page order. Other pages have no rail.
  */
 const NAMES = [
   ['hero', 'The forum'],
-  ['problem', 'The problem'],
-  ['audience', 'Who it is for'],
-  ['process', 'How it works'],
-  ['programme', 'The programme'],
-  ['ask', 'The ask'],
+  ['why', 'Why FORGE'],
+  ['journey', 'The journey'],
+  ['startup', 'An event as a startup'],
+  ['join', 'Join FORGE'],
 ];
 
 export const CHAPTERS = Object.freeze(

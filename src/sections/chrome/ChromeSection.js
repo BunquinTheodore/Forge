@@ -55,7 +55,9 @@ export default class ChromeSection extends BaseSection {
           yPercent: 0, autoAlpha: 1, duration: 1.1, ease: 'expo.out', stagger: 0.07, delay: 0.15,
         });
       });
-      gsap.fromTo(this.$$('.chrome__rail-tick'), { scaleX: 0 }, {
+      const ticks = this.$$('.chrome__rail-tick');
+      if (!ticks.length) return; // pages without a chapter rail
+      gsap.fromTo(ticks, { scaleX: 0 }, {
         scaleX: 1,
         ease: 'none',
         stagger: 0.04,

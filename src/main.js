@@ -1,10 +1,12 @@
-// tokens, base and the splash/chrome/hero CSS are inlined into index.html (vite.config.js criticalCss),
+// tokens, base and the splash/chrome/hero/pagehead/partners CSS are inlined into index.html (vite.config.js criticalCss),
 // so they are excluded here. Every other section stylesheet is bundled and loaded without blocking paint.
 import.meta.glob([
   './sections/*/*.css',
   '!./sections/splash/*.css',
   '!./sections/chrome/*.css',
   '!./sections/hero/*.css',
+  '!./sections/pagehead/*.css',
+  '!./sections/partners/*.css',
 ], { eager: true });
 import { App } from './core/App.js';
 import { ScrollTrigger } from './core/Scroll.js';

@@ -113,3 +113,4 @@
 @media (prefers-reduced-motion: reduce) {
   .sec--footer .footer__l { transform: none !important; }
 }
+.sec--footer .footer__fact dd a { color: inherit; text-underline-offset: 4px; }

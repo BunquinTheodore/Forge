@@ -64,7 +64,8 @@
   /* Space and layout */
   --gutter: clamp(16px, 4vw, 64px);
   --maxw: 1360px;
-  --section-pad: clamp(96px, 14vh, 200px);
+  --bar-h: clamp(60px, 4.6vw + 40px, 84px); /* fixed header height, also used by inner page heads */
+  --section-pad: clamp(64px, 10vh, 128px);
   --radius: 14px;
   --radius-sm: 8px;
 

@@ -26,6 +26,7 @@ export class Rail {
     this.inView = new Set();
     this.activeId = '';
 
+    section.el.classList.toggle('has-rail', this.chapters.length > 1);
     this.#build();
     this.#observe();
     if (this.chapters.length) this.setActive(this.chapters[0].id);

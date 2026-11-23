@@ -33,18 +33,31 @@ export class Menu {
       section.listen(a, 'focus', () => this.#preview(a.dataset.num));
     });
     section.listen(this.el, 'pointerleave', () => this.#preview(this.activeNum));
+    // Menu links are real page navigations: if the page is restored from the back/forward cache, never show it open.
+    section.listen(window, 'pageshow', (e) => { if (e.persisted && this.isOpen) this.close(); });
+    this.markCurrentPage();
   }
 
-  setActive(id) {
+  /** Mark the link for the page being viewed (pages other than the homepage have no chapter rail). */
+  markCurrentPage() {
+    const slash = (p) => p.replace(/index\.html$/, '').replace(/\/?$/, '/');
+    const path = slash(location.pathname);
+    const here = this.links.find((a) => !a.hash && slash(new URL(a.href, location.href).pathname) === path);
+    if (!here) return;
+    here.setAttribute('aria-current', 'page');
+    this.activeNum = here.dataset.num;
+    this.previewNum.textContent = this.activeNum;
+  }
+
+  /** Homepage chapters: the menu keeps the forum link current (its chapters have their own rail numbers). */
+  setActive() {
+    const current = this.links.find((a) => a.dataset.chapter === 'hero');
+    if (!current || !document.querySelector('[data-section="hero"]')) return;
     this.links.forEach((a) => {
-      const on = a.dataset.chapter === id;
-      if (on) {
-        a.setAttribute('aria-current', 'location');
-        this.activeNum = a.dataset.num;
-      } else {
-        a.removeAttribute('aria-current');
-      }
+      if (a === current) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
     });
+    this.activeNum = current.dataset.num;
     if (!this.isOpen) this.previewNum.textContent = this.activeNum;
   }
 

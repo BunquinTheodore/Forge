@@ -6,7 +6,7 @@ const SECTION_MODULES = import.meta.glob('../sections/*/*Section.js', { eager: t
 const SPLASH_MODULES = import.meta.glob('../sections/splash/Splash.js', { eager: true });
 
 /** Sections whose CSS is inlined in index.html (see vite.config.js): initialised before the splash. */
-const CRITICAL_SECTIONS = new Set(['chrome', 'hero']);
+const CRITICAL_SECTIONS = new Set(['chrome', 'hero', 'pagehead', 'partners']);
 const STYLE_TIMEOUT = 6000;        // ms: never wait longer than this for the async stylesheet
 const GL_IDLE_HIGH = 1200;         // ms: idle timeout before the stage loads on desktop
 const GL_IDLE_DEFERRED = 2000;     // ms: idle timeout once a deferred stage is allowed to load
@@ -70,7 +70,7 @@ export class App {
     gsap.ticker.add((time, deltaMs) => this.#tick(time, deltaMs / 1000));
 
     const entries = this.#sectionEntries();
-    // Chrome and hero are styled by the inlined critical CSS: build them before the splash shows.
+    // Chrome, hero and the inner page heads are styled by the inlined critical CSS: build them before the splash shows.
     this.#initSections(entries.filter((e) => CRITICAL_SECTIONS.has(e.SectionClass.id)));
 
     // Desktop builds the stage behind the splash. Elsewhere GL waits until after 'ready' so
@@ -94,7 +94,16 @@ export class App {
     this.isReady = true;
     document.documentElement.classList.add('is-ready');
     this.emit('ready');
+    this.#scrollToHash();
     if (!eagerGL) this.#deferStage();
+  }
+
+  /** Deep links such as /#join: land on the target once every section (and pin) has been built. */
+  #scrollToHash() {
+    let id = '';
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { /* malformed hash: ignore */ }
+    const target = id ? document.getElementById(id) : null;
+    if (target) this.scroll.to(target, { immediate: true });
   }
 
   #createSplash() {
