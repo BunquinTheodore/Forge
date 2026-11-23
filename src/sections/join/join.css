@@ -1,7 +1,7 @@
 /* JOIN: three ways to take part, registration contacts, ICCPI membership (separate). Scoped under .sec--join */
-.sec--join .join__head { max-width: 52rem; }
-.sec--join .join__title { margin-top: 18px; font-size: clamp(2.4rem, 1rem + 5.5vw, 5.8rem); line-height: 0.98; }
-.sec--join .join__lead { margin-top: 22px; }
+.sec--join .join__head { max-width: none; }
+.sec--join .join__title { margin-top: 18px; font-size: clamp(1.7rem, 7.4vw, 5.8rem); line-height: 1; white-space: nowrap; }
+.sec--join .join__lead { margin-top: 22px; max-width: 46ch; }
 
 .sec--join .join__cards { list-style: none; margin: clamp(36px, 6vw, 64px) 0 0; padding: 0; display: grid; gap: 14px; }
 .sec--join .offer__card {

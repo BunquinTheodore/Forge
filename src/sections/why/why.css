@@ -7,35 +7,55 @@
 
 .sec--why .why__map { position: relative; margin: 0; width: min(100%, 560px); aspect-ratio: 1; justify-self: center; }
 .sec--why .why__lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.sec--why .why__line { stroke: var(--line-strong); stroke-width: 0.35; transition: stroke 0.4s var(--ease-out), stroke-width 0.4s var(--ease-out); }
-.sec--why .why__line.is-on { stroke: var(--ember-hot); stroke-width: 0.7; filter: drop-shadow(0 0 1.2px var(--ember)); }
-.sec--why .why__ring { fill: none; stroke: var(--line-ember); stroke-width: 0.3; }
-.sec--why .why__ring--outer { stroke: var(--line); stroke-dasharray: 0.8 1.6; transform-origin: 50% 50%; animation: why-spin 60s linear infinite; }
-@keyframes why-spin { to { transform: rotate(360deg); } }
 
+/* Connections: quiet base, soft halo, bright line (the last two draw in from the participant to FORGE) */
+.sec--why .why__base line { stroke: var(--line-strong); stroke-width: 0.3; stroke-dasharray: 0.8 1.2; }
+.sec--why .why__halo { stroke: var(--ember); stroke-width: 2.2; stroke-linecap: round; opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.sec--why .why__line { stroke: var(--ember-hot); stroke-width: 0.6; stroke-linecap: round; opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.sec--why .why__halo { filter: none; }
+.sec--why .why__spark { fill: var(--cream); opacity: 0; }
+/* Without motion: the active connection is simply shown */
+.sec--why .why__line.is-on { opacity: 1; stroke-dashoffset: 0; }
+.sec--why .why__halo.is-on { opacity: 0.18; stroke-dashoffset: 0; }
+
+/* Core: opaque, so the lines meet it instead of running through it */
 .sec--why .why__core {
   position: absolute; left: 50%; top: 50%; width: 22%; aspect-ratio: 1; transform: translate(-50%, -50%);
-  display: flex; align-items: center; justify-content: center; gap: 2px; border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(232, 91, 34, 0.32), rgba(8, 11, 14, 0.92) 78%); box-shadow: 0 0 38px rgba(232, 91, 34, 0.25);
+  display: flex; align-items: center; justify-content: center; gap: 2px; border-radius: 50%; z-index: 1;
+  background: radial-gradient(closest-side, rgba(232, 91, 34, 0.3), rgba(232, 91, 34, 0) 85%), #0a0d11;
+  border: 1px solid var(--line-ember); box-shadow: 0 0 38px rgba(232, 91, 34, 0.22);
 }
 .sec--why .why__core-k { font-weight: 900; font-stretch: 125%; font-size: clamp(0.8rem, 0.5rem + 1.5vw, 1.5rem); letter-spacing: 0.02em; }
 .sec--why .why__core-ph { align-self: flex-start; margin-top: 30%; font-style: italic; font-weight: 800; font-size: 0.6rem; color: var(--ember); }
+/* Ring that leaves the core when a connection lands (transform and opacity only) */
+.sec--why .why__pulse {
+  position: absolute; left: 50%; top: 50%; width: 22%; aspect-ratio: 1; margin: calc(-11% * 1) 0 0 calc(-11% * 1);
+  border-radius: 50%; border: 1.5px solid var(--ember-hot); opacity: 0; pointer-events: none;
+}
 
 .sec--why .why__nodes { list-style: none; margin: 0; padding: 0; }
-.sec--why .why__node {
-  position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; align-items: center; gap: 10px; width: 34%; text-align: center; cursor: default; outline-offset: 6px;
-}
+/* A node is a point on the map; the dot sits exactly on it and the label sits clear of the line (above for top nodes, below for bottom ones) */
+.sec--why .why__node { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: 0; height: 0; cursor: default; z-index: 1; }
 .sec--why .why__dot {
-  width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--steel-2); background: var(--ink);
-  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--steel-2); background: var(--ink);
+  transition: background 0.5s var(--ease-out), border-color 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+/* Soft ring around the active dot: scales and fades (compositor only) */
+.sec--why .why__dot::after {
+  content: ''; position: absolute; inset: -9px; border-radius: 50%; border: 1px solid var(--ember-hot); opacity: 0; transform: scale(0.5);
 }
 .sec--why .why__node-k {
+  position: absolute; left: 0; width: min(12rem, 32vw); transform: translateX(-50%); text-align: center; text-wrap: balance;
   font-size: var(--fs-small); font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.25; color: var(--fog);
-  transition: color 0.4s var(--ease-out);
+  transition: color 0.5s var(--ease-out);
 }
-.sec--why .why__node.is-on .why__dot { background: var(--ember-glow); border-color: var(--ember-hot); transform: scale(1.35); box-shadow: 0 0 0 4px rgba(232, 91, 34, 0.22), 0 0 20px var(--ember-hot); }
+.sec--why .why__node[data-y='18'] .why__node-k { bottom: 20px; }
+.sec--why .why__node[data-y='82'] .why__node-k { top: 20px; }
+.sec--why .why__node.is-on .why__dot { background: var(--ember-glow); border-color: var(--ember-hot); transform: scale(1.3); }
+.sec--why .why__node.is-on .why__dot::after { animation: why-ring 1.6s var(--ease-out) infinite; }
 .sec--why .why__node.is-on .why__node-k { color: var(--cream); }
+@keyframes why-ring { 0% { opacity: 0.8; transform: scale(0.5); } 100% { opacity: 0; transform: scale(1.6); } }
+
 .sec--why .why__cap {
   position: absolute; left: 50%; bottom: -4%; transform: translateX(-50%); width: 80%; text-align: center;
   font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute);
@@ -45,5 +65,5 @@
   .sec--why .why__wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sec--why .why__ring--outer { animation: none; }
+  .sec--why .why__node.is-on .why__dot::after { animation: none; opacity: 0.6; transform: scale(1.2); }
 }

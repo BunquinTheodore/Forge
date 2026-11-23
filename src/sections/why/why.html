@@ -13,19 +13,30 @@
 
     <figure class="why__map" data-map>
       <svg class="why__lines" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <line class="why__line" data-for="startups" x1="50" y1="50" x2="20" y2="18" pathLength="1" />
-        <line class="why__line" data-for="enterprises" x1="50" y1="50" x2="80" y2="18" pathLength="1" />
-        <line class="why__line" data-for="capabilities" x1="50" y1="50" x2="20" y2="82" pathLength="1" />
-        <line class="why__line" data-for="investors" x1="50" y1="50" x2="80" y2="82" pathLength="1" />
-        <circle class="why__ring" cx="50" cy="50" r="11" />
-        <circle class="why__ring why__ring--outer" cx="50" cy="50" r="17" />
+        <!-- Each connection runs from the participant to FORGE: a quiet base line, a halo and a bright line that draws in when active. -->
+        <g class="why__base">
+          <line x1="20" y1="18" x2="50" y2="50" />
+          <line x1="80" y1="18" x2="50" y2="50" />
+          <line x1="20" y1="82" x2="50" y2="50" />
+          <line x1="80" y1="82" x2="50" y2="50" />
+        </g>
+        <line class="why__halo" data-for="startups" x1="20" y1="18" x2="50" y2="50" pathLength="1" />
+        <line class="why__halo" data-for="enterprises" x1="80" y1="18" x2="50" y2="50" pathLength="1" />
+        <line class="why__halo" data-for="capabilities" x1="20" y1="82" x2="50" y2="50" pathLength="1" />
+        <line class="why__halo" data-for="investors" x1="80" y1="82" x2="50" y2="50" pathLength="1" />
+        <line class="why__line" data-for="startups" x1="20" y1="18" x2="50" y2="50" pathLength="1" />
+        <line class="why__line" data-for="enterprises" x1="80" y1="18" x2="50" y2="50" pathLength="1" />
+        <line class="why__line" data-for="capabilities" x1="20" y1="82" x2="50" y2="50" pathLength="1" />
+        <line class="why__line" data-for="investors" x1="80" y1="82" x2="50" y2="50" pathLength="1" />
+        <circle class="why__spark" r="1.1" cx="50" cy="50" />
       </svg>
+      <span class="why__pulse" aria-hidden="true"></span>
       <span class="why__core" aria-hidden="true"><span class="why__core-k">FORGE</span><span class="why__core-ph">PH</span></span>
       <ul class="why__nodes">
-        <li class="why__node" data-node="startups" style="--x:20;--y:18"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">International startups</span></li>
-        <li class="why__node" data-node="enterprises" style="--x:80;--y:18"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">Philippine enterprises</span></li>
-        <li class="why__node" data-node="capabilities" style="--x:20;--y:82"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">Professional capabilities</span></li>
-        <li class="why__node" data-node="investors" style="--x:80;--y:82"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">Investors</span></li>
+        <li class="why__node" data-node="startups" data-x="20" data-y="18" style="--x:20;--y:18"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">International startups</span></li>
+        <li class="why__node" data-node="enterprises" data-x="80" data-y="18" style="--x:80;--y:18"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">Philippine enterprises</span></li>
+        <li class="why__node" data-node="capabilities" data-x="20" data-y="82" style="--x:20;--y:82"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">Professional capabilities</span></li>
+        <li class="why__node" data-node="investors" data-x="80" data-y="82" style="--x:80;--y:82"><span class="why__dot" aria-hidden="true"></span><span class="why__node-k">Investors</span></li>
       </ul>
       <figcaption class="why__cap">Business opportunities and a stronger local ecosystem.</figcaption>
     </figure>
