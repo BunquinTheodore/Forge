@@ -1,0 +1,35 @@
+<!--
+  MAIN SPONSOR BLOCKS: prepared, not shipped. Use them once Piaggio confirms its official corporate name, logo and role.
+  Then also add the final wording to the menu (src/sections/chrome/chrome.html) and the footer (src/sections/footer/footer.html).
+-->
+
+<!-- 1. Homepage hero. Paste inside <ul class="hero__sponsors"> in src/sections/hero/hero.html, after the ICCPI tile.
+        Add the approved logo as an <img> before .hero__sp-text. -->
+<li class="hero__sp hero__sp--main">
+  <span class="hero__sp-text">
+    <span class="hero__sp-k">Main sponsor</span>
+    <span class="hero__sp-n">Piaggio Group</span>
+    <span class="hero__sp-d">Celebrating 80 years of Vespa</span>
+  </span>
+</li>
+
+<!-- 2. Partners page. Paste inside <div class="partners__lead-row"> in src/sections/partners/partners.html, between the ICCPI card
+        and the "Partner with us" card. The row switches to three columns automatically on wide screens. -->
+<article class="pcard pcard--main">
+  <p class="pcard__k">Main sponsor</p>
+  <div class="pcard__body">
+    <div>
+      <h3 class="pcard__n">Piaggio Group</h3>
+      <p class="pcard__d">Celebrating 80 years of Vespa: the Italian scooter icon.</p>
+      <p class="pcard__tag">Official name and branding subject to final approval</p>
+    </div>
+  </div>
+</article>
+
+<!-- 3. Homepage "day at a glance" featured card. Paste first inside <div class="day__grid"> in src/sections/startup/startup.html,
+        and change .day__grid to three columns in startup.css. Style: add a .day__card--feature rule (ember border). -->
+<article class="day__card day__card--feature">
+  <p class="day__k">Featured industry experience</p>
+  <h4 class="day__h">Piaggio Group. Celebrating 80 years of Vespa.</h4>
+  <p class="day__p">Italian industrial heritage, global innovation and the Vespa experience.</p>
+</article>

@@ -1,0 +1,89 @@
+/* REGISTER: summary beside the form on the three registration pages. Scoped under .sec--register */
+.sec.sec--register { padding-top: 0; }
+.sec--register .register__wrap { display: grid; gap: clamp(28px, 5vw, 56px); align-items: start; }
+
+/* Side summary */
+.sec--register .register__side {
+  padding: clamp(22px, 3vw, 36px); border: 1px solid var(--line-ember); border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(168, 52, 15, 0.26), rgba(8, 11, 14, 0.86));
+}
+.sec--register .register__price { margin-top: 16px; font-family: var(--font-serif); font-size: clamp(2rem, 1.2rem + 2.6vw, 3.2rem); line-height: 1.05; letter-spacing: -0.02em; }
+.sec--register .register__unit { margin-top: 8px; color: var(--fog); font-size: var(--fs-small); }
+.sec--register .register__facts { margin: clamp(20px, 3vw, 32px) 0 0; display: grid; border-top: 1px solid var(--line); }
+.sec--register .register__facts > div { display: grid; grid-template-columns: 5.5rem 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.sec--register .register__facts dt { font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute); padding-top: 3px; }
+.sec--register .register__facts dd { margin: 0; font-size: var(--fs-small); color: var(--cream); }
+.sec--register .register__next { margin-top: 22px; color: var(--bone); font-size: var(--fs-small); line-height: 1.6; }
+.sec--register .register__next strong { color: var(--cream); }
+.sec--register .register__contact { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-size: var(--fs-small); }
+.sec--register .register__contact p + p { margin-top: 6px; }
+.sec--register .register__contact a { color: var(--cream); text-underline-offset: 4px; overflow-wrap: anywhere; }
+
+/* Form */
+.sec--register .register__form { min-width: 0; }
+.sec--register .register__h { font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h2); line-height: 1.04; letter-spacing: -0.02em; margin-bottom: clamp(22px, 3vw, 34px); }
+.sec--register .register__status { margin-bottom: 22px; padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: rgba(8, 11, 14, 0.6); font-size: var(--fs-small); }
+.sec--register .register__status[data-kind='error'] { border-color: var(--it-red); background: rgba(226, 52, 43, 0.1); color: var(--cream); }
+
+.sec--register .group { margin: 0 0 clamp(26px, 4vw, 40px); padding: 0; border: 0; min-width: 0; }
+.sec--register .group__legend { padding: 0 0 14px; margin-bottom: 16px; width: 100%; border-bottom: 1px solid var(--line); font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ember); }
+.sec--register .group__grid { display: grid; gap: 18px; }
+.sec--register .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.sec--register .field__label { font-size: var(--fs-small); font-weight: 600; color: var(--bone); }
+.sec--register .field__req { color: var(--ember); }
+.sec--register .field__hint { font-size: var(--fs-micro); color: var(--mute); letter-spacing: 0.04em; }
+.sec--register .field__err { font-size: var(--fs-small); color: #ff8a80; }
+.sec--register input[type='text'], .sec--register input[type='email'], .sec--register input[type='tel'],
+.sec--register select, .sec--register textarea {
+  width: 100%; min-height: 48px; padding: 12px 14px; color: var(--cream); font: inherit; font-size: 1rem;
+  background: rgba(8, 11, 14, 0.62); border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast), background var(--dur-fast);
+}
+.sec--register textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+.sec--register select {
+  appearance: none; padding-right: 40px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23e85b22' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+.sec--register select option { background: var(--ink-2); color: var(--cream); }
+.sec--register input:hover, .sec--register select:hover, .sec--register textarea:hover { border-color: var(--steel-2); }
+.sec--register input:focus-visible, .sec--register select:focus-visible, .sec--register textarea:focus-visible {
+  outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px rgba(232, 91, 34, 0.28);
+}
+.sec--register .has-error input, .sec--register .has-error select, .sec--register .has-error textarea { border-color: #ff8a80; }
+
+.sec--register .checks { display: grid; gap: 4px 18px; }
+.sec--register .check { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 8px 0; cursor: pointer; font-size: var(--fs-small); line-height: 1.45; color: var(--bone); }
+.sec--register .check input {
+  appearance: none; flex: 0 0 auto; width: 22px; height: 22px; margin: 1px 0 0; border-radius: 5px; cursor: pointer;
+  background: rgba(8, 11, 14, 0.62); border: 1.5px solid var(--steel-2); display: grid; place-items: center;
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+.sec--register .check input::after { content: ''; width: 10px; height: 6px; border: 2px solid var(--ink); border-top: 0; border-right: 0; transform: rotate(-45deg) scale(0); margin-top: -2px; transition: transform var(--dur-fast); }
+.sec--register .check input:checked { background: var(--ember); border-color: var(--ember); }
+.sec--register .check input:checked::after { transform: rotate(-45deg) scale(1); }
+.sec--register .check input:focus-visible { outline: 2px solid var(--ember-glow); outline-offset: 3px; }
+.sec--register .field--consent { margin-top: 6px; }
+
+.sec--register .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.sec--register .register__actions { margin-top: 8px; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.sec--register .register__submit:disabled { opacity: 0.6; cursor: progress; }
+.sec--register .register__fine { max-width: 60ch; color: var(--mute); font-size: var(--fs-small); line-height: 1.5; }
+.sec--register .register__nojs { padding: 14px 18px; border: 1px solid var(--line-ember); border-radius: var(--radius-sm); }
+
+.sec--register .register__done { padding: clamp(24px, 4vw, 48px); border: 1px solid var(--line-ember); border-radius: var(--radius); background: linear-gradient(160deg, rgba(168, 52, 15, 0.3), rgba(8, 11, 14, 0.86)); outline: none; }
+.sec--register .register__done-h { margin-top: 14px; font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h2); line-height: 1.04; letter-spacing: -0.02em; }
+.sec--register .register__done-h em { font-style: italic; color: var(--ember); }
+.sec--register .register__done-p { margin-top: 18px; max-width: 52ch; color: var(--bone); overflow-wrap: anywhere; }
+.sec--register .register__done-p a { color: var(--cream); }
+.sec--register .register__done-a { margin-top: 26px; }
+
+@media (min-width: 640px) {
+  .sec--register .group__grid { grid-template-columns: 1fr 1fr; gap: 18px 20px; }
+  .sec--register .field--textarea, .sec--register .field--checks, .sec--register .field--consent { grid-column: 1 / -1; }
+  .sec--register .checks { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 980px) {
+  .sec--register .register__wrap { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); }
+  .sec--register .register__side { position: sticky; top: calc(var(--bar-h, 84px) + 24px); }
+}

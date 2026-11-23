@@ -1,7 +1,18 @@
 # FORGE PH website: build contract
 
-One-page cinematic scroll site for **FORGE PH, The Cross-Industry Startup Forum** (presented by ICCPI,
-Italian Chamber of Commerce in the Philippines). 29 October 2026, 9:00 AM, Dusit Thani Manila, Makati.
+Cinematic scroll site for **FORGE PH 2027, The International Cross-Industry Startup Forum** (presented by ICCPI,
+Italian Chamber of Commerce in the Philippines). Piaggio Group sponsorship is kept off the site until Piaggio confirms
+(prepared in docs/main-sponsor-blocks.html).
+27 January 2027, 10:00 AM to 6:00 PM, WhiteSpace, Makati, Philippines.
+
+**Multi-page (2027 update).** Pages are folders with an `index.html` (listed in `PAGES` in `vite.config.js`):
+home (`/`: hero, why, journey, startup, join), `/programme/`, `/how-forge-works/`, `/workshop-fd90/`,
+`/international-forge/`, `/partners/`, `/register/conference|booth|workshop/`. Each page includes the same
+splash, chrome and footer partials plus its own sections. Partials: `<!--@include id-->` or
+`<!--@include dir/name-->` (nested includes work). The GL stage only loads acts for sections present on the page.
+Registration: `shared/registration.js` (schema, used by browser and server), `api/register.js` (Vercel function),
+setup in `docs/registration-setup.md`. The section map below describes the original 2026 one-page build; the
+problem, audience and ask sections were removed in the 2027 update.
 
 Stack: Vite 8, vanilla ES modules (plain JS, no TS, no framework), three 0.186, gsap 3.15 (+ScrollTrigger), lenis.
 Run: `npm run dev` / `npm run build`. Source material (READ IT, it is the content): `_source/*.txt`
