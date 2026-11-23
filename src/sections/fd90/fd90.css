@@ -1,0 +1,40 @@
+/* FD90: the 90-day process, FORGE NEXT, the information desk. Scoped under .sec--fd90 */
+.sec--fd90 .fd90__head { max-width: 62rem; }
+.sec--fd90 .fd90__title { margin-top: 18px; font-size: clamp(2.2rem, 1.1rem + 4.6vw, 5rem); }
+.sec--fd90 .fd90__lead { margin-top: 24px; max-width: 54ch; }
+
+.sec--fd90 .fd90__timeline { --p: 0; position: relative; margin-top: clamp(40px, 7vw, 80px); padding-left: 38px; }
+.sec--fd90 .fd90__rail { position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; background: var(--line-strong); }
+.sec--fd90 .fd90__fill {
+  position: absolute; inset: 0; transform-origin: 50% 0; transform: scaleY(var(--p));
+  background: linear-gradient(180deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow));
+  box-shadow: 0 0 10px rgba(232, 91, 34, 0.7), 0 0 26px rgba(255, 122, 47, 0.35);
+}
+.sec--fd90 .fd90__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; }
+.sec--fd90 .mile { position: relative; }
+.sec--fd90 .mile__node {
+  position: absolute; left: -35px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink); border: 2px solid var(--steel-2);
+  transition: background 0.5s var(--ease-out), border-color 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+}
+.sec--fd90 .mile.is-lit .mile__node { background: var(--ember-glow); border-color: var(--ember-hot); box-shadow: 0 0 0 4px rgba(232, 91, 34, 0.2), 0 0 16px var(--ember-hot); }
+.sec--fd90 .mile__d { font-size: var(--fs-small); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ember); }
+.sec--fd90 .mile__k { margin-top: 6px; font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.1; letter-spacing: -0.015em; }
+.sec--fd90 .mile__p { margin-top: 8px; color: var(--fog); font-size: var(--fs-small); line-height: 1.5; max-width: 30ch; }
+.sec--fd90 .fd90__note { margin-top: clamp(24px, 3vw, 36px); color: var(--mute); font-size: var(--fs-small); }
+
+.sec--fd90 .fd90__split { margin-top: clamp(48px, 8vw, 96px); display: grid; gap: 14px; }
+.sec--fd90 .fd90__panel { padding: clamp(24px, 3vw, 40px); border: 1px solid var(--line-strong); border-radius: var(--radius); background: linear-gradient(165deg, rgba(17, 37, 58, 0.62), rgba(8, 11, 14, 0.82)); scroll-margin-top: 100px; }
+.sec--fd90 .fd90__panel--desk { border-color: var(--line-ember); background: linear-gradient(160deg, rgba(168, 52, 15, 0.32), rgba(8, 11, 14, 0.84)); }
+.sec--fd90 .fd90__h { margin-top: 14px; font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.6rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 18ch; }
+.sec--fd90 .fd90__h em { font-style: italic; color: var(--ember); }
+.sec--fd90 .fd90__p { margin-top: 16px; color: var(--bone); max-width: 46ch; }
+.sec--fd90 .fd90__action { margin-top: 24px; }
+
+@media (min-width: 900px) {
+  .sec--fd90 .fd90__timeline { padding: 40px 0 0; }
+  .sec--fd90 .fd90__rail { left: 0; right: 0; top: 14px; bottom: auto; width: auto; height: 2px; }
+  .sec--fd90 .fd90__fill { transform-origin: 0 50%; transform: scaleX(var(--p)); background: linear-gradient(90deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow)); }
+  .sec--fd90 .fd90__steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2vw, 32px); }
+  .sec--fd90 .mile__node { left: 0; top: -33px; }
+  .sec--fd90 .fd90__split { grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 24px); }
+}

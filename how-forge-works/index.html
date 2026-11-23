@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>How FORGE works | FORGE PH 2027</title>
+  <meta name="description" content="The FORGE operating model: Recruit, Profile, Qualify, Configure, De-risk and Convert." />
+  <meta name="theme-color" content="#080B0E" />
+  <link rel="canonical" href="https://www.forgeph.org/how-forge-works/" />
+  <meta property="og:title" content="How FORGE works | FORGE PH 2027" />
+  <meta property="og:description" content="The FORGE operating model: Recruit, Profile, Qualify, Configure, De-risk and Convert." />
+  <meta property="og:image" content="https://www.forgeph.org/img/ribbon-1280.webp" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.forgeph.org/how-forge-works/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/img/iccpi-logo.png" type="image/png" />
+  <link rel="preload" href="/fonts/archivo-latin-wdth.woff2" as="font" type="font/woff2" crossorigin />
+  <!--@critical-css-->
+  <script>
+  /* Swap no-js, then start the CSS splash intro once the wordmark font is ready (700ms cap). */
+  (function (d) {
+    var r = d.documentElement;
+    r.classList.replace('no-js', 'js');
+    try { if (sessionStorage.getItem('forge:splash-seen') === '1') r.classList.add('splash-repeat'); } catch (e) {}
+    var go = function () {
+      if (r.classList.contains('splash-go')) return;
+      window.__splashT0 = performance.now();
+      r.classList.add('splash-go');
+      d.dispatchEvent(new Event('splash-go'));
+    };
+    setTimeout(go, 700);
+    if (d.fonts && d.fonts.load) d.fonts.load('900 1em Archivo').then(go, go); else go();
+  })(document);
+  </script>
+</head>
+<body data-page="how">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!--@include splash-->
+  <!--@include chrome-->
+
+  <main id="main">
+    <section class="sec sec--pagehead" data-section="pagehead" aria-labelledby="pagehead-title">
+      <div class="wrap">
+        <a class="pagehead__back" href="/">FORGE PH 2027</a>
+        <p class="label pagehead__eyebrow">The operating model</p>
+        <h1 class="h-display pagehead__title" id="pagehead-title">
+        <span class="line"><span>How FORGE</span></span>
+        <span class="line"><span><em>works.</em></span></span>
+        </h1>
+        <p class="lead pagehead__lead">The FORGE operating model, from recruiting potential to converting outcomes.</p>
+      <div class="pagehead__ctas"><a class="btn" href="/programme/">Explore the programme</a></div>
+      </div>
+    </section>
+    <!--@include process-->
+  </main>
+
+  <!--@include footer-->
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

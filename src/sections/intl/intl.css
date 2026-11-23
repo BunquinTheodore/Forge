@@ -1,0 +1,56 @@
+/* INTL: the Italy-Philippines corridor graphic and the four international themes. Scoped under .sec--intl */
+.sec--intl .intl__hero { display: grid; gap: clamp(32px, 6vw, 64px); align-items: center; }
+.sec--intl .intl__title { margin-top: 18px; font-size: clamp(2.2rem, 1.1rem + 4.6vw, 5rem); }
+.sec--intl .intl__lead { margin-top: 24px; max-width: 46ch; }
+
+.sec--intl .intl__map { position: relative; margin: 0; width: 100%; aspect-ratio: 400 / 240; }
+.sec--intl .intl__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sec--intl .intl__arc { fill: none; stroke: var(--line-strong); stroke-width: 1.2; stroke-dasharray: 2 5; }
+.sec--intl .intl__arc--glow { stroke: var(--ember-hot); stroke-width: 1.8; stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 4px var(--ember)); transition: stroke-dashoffset 2s var(--ease-out); }
+.sec--intl .intl__map.is-in .intl__arc--glow { stroke-dashoffset: 0; }
+.sec--intl .intl__end { fill: var(--ember-glow); stroke: var(--ember-hot); stroke-width: 2; }
+.sec--intl .intl__pulse { fill: none; stroke: var(--ember); stroke-width: 1.2; transform-box: fill-box; transform-origin: center; animation: intl-pulse 3s ease-out infinite; }
+.sec--intl .intl__pulse--b { animation-delay: 1.5s; }
+@keyframes intl-pulse { from { transform: scale(1); opacity: 0.9; } to { transform: scale(4.5); opacity: 0; } }
+.sec--intl .intl__spark { fill: var(--cream); filter: drop-shadow(0 0 6px var(--ember-hot)); }
+.sec--intl .intl__tag {
+  position: absolute; top: 72%; transform: translateX(-50%); padding-top: 14px;
+  font-size: var(--fs-small); font-weight: 750; font-stretch: 112%; letter-spacing: 0.16em; text-transform: uppercase;
+}
+.sec--intl .intl__tag--a { left: 11%; }
+.sec--intl .intl__tag--b { left: 89%; }
+.sec--intl .intl__mid {
+  position: absolute; left: 50%; top: 56%; transform: translateX(-50%); width: 60%; text-align: center;
+  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--fog);
+}
+
+.sec--intl .intl__grid { list-style: none; margin: clamp(48px, 8vw, 96px) 0 0; padding: 0; display: grid; gap: 14px; }
+.sec--intl .intl__card {
+  padding: clamp(22px, 2.6vw, 34px); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  background: linear-gradient(165deg, rgba(17, 37, 58, 0.6), rgba(8, 11, 14, 0.82));
+  transition: border-color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+}
+.sec--intl .intl__card:hover { border-color: var(--line-ember); transform: translateY(-4px); }
+.sec--intl .intl__card--next { border-color: var(--line-ember); background: linear-gradient(160deg, rgba(168, 52, 15, 0.3), rgba(8, 11, 14, 0.82)); }
+.sec--intl .intl__n { font-size: var(--fs-small); letter-spacing: 0.12em; color: var(--ember); }
+.sec--intl .intl__k { margin-top: 12px; font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.12; letter-spacing: -0.015em; }
+.sec--intl .intl__p { margin-top: 12px; color: var(--fog); font-size: var(--fs-small); line-height: 1.6; }
+.sec--intl .intl__foot { margin-top: clamp(32px, 5vw, 56px); display: flex; flex-wrap: wrap; gap: 12px; }
+
+@media (max-width: 599px) {
+  .sec--intl .intl__tag { font-size: var(--fs-micro); letter-spacing: 0.1em; }
+  .sec--intl .intl__tag--a { left: 0; transform: none; }
+  .sec--intl .intl__tag--b { left: auto; right: 0; transform: none; }
+}
+@media (min-width: 760px) {
+  .sec--intl .intl__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 24px); }
+}
+@media (min-width: 960px) {
+  .sec--intl .intl__hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .sec--intl .intl__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sec--intl .intl__pulse { animation: none; opacity: 0; }
+  .sec--intl .intl__spark { display: none; }
+  .sec--intl .intl__arc--glow { stroke-dashoffset: 0; transition: none; }
+}

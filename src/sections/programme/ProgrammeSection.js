@@ -1,6 +1,5 @@
 import { BaseSection, gsap, ScrollTrigger } from '../../core/BaseSection.js';
 import { AgendaClock } from './AgendaClock.js';
-import { WorkshopLoop } from './WorkshopLoop.js';
 import { SplitFlap } from './SplitFlap.js';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -9,7 +8,7 @@ const DIAL_TICKS = 120;
 /**
  * PROGRAMME: cream paper sheet in the programme document style.
  * Entrance: the sheet is laid down (scales flat) and every time flips in like a departures board.
- * Signature: a scroll-scrubbed analog clock that walks the morning agenda; an orbiting workshop loop.
+ * Signature: a scroll-scrubbed analog clock that walks the day from 10:00 to 18:00.
  */
 export default class ProgrammeSection extends BaseSection {
   static id = 'programme';
@@ -27,7 +26,6 @@ export default class ProgrammeSection extends BaseSection {
       slots,
       this.reducedMotion,
     );
-    this.loop = new WorkshopLoop(this.$('.programme__loop'), this.reducedMotion);
     this.flaps = this.$$('[data-flap]').map((el) => new SplitFlap(el));
     this.#buildDial();
     this.clock.setActive(0, { animate: false });
@@ -99,7 +97,6 @@ export default class ProgrammeSection extends BaseSection {
       once: true,
       onEnter: () => this.#flipAll(),
     });
-    this.#loopEntrance();
   }
 
   #flipAll() {
@@ -108,20 +105,8 @@ export default class ProgrammeSection extends BaseSection {
     });
   }
 
-  /** Loop draws itself around once as it arrives. */
-  #loopEntrance() {
-    const track = this.$('.loop__track');
-    const steps = this.$$('.programme__step');
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: this.$('.programme__loop'), start: 'top 80%', end: 'top 35%', scrub: 0.6 },
-    });
-    tl.fromTo(track, { strokeDashoffset: 754 }, { strokeDashoffset: 0, ease: 'none', duration: 1 }, 0)
-      .fromTo(steps, { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, stagger: 0.18, duration: 0.3, ease: 'back.out(2)' }, 0.1);
-  }
-
   update(dt) {
     this.clock.update(dt);
-    this.loop.update(dt);
   }
 
   destroy() {

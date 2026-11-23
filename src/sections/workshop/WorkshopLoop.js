@@ -10,7 +10,7 @@ export class WorkshopLoop {
   constructor(root, reduced) {
     this.reduced = reduced;
     this.orbit = root.querySelector('.loop__orbit');
-    this.steps = Array.from(root.querySelectorAll('.programme__step'));
+    this.steps = Array.from(root.querySelectorAll('.wk__step'));
     this.angle = 0;
     this.active = -1;
     this.#setActive(0);

@@ -3,7 +3,7 @@ import { SplitFlap } from './SplitFlap.js';
 const NS = 'http://www.w3.org/2000/svg';
 const C = 100;
 const FACE_R = 90;
-const END_OF_MORNING = 725; // 12:05, closing the last 40 minute slot
+const DAY_END = 1095;     // 18:15, closes the last slot
 const FOLLOW = 5;
 
 const el = (name, attrs, parent) => {
@@ -43,17 +43,20 @@ export class AgendaClock {
   #build() {
     const face = el('g', { class: 'clock__face' }, this.svg);
     el('circle', { cx: C, cy: C, r: FACE_R, class: 'clock__rim' }, face);
-    const [sx, sy] = polar(hourAngle(this.slots[0].min), FACE_R - 13);
-    const [ex, ey] = polar(hourAngle(END_OF_MORNING), FACE_R - 13);
-    el('path', { d: `M${sx} ${sy}A${FACE_R - 13} ${FACE_R - 13} 0 0 1 ${ex} ${ey}`, class: 'clock__morning' }, face);
+    const startDeg = hourAngle(this.slots[0].min);
+    const endDeg = hourAngle(DAY_END);
+    const large = (endDeg - startDeg + 360) % 360 > 180 ? 1 : 0;
+    const [sx, sy] = polar(startDeg, FACE_R - 13);
+    const [ex, ey] = polar(endDeg, FACE_R - 13);
+    el('path', { d: `M${sx} ${sy}A${FACE_R - 13} ${FACE_R - 13} 0 ${large} 1 ${ex} ${ey}`, class: 'clock__morning' }, face);
     for (let i = 0; i < 60; i += 1) {
       const hour = i % 5 === 0;
       const [x1, y1] = polar(i * 6, FACE_R - (hour ? 9 : 4));
       const [x2, y2] = polar(i * 6, FACE_R - 1);
       el('line', { x1, y1, x2, y2, class: hour ? 'clock__tick clock__tick--h' : 'clock__tick' }, face);
     }
-    [9, 10, 11, 12].forEach((h) => {
-      const [x, y] = polar(h * 30, FACE_R - 24);
+    [12, 3, 6, 9].forEach((h) => {
+      const [x, y] = polar(h * 30, FACE_R - 27);
       const t = el('text', { x, y: y + 4, 'text-anchor': 'middle', class: 'clock__num' }, face);
       t.textContent = String(h);
     });
@@ -72,7 +75,7 @@ export class AgendaClock {
     const x = Math.min(n - 0.0001, Math.max(0, p * n));
     const i = Math.floor(x);
     const from = this.slots[i].min;
-    const to = i + 1 < n ? this.slots[i + 1].min : END_OF_MORNING;
+    const to = i + 1 < n ? this.slots[i + 1].min : DAY_END;
     // Rest on the slot for the first half of its band, then travel.
     const travel = smooth(Math.min(1, Math.max(0, (x - i - 0.5) / 0.5)));
     this.target = this.reduced ? from : from + (to - from) * travel;

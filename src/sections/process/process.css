@@ -122,11 +122,18 @@ html.no-js .sec--process .step .step__p { opacity: 1; }
 }
 .sec--process .arch__flow.is-linked .plate::after,
 .sec--process.is-in .plate::after { transform: none; }
-@media (min-width: 820px) {
-  .sec--process .arch__flow { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(36px, 5vw, 80px); align-items: stretch; }
+@media (min-width: 640px) and (max-width: 1099px) {
+  .sec--process .arch__flow { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .sec--process .plate:not(:last-child)::after { display: none; }
+}
+@media (min-width: 1100px) {
+  .sec--process .arch__flow { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(28px, 3.6vw, 64px); align-items: stretch; }
   .sec--process .plate:not(:last-child)::after {
     left: 100%; top: 50%; bottom: auto; width: clamp(36px, 5vw, 80px); height: 1px; transform: scaleX(0); transform-origin: 0 50%;
   }
+}
+@media (min-width: 820px) {
+  .sec--process .plate__k { overflow-wrap: anywhere; }
 }
 
 .sec--process .hypo {

@@ -1,0 +1,18 @@
+/* PAGEHEAD: title block shared by every inner page. Markup lives in each page. Scoped under .sec--pagehead */
+.sec.sec--pagehead { padding: calc(var(--bar-h, 84px) + clamp(40px, 9vh, 120px)) 0 clamp(40px, 7vh, 88px); }
+.sec--pagehead .pagehead__back {
+  display: flex; width: fit-content; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: var(--fog);
+  font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-label); text-transform: uppercase; transition: color var(--dur-fast);
+}
+.sec--pagehead .pagehead__back::before { content: '\2190'; color: var(--ember); letter-spacing: 0; }
+.sec--pagehead .pagehead__back:hover,
+.sec--pagehead .pagehead__back:focus-visible { color: var(--cream); }
+.sec--pagehead .pagehead__eyebrow { display: block; margin-top: clamp(10px, 1.6vw, 18px); }
+.sec--pagehead .pagehead__title { margin-top: 16px; font-size: clamp(2.5rem, 1rem + 5.4vw, 6rem); line-height: 0.98; }
+.sec--pagehead .pagehead__lead { margin-top: clamp(20px, 3vw, 32px); max-width: 52ch; }
+.sec--pagehead .pagehead__facts {
+  list-style: none; margin: clamp(22px, 3vw, 36px) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 0;
+  font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--cream);
+}
+.sec--pagehead .pagehead__facts li + li::before { content: ''; display: inline-block; width: 1px; height: 0.95em; margin: 0 1.1em; vertical-align: -0.12em; background: var(--line-strong); }
+.sec--pagehead .pagehead__ctas { margin-top: clamp(24px, 3.4vw, 40px); display: flex; flex-wrap: wrap; gap: 12px; }
