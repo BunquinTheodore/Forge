@@ -30,7 +30,8 @@ export class Device {
 
   /** Device pixel ratio cap for the GL canvas at the current tier. */
   get maxDpr() {
-    return { low: 1, mid: 1.25, high: 2 }[this.tier];
+    // 'high' stops at 1.5: a 2x canvas is four times the pixels to shade every frame, for no visible gain on glow and particles.
+    return { low: 1, mid: 1.25, high: 1.5 }[this.tier];
   }
 
   /** Multiplier for particle counts and geometry detail: 0.35 / 0.6 / 1. */

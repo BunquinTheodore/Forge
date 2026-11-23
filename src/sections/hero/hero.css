@@ -60,8 +60,8 @@
   font-weight: 850; font-stretch: 118%; line-height: 1; letter-spacing: 0.01em; color: var(--cream);
   font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3.4rem);
 }
-.sec--hero .hero__cd-n.is-tick { animation: hero-cd-tick 0.5s var(--ease-out); }
-@keyframes hero-cd-tick { from { color: var(--ember-glow); text-shadow: 0 0 18px rgba(255, 122, 47, 0.65); } to { color: var(--cream); text-shadow: none; } }
+.sec--hero .hero__cd-n.is-tick { animation: hero-cd-tick 0.45s var(--ease-out); }
+@keyframes hero-cd-tick { from { opacity: 0.45; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 .sec--hero .hero__cd-u { font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--fog); }
 .sec--hero .hero__cd-sep { font-size: clamp(1.5rem, 1rem + 1.8vw, 2.6rem); font-weight: 300; line-height: 1.12; color: var(--ember); opacity: 0.8; }
 

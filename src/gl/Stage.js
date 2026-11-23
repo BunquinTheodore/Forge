@@ -5,8 +5,8 @@ import { ScrollTrigger } from '../core/Scroll.js';
 
 const CAMERA_Z = 10;
 const FOV = 35;
-const SLOW_FRAME = 1 / 40;      // frames slower than this count against the governor
-const GOVERNOR_WINDOW = 60;     // consecutive slow frames before downgrading quality
+const SLOW_FRAME = 1 / 42;      // frames slower than this count against the governor
+const GOVERNOR_WINDOW = 40;     // consecutive slow frames before downgrading quality
 const PRELOAD_MARGIN = 2.0;     // queue an act when its section is within two viewports
 const WARMUP_MARGIN = 1.0;      // acts awaited by warmup(): global ones and those within one viewport
 const IDLE_TIMEOUT = 300;       // ms: max wait for an idle slot before loading the next queued act
