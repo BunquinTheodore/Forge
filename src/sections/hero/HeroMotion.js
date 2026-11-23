@@ -17,9 +17,11 @@ export class HeroMotion {
     this.sub = section.$('.hero__sub');
     this.mark = section.$('.hero__mark');
     this.supporting = [
-      section.$('.hero__presents'),
+      section.$('.hero__countdown'),
+      ...section.$$('.hero__sp'),
       ...section.$$('.hero__pillars li'),
       ...section.$$('.hero__tag-line'),
+      section.$('.hero__lede'),
       section.$('.hero__ctas'),
       section.$('.hero__strip'),
     ].filter(Boolean);
@@ -79,8 +81,8 @@ export class HeroMotion {
       tl.to(this.mark, { scale: 1.08, yPercent: -8, duration: 1 }, 0)
         .to(this.ph, { xPercent: 120, yPercent: -40, duration: 1 }, 0)
         .to(this.section.$('.hero__sub'), { yPercent: -60, autoAlpha: 0, duration: 0.55 }, 0.3)
-        .to(this.section.$$('.hero__pillars, .hero__presents'), { y: -40, autoAlpha: 0, duration: 0.5, stagger: 0.05 }, 0.25)
-        .to(this.section.$$('.hero__tag, .hero__ctas'), { y: -60, autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.4)
+        .to(this.section.$$('.hero__pillars, .hero__top'), { y: -40, autoAlpha: 0, duration: 0.5, stagger: 0.05 }, 0.25)
+        .to(this.section.$$('.hero__tag, .hero__lede, .hero__ctas'), { y: -60, autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.4)
         .to(this.section.$('.hero__base'), { y: 40, autoAlpha: 0, duration: 0.45 }, 0.5);
     });
     this.mm = mm;

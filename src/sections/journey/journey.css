@@ -1,0 +1,46 @@
+/* JOURNEY: four stages on a molten line. Vertical on phones, horizontal from 900px. Scoped under .sec--journey */
+.sec--journey .journey__title { margin-top: 18px; font-size: clamp(2.2rem, 1.1rem + 4.6vw, 5rem); }
+.sec--journey .journey__track { --p: 0; position: relative; margin-top: clamp(40px, 7vw, 80px); padding-left: 38px; }
+
+.sec--journey .journey__rail { position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; background: var(--line-strong); }
+.sec--journey .journey__fill {
+  position: absolute; inset: 0; transform-origin: 50% 0; transform: scaleY(var(--p));
+  background: linear-gradient(180deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow));
+  box-shadow: 0 0 10px rgba(232, 91, 34, 0.7), 0 0 26px rgba(255, 122, 47, 0.35);
+}
+.sec--journey .journey__stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.sec--journey .stage { position: relative; }
+.sec--journey .stage__card {
+  position: relative; display: flex; flex-direction: column; gap: 8px; height: 100%;
+  padding: clamp(18px, 2.4vw, 28px); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  background: linear-gradient(165deg, rgba(17, 37, 58, 0.62), rgba(8, 11, 14, 0.78)); color: inherit; text-decoration: none; overflow: hidden;
+  transition: border-color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
+}
+.sec--journey .stage__card::after {
+  content: ''; position: absolute; inset: auto 0 0 0; height: 2px; transform: scaleX(0); transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--ember-deep), var(--ember), var(--ember-glow)); transition: transform 0.6s var(--ease-out);
+}
+.sec--journey .stage__card:hover,
+.sec--journey .stage__card:focus-visible { border-color: var(--line-ember); transform: translateY(-4px); }
+.sec--journey .stage__card:hover::after,
+.sec--journey .stage__card:focus-visible::after { transform: scaleX(1); }
+.sec--journey .stage__node {
+  position: absolute; left: -35px; top: 26px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--ink); border: 2px solid var(--steel-2); transition: background 0.5s var(--ease-out), border-color 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+}
+.sec--journey .stage.is-lit .stage__node { background: var(--ember-glow); border-color: var(--ember-hot); box-shadow: 0 0 0 4px rgba(232, 91, 34, 0.2), 0 0 16px var(--ember-hot); }
+.sec--journey .stage__n { font-size: var(--fs-small); letter-spacing: 0.12em; color: var(--ember); }
+.sec--journey .stage__k { font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.1; letter-spacing: -0.015em; }
+.sec--journey .stage__p { color: var(--fog); font-size: var(--fs-small); line-height: 1.5; flex: 1; }
+.sec--journey .stage__more { margin-top: 8px; font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--cream); }
+.sec--journey .stage__more::after { content: ' \2192'; color: var(--ember); }
+.sec--journey .journey__foot { margin-top: clamp(32px, 5vw, 56px); }
+
+@media (min-width: 900px) {
+  .sec--journey .journey__track { padding: 40px 0 0; }
+  .sec--journey .journey__rail { left: 0; right: 0; top: 14px; bottom: auto; width: auto; height: 2px; }
+  .sec--journey .journey__fill { transform-origin: 0 50%; transform: scaleX(var(--p)); background: linear-gradient(90deg, var(--ember-deep), var(--ember) 60%, var(--ember-glow)); }
+  .sec--journey .journey__stages { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 24px); }
+  .sec--journey .stage__node { left: 22px; top: -33px; }
+  .sec--journey .stage__card { padding-top: 26px; }
+}

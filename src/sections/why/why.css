@@ -1,0 +1,49 @@
+/* WHY FORGE: copy beside a live connection map. Scoped under .sec--why */
+.sec--why .why__wrap { display: grid; gap: clamp(40px, 7vw, 72px); align-items: center; }
+.sec--why .why__title { margin-top: 18px; font-size: clamp(2.4rem, 1.2rem + 5vw, 5.4rem); }
+.sec--why .why__lead { margin-top: 24px; }
+.sec--why .why__text { margin-top: 18px; max-width: 52ch; color: var(--fog); }
+.sec--why .why__cta { margin-top: 32px; }
+
+.sec--why .why__map { position: relative; margin: 0; width: min(100%, 560px); aspect-ratio: 1; justify-self: center; }
+.sec--why .why__lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sec--why .why__line { stroke: var(--line-strong); stroke-width: 0.35; transition: stroke 0.4s var(--ease-out), stroke-width 0.4s var(--ease-out); }
+.sec--why .why__line.is-on { stroke: var(--ember-hot); stroke-width: 0.7; filter: drop-shadow(0 0 1.2px var(--ember)); }
+.sec--why .why__ring { fill: none; stroke: var(--line-ember); stroke-width: 0.3; }
+.sec--why .why__ring--outer { stroke: var(--line); stroke-dasharray: 0.8 1.6; transform-origin: 50% 50%; animation: why-spin 60s linear infinite; }
+@keyframes why-spin { to { transform: rotate(360deg); } }
+
+.sec--why .why__core {
+  position: absolute; left: 50%; top: 50%; width: 22%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  display: flex; align-items: center; justify-content: center; gap: 2px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(232, 91, 34, 0.32), rgba(8, 11, 14, 0.92) 78%); box-shadow: 0 0 38px rgba(232, 91, 34, 0.25);
+}
+.sec--why .why__core-k { font-weight: 900; font-stretch: 125%; font-size: clamp(0.8rem, 0.5rem + 1.5vw, 1.5rem); letter-spacing: 0.02em; }
+.sec--why .why__core-ph { align-self: flex-start; margin-top: 30%; font-style: italic; font-weight: 800; font-size: 0.6rem; color: var(--ember); }
+
+.sec--why .why__nodes { list-style: none; margin: 0; padding: 0; }
+.sec--why .why__node {
+  position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px; width: 34%; text-align: center; cursor: default; outline-offset: 6px;
+}
+.sec--why .why__dot {
+  width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--steel-2); background: var(--ink);
+  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+.sec--why .why__node-k {
+  font-size: var(--fs-small); font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.25; color: var(--fog);
+  transition: color 0.4s var(--ease-out);
+}
+.sec--why .why__node.is-on .why__dot { background: var(--ember-glow); border-color: var(--ember-hot); transform: scale(1.35); box-shadow: 0 0 0 4px rgba(232, 91, 34, 0.22), 0 0 20px var(--ember-hot); }
+.sec--why .why__node.is-on .why__node-k { color: var(--cream); }
+.sec--why .why__cap {
+  position: absolute; left: 50%; bottom: -4%; transform: translateX(-50%); width: 80%; text-align: center;
+  font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--mute);
+}
+
+@media (min-width: 900px) {
+  .sec--why .why__wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sec--why .why__ring--outer { animation: none; }
+}
