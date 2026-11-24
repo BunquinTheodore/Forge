@@ -133,6 +133,8 @@ function devApi() {
 /** Every page of the site. Each folder is a static page (clean URL with a trailing slash). */
 const PAGES = [
   'index.html',
+  '404.html',
+  'privacy/index.html',
   'programme/index.html',
   'how-forge-works/index.html',
   'workshop-fd90/index.html',

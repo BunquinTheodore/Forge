@@ -1,0 +1,11 @@
+/* LEGAL: plain reading column for the privacy notice. Scoped under .sec--legal */
+.sec.sec--legal { padding-top: 0; }
+.sec--legal .legal__wrap > * { max-width: 820px; }
+.sec--legal .legal__updated { color: var(--mute); font-size: var(--fs-small); letter-spacing: var(--track-wide); text-transform: uppercase; }
+.sec--legal h2 { margin-top: clamp(32px, 5vw, 52px); font-family: var(--font-serif); font-weight: 400; font-size: var(--fs-h3); line-height: 1.15; letter-spacing: -0.015em; }
+.sec--legal p, .sec--legal li { margin-top: 12px; color: var(--bone); font-size: var(--fs-body); line-height: 1.65; }
+.sec--legal ul { margin: 6px 0 0; padding-left: 1.3em; }
+.sec--legal li { margin-top: 8px; }
+.sec--legal strong { color: var(--cream); font-weight: 650; }
+.sec--legal a { color: var(--cream); text-underline-offset: 4px; overflow-wrap: anywhere; }
+.sec--legal a:hover { color: var(--ember-glow); }

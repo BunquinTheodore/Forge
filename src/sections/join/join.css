@@ -45,6 +45,7 @@
 .sec--join .join__member { padding: clamp(20px, 2.4vw, 32px); border-radius: var(--radius); }
 .sec--join .join__contact { border: 1px solid var(--line-ember); background: rgba(8, 11, 14, 0.55); }
 .sec--join .join__member { border: 1px dashed var(--line-strong); }
+.sec--join .join__help { margin-top: 12px; color: var(--fog); font-size: var(--fs-small); max-width: 44ch; }
 .sec--join .join__mail { margin-top: 12px; font-family: var(--font-serif); font-size: var(--fs-h3); line-height: 1.2; overflow-wrap: anywhere; }
 .sec--join .join__mail a { text-decoration: none; background: linear-gradient(var(--ember), var(--ember)) 0 100% / 0 1px no-repeat; transition: background-size 0.5s var(--ease-out), color 0.3s; }
 .sec--join .join__mail a:hover,

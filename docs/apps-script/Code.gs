@@ -54,7 +54,13 @@ function doPost(e) {
     lock.releaseLock();
   }
 
-  notify(record);
+  // The row is already saved. An email problem must never turn a saved registration into an error for the visitor.
+  try {
+    notify(record);
+    sendConfirmation(record);
+  } catch (err) {
+    console.error('email failed: ' + err);
+  }
   return json({ ok: true });
 }
 
@@ -75,18 +81,21 @@ function tabFor(form, columns) {
   return sheet;
 }
 
-var MAX_EMAILS_PER_DAY = 100; // protects the mail quota if the form is ever flooded; rows are still saved
+// Google limits how many recipients a script may email per day (100 for a free Gmail account, 1500 for Workspace).
+// The team notification has priority: confirmations stop earlier so the team always hears about a registration.
+var NOTIFY_LIMIT = 90;
+var CONFIRM_LIMIT = 60;
 
-/** Counts today's notification emails in a script property, under the lock, so concurrent submissions cannot under-count. */
-function reserveEmail() {
+/** Counts today's recipients in a script property, under the lock, so concurrent submissions cannot under-count. */
+function reserveEmail(recipients, limit) {
   var lock = LockService.getScriptLock();
   lock.waitLock(5000);
   try {
     var props = PropertiesService.getScriptProperties();
     var key = 'emails-' + Utilities.formatDate(new Date(), 'Asia/Manila', 'yyyyMMdd');
     var sent = Number(props.getProperty(key) || 0);
-    if (sent >= MAX_EMAILS_PER_DAY) return false;
-    props.setProperty(key, String(sent + 1));
+    if (sent + recipients > limit) return false;
+    props.setProperty(key, String(sent + recipients));
     return true;
   } finally {
     lock.releaseLock();
@@ -96,11 +105,36 @@ function reserveEmail() {
 function notify(record) {
   var to = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAILS');
   if (!to) return;
-  if (!reserveEmail()) return;
+  if (!reserveEmail(to.split(',').length, NOTIFY_LIMIT)) return;
   var lines = ['New FORGE PH 2027 ' + record.form + ' submission', 'Reference: ' + record.reference, 'Name: ' + record.fullName, 'Organization: ' + record.organization, 'Email: ' + record.email, '', 'Open the Google Sheet to see the full details.'];
   try {
     MailApp.sendEmail({ to: to, subject: 'FORGE PH 2027: new ' + record.form + ' submission (' + record.reference + ')', body: lines.join('\n') });
   } catch (err) {
     console.error('notify failed: ' + err);
   }
+}
+
+/** Confirmation to the person who registered (switch off with the script property CONFIRMATION_EMAIL = off). */
+function sendConfirmation(record) {
+  var props = PropertiesService.getScriptProperties();
+  if (props.getProperty('CONFIRMATION_EMAIL') === 'off') return;
+  var to = String(record.email || '');
+  if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]{2,}$/.test(to)) return;
+  if (!reserveEmail(1, CONFIRM_LIMIT)) return;
+  var what = { conference: 'conference registration', booth: 'booth application', workshop: 'workshop and FD90 interest' }[record.form] || 'registration';
+  var lines = [
+    'Hello ' + String(record.fullName || '').split(' ')[0] + ',',
+    '',
+    'Thank you. We have received your ' + what + ' for FORGE PH 2027.',
+    'Your reference: ' + record.reference,
+    '',
+    'When: 27 January 2027, 10:00 AM to 6:00 PM',
+    'Where: WhiteSpace, Makati, Philippines',
+    '',
+    'The ICCPI team will write to you with the next steps. If you have a question, reply to this email or write to info@iccpi.org.ph or f.calabretta@iccpi.org.ph.',
+    '',
+    'FORGE PH 2027, presented by the Italian Chamber of Commerce in the Philippines',
+    'https://www.forgeph.org'
+  ];
+  MailApp.sendEmail({ to: to, replyTo: 'info@iccpi.org.ph', name: 'FORGE PH 2027', subject: 'FORGE PH 2027: we received your ' + what + ' (' + record.reference + ')', body: lines.join('\n') });
 }

@@ -6,10 +6,10 @@ import { buildFields, readValues } from './FormBuilder.js';
 const ENDPOINT = '/api/register';
 const FALLBACK_EMAILS = 'info@iccpi.org.ph and f.calabretta@iccpi.org.ph';
 const MESSAGES = {
-  not_configured: `Online registration is being finalised. Please email ${FALLBACK_EMAILS} with your details and we will register you.`,
+  not_configured: `Registration is temporarily unavailable. Please try again in a few minutes. If it keeps happening, contact ${FALLBACK_EMAILS}.`,
   rate: 'Too many attempts. Please wait a few minutes and try again.',
-  origin: `This page is not allowed to send registrations. Please email ${FALLBACK_EMAILS}.`,
-  default: `We could not send your registration. Please try again, or email ${FALLBACK_EMAILS}.`,
+  origin: `Registration could not be sent from this page. Please try again from www.forgeph.org, or contact ${FALLBACK_EMAILS}.`,
+  default: `We could not send your registration. Your answers are still here: please try again. If it keeps happening, contact ${FALLBACK_EMAILS}.`,
 };
 
 /**

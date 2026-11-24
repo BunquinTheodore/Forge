@@ -34,13 +34,10 @@
   text-align: center;
 }
 
-.splash__presents { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.splash__logo-wrap {
-  /* The logo ships on pure black. The wrap gives the screen blend an ink backdrop inside the
-     stage's isolated stacking context, so the black box melts into the overlay. */
-  display: block; background: var(--ink); isolation: isolate; line-height: 0;
-}
-.splash__logo { display: block; width: clamp(40px, 5vw, 56px); height: auto; mix-blend-mode: screen; }
+.splash__presents { display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vh, 16px); }
+/* The white logo has a transparent background, so it sits straight on the overlay */
+.splash__logo-wrap { display: block; line-height: 0; }
+.splash__logo { display: block; width: auto; height: clamp(104px, 21vh, 190px); }
 .splash__by {
   font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label);
   text-transform: uppercase; color: var(--fog);

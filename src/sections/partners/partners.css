@@ -8,7 +8,7 @@
 .sec--partners .pcard--main { border-color: var(--line-ember); background: linear-gradient(160deg, rgba(168, 52, 15, 0.32), rgba(8, 11, 14, 0.84)); }
 .sec--partners .pcard__k { font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ember); }
 .sec--partners .pcard__body { margin-top: clamp(18px, 2.4vw, 28px); display: flex; align-items: center; gap: clamp(16px, 2vw, 24px); }
-.sec--partners .pcard__logo { flex: 0 0 auto; width: clamp(64px, 7vw, 92px); height: auto; box-sizing: content-box; padding: 6px; background: var(--ink-0); border-radius: var(--radius-sm); box-shadow: 0 0 0 1px var(--line); }
+.sec--partners .pcard__logo { flex: 0 0 auto; width: clamp(120px, 13vw, 190px); height: auto; }
 .sec--partners .pcard__n { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.7rem, 1.1rem + 2vw, 2.8rem); line-height: 1.05; letter-spacing: -0.02em; }
 .sec--partners .pcard__d { margin-top: 8px; color: var(--bone); max-width: 36ch; }
 .sec--partners .pcard__tag { margin-top: 14px; display: inline-block; padding: 3px 10px; border: 1px dashed var(--line-ember); border-radius: 999px; font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--ember-glow); }

@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ICCPI//FORGE PH 2027//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:forge-ph-2027@forgeph.org
+DTSTAMP:20261123T000000Z
+DTSTART:20270127T020000Z
+DTEND:20270127T100000Z
+SUMMARY:FORGE PH 2027. The International Cross-Industry Startup Forum
+LOCATION:WhiteSpace\, Makati\, Philippines
+DESCRIPTION:Presented by the Italian Chamber of Commerce in the Philippines (ICCPI). Programme and registration: https://www.forgeph.org/
+URL:https://www.forgeph.org/
+END:VEVENT
+END:VCALENDAR

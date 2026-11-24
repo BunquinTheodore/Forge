@@ -15,9 +15,9 @@
 
 /* Presenter and tagline */
 .sec--footer .footer__top { display: grid; gap: clamp(32px, 5vw, 64px); align-items: end; }
-.sec--footer .footer__presenter { display: flex; align-items: center; gap: 18px; max-width: 34rem; }
-.sec--footer .footer__logo { width: clamp(64px, 7vw, 92px); height: auto; mix-blend-mode: screen; flex: 0 0 auto; }
-.sec--footer .footer__presented { color: var(--fog); font-size: var(--fs-small); line-height: 1.5; max-width: 30ch; }
+.sec--footer .footer__presenter { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(12px, 1.6vw, 20px); }
+.sec--footer .footer__logo { width: clamp(140px, 15vw, 230px); height: auto; flex: 0 0 auto; }
+.sec--footer .footer__presented { color: var(--ember); font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-label); text-transform: uppercase; }
 .sec--footer .footer__tag {
   font-family: var(--font-serif); font-weight: 400; font-size: clamp(2rem, 1.2rem + 3.4vw, 4.4rem);
   line-height: 1.02; letter-spacing: -0.02em; color: var(--cream);
@@ -114,3 +114,5 @@
   .sec--footer .footer__l { transform: none !important; }
 }
 .sec--footer .footer__fact dd a { color: inherit; text-underline-offset: 4px; }
+.sec--footer .footer__fact dd a[download], .sec--footer .footer__fact dd a[target] { display: inline-block; margin-left: 12px; color: var(--ember-glow); font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; }
+.sec--footer .footer__privacy { color: inherit; text-underline-offset: 4px; margin-left: 8px; }

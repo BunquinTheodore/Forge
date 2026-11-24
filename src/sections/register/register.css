@@ -68,6 +68,7 @@
 .sec--register .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .sec--register .register__actions { margin-top: 8px; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
 .sec--register .register__submit:disabled { opacity: 0.6; cursor: progress; }
+.sec--register .register__fine a { color: var(--cream); text-underline-offset: 4px; }
 .sec--register .register__fine { max-width: 60ch; color: var(--mute); font-size: var(--fs-small); line-height: 1.5; }
 .sec--register .register__nojs { padding: 14px 18px; border: 1px solid var(--line-ember); border-radius: var(--radius-sm); }
 
