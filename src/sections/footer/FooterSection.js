@@ -87,6 +87,10 @@ export default class FooterSection extends BaseSection {
     });
   }
 
+  onEnter() {
+    this.wordmark.wake();
+  }
+
   update(dt) {
     this.wordmark.update(dt);
   }
