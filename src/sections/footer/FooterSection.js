@@ -61,10 +61,12 @@ export default class FooterSection extends BaseSection {
 
   #forgeLetters() {
     const mark = this.$('.footer__mark');
-    gsap.fromTo(this.wordmark.letters, { yPercent: 70, rotateX: -60, autoAlpha: 0.15 }, {
+    // Rise and fade only: a 3D flip (perspective + rotateX) put five giant gradient letters on their own
+    // layers and made scrolling into the footer drop frames.
+    gsap.fromTo(this.wordmark.letters, { yPercent: 70, autoAlpha: 0.15 }, {
       yPercent: 0,
-      rotateX: 0,
       autoAlpha: 1,
+      force3D: false,
       ease: 'power2.out',
       stagger: 0.12,
       scrollTrigger: { trigger: mark, start: 'top bottom', end: 'bottom bottom', scrub: 0.8 },

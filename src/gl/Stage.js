@@ -11,6 +11,8 @@ const PRELOAD_MARGIN = 2.0;     // queue an act when its section is within two v
 const WARMUP_MARGIN = 1.0;      // acts awaited by warmup(): global ones and those within one viewport
 const IDLE_TIMEOUT = 300;       // ms: max wait for an idle slot before loading the next queued act
 const COMPILE_TIMEOUT = 4000;   // ms: never let a shader compile wait hold an act back longer
+const CALM_STEP = 1 / 30;       // while only the slow ambient dust is on screen it is drawn about 30 times a second
+const CALM_SLACK = 0.9;         // draw once 90% of a step has passed, so 60 and 144 Hz screens both land near 30 fps
 
 const idle = (timeout) => new Promise((r) => {
   if (window.requestIdleCallback) window.requestIdleCallback(() => r(), { timeout });
@@ -35,6 +37,8 @@ export class Stage {
     this.velocity = 0;
     this.time = 0;
     this.slowFrames = 0;
+    this.calm = false;          // true while no section act (hero ribbon, process) is on screen
+    this.sinceDraw = 0;
     this.slots = [];
     this.queue = [];
     this.pumping = false;
@@ -209,10 +213,24 @@ export class Stage {
     for (const s of this.slots) s.act?.onTierChange(tier);
   }
 
-  render(dt) {
+  /**
+   * Calm mode: with only the slow ambient dust on screen (no hero ribbon or process act), the canvas is
+   * redrawn about 30 times a second instead of every frame. A frame that skips the draw leaves the
+   * previous image on screen. The quality governor only judges frames that draw, so skipped frames
+   * cannot hide a slow GPU.
+   */
+  render(frameDt) {
     if (document.hidden) return;
+
+    let dt = frameDt;
+    if (this.calm) {
+      this.sinceDraw += frameDt;
+      if (this.sinceDraw < CALM_STEP * CALM_SLACK) return;
+      dt = this.sinceDraw;
+    }
+    this.sinceDraw = 0;
+    this.#govern(frameDt);
     this.time += dt;
-    this.#govern(dt);
 
     const k = 1 - Math.exp(-dt * 6);
     this.pointer.x += (this.pointer.tx - this.pointer.x) * k;
@@ -226,6 +244,7 @@ export class Stage {
     state.scrollY = y;
     state.pageProgress = this.app.scroll.progress;
     state.tier = this.device.tier;
+    let sectionActShown = false;
     for (const s of this.slots) {
       if (!s.act && !s.loading && this.#distance(s, y) < PRELOAD_MARGIN) this.#enqueue(s);
       const act = s.act;
@@ -243,10 +262,12 @@ export class Stage {
 
       act.group.visible = s.visibility > 0;
       if (!act.group.visible) continue;
+      if (!s.global) sectionActShown = true;
       state.progress = progress;
       state.visibility = s.visibility;
       act.update(dt, this.time, state);
     }
+    this.calm = !sectionActShown;
     this.renderer.render(this.scene, this.camera);
   }
 

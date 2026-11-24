@@ -64,7 +64,7 @@
 /* Molten wordmark: outline letters, fill gradient follows the pointer */
 .sec--footer .footer__mark {
   position: relative; margin-top: clamp(56px, 9vw, 120px); padding: 0 calc(var(--gutter) * 0.5);
-  overflow: hidden; touch-action: pan-y; perspective: 900px; user-select: none; -webkit-user-select: none;
+  overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none;
 }
 .sec--footer .footer__word {
   --mx: 20%; --my: 60%; --r: 120px; --level: 0%;
