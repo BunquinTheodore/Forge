@@ -6,6 +6,10 @@
 }
 .sec--footer .footer__furnace {
   position: absolute; inset: auto -10% 0 -10%; height: 85%; pointer-events: none; transform-origin: 50% 100%;
+  /* A glow this large (about 2 megapixels of CSS pixels, more on dense screens) is scrubbed with scaleY and opacity on every scroll frame.
+     Without its own compositor layer Chrome repainted all of it each frame, which is the footer scroll lag.
+     With the hint it is painted once and only transformed and faded by the GPU. */
+  will-change: transform, opacity;
   background:
     radial-gradient(50% 60% at 50% 100%, rgba(232, 91, 34, 0.34), transparent 70%),
     radial-gradient(80% 40% at 50% 100%, rgba(168, 52, 15, 0.4), transparent 75%),
@@ -112,6 +116,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sec--footer .footer__l { transform: none !important; }
+  .sec--footer .footer__furnace { will-change: auto; } /* nothing animates it, so it needs no layer of its own */
 }
 .sec--footer .footer__fact dd a { color: inherit; text-underline-offset: 4px; }
 .sec--footer .footer__fact dd a[download], .sec--footer .footer__fact dd a[target] { display: inline-block; margin-left: 12px; color: var(--ember-glow); font-size: var(--fs-micro); letter-spacing: var(--track-wide); text-transform: uppercase; }
