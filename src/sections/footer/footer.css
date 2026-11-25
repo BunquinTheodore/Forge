@@ -16,7 +16,7 @@
 /* Presenter and tagline */
 .sec--footer .footer__top { display: grid; gap: clamp(32px, 5vw, 64px); align-items: end; }
 .sec--footer .footer__presenter { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(12px, 1.6vw, 20px); }
-.sec--footer .footer__logo { width: clamp(140px, 15vw, 230px); height: auto; flex: 0 0 auto; }
+.sec--footer .footer__logo { width: clamp(160px, 17vw, 262px); height: auto; flex: 0 0 auto; border-radius: var(--radius-sm); }
 .sec--footer .footer__presented { color: var(--ember); font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-label); text-transform: uppercase; }
 .sec--footer .footer__tag {
   font-family: var(--font-serif); font-weight: 400; font-size: clamp(2rem, 1.2rem + 3.4vw, 4.4rem);

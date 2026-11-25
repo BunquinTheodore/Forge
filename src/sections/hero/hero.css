@@ -72,12 +72,12 @@
   border: 1px solid var(--line-strong); background: rgba(8, 11, 14, 0.55);
 }
 .sec--hero .hero__sp--main { border-color: var(--line-ember); background: linear-gradient(100deg, rgba(168, 52, 15, 0.28), rgba(8, 11, 14, 0.6) 70%); }
-/* ICCPI presents: the white logo, large, on a quiet panel that matches the countdown box */
+/* ICCPI presents: the colour logo on its own white tile, large, inside a quiet panel that matches the countdown box */
 .sec--hero .hero__sp--iccpi {
   flex-direction: column; align-items: center; justify-content: center; text-align: center;
   gap: clamp(8px, 1.5svh, 14px); padding: clamp(10px, 1.7svh, 16px) clamp(20px, 2.2vw, 32px) clamp(12px, 2.1svh, 20px);
 }
-.sec--hero .hero__logo { display: block; flex: 0 0 auto; height: clamp(92px, 14svh, 188px); width: auto; }
+.sec--hero .hero__logo { display: block; flex: 0 0 auto; height: clamp(105px, 16svh, 214px); width: auto; border-radius: var(--radius-sm); }
 .sec--hero .hero__sp-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sec--hero .hero__sp-k { font-size: var(--fs-micro); font-weight: 650; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--fog); }
 .sec--hero .hero__sp--main .hero__sp-k { color: var(--ember); }
@@ -194,8 +194,8 @@
   .sec--hero .hero__countdown { align-items: flex-start; justify-content: center; }
   .sec--hero .hero__sponsors { grid-template-columns: auto; width: auto; justify-items: stretch; gap: 8px; }
   .sec--hero .hero__sp { padding: 8px 12px; }
-  .sec--hero .hero__sp--iccpi { padding: clamp(10px, 1.5svh, 16px) clamp(18px, 1.8vw, 28px) clamp(12px, 1.9svh, 18px); }
-  .sec--hero .hero__logo { height: clamp(92px, 16.5svh, 176px); }
+  .sec--hero .hero__sp--iccpi { padding: clamp(8px, 1.2svh, 13px) clamp(14px, 1.4vw, 22px) clamp(10px, 1.5svh, 15px); }
+  .sec--hero .hero__logo { height: clamp(105px, 17.5svh, 200px); }
   .sec--hero .hero__title { align-items: flex-start; margin-top: auto; }
   .sec--hero .hero__mark { font-size: min(11.5vw, 17svh, 15rem); }
   .sec--hero .hero__sub { font-size: min(2.6vw, 4.6svh, 2.6rem); }

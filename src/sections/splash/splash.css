@@ -35,9 +35,9 @@
 }
 
 .splash__presents { display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vh, 16px); }
-/* The white logo has a transparent background, so it sits straight on the overlay */
+/* The colour logo is its own white tile (the image carries the margin), so it sits straight on the overlay */
 .splash__logo-wrap { display: block; line-height: 0; }
-.splash__logo { display: block; width: auto; height: clamp(104px, 21vh, 190px); }
+.splash__logo { display: block; width: auto; height: clamp(104px, 24vh, 217px); border-radius: var(--radius-sm); }
 .splash__by {
   font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--track-label);
   text-transform: uppercase; color: var(--fog);
