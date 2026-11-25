@@ -30,6 +30,7 @@ DOC-2026_*.png the dark deck, FORGE_PH_*.png the cream programme).
 - Visual motif: molten forged-metal ribbon with ember sparks + glowing network nodes/lines (poster). Dark, cinematic,
   premium, editorial. Alternate a few cream "paper" sections (programme doc look) for rhythm.
 - Images available: `/img/poster-900.webp`, `/img/poster-1600.webp`, `/img/ribbon-1280.webp`, `/img/iccpi-logo.webp|png`.
+- Link preview (share) image: `/img/og-forge-ph-2027.jpg`, 1200x630, a baseline JPEG under 300 KB. Every page's `og:image` and `twitter:image`, and the Event JSON-LD on the home page, point at it (`ribbon-1280.webp` is no longer the share image). It shows the date, time and venue, so replace it when those change, and give the new file a new name so shared links do not keep showing the cached old card. `npm test` checks that each page's tags match the file.
 
 ## Copy rules (user's hard design preferences)
 - NO hyphens or dashes before text and no decorative leading lines before labels. Write `THESIS`, `01`, never
