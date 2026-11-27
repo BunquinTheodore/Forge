@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { format } from 'node:util';
 import handler from '../api/register.js';
 
-// Every saved registration from the three forms is emailed to ICCPI through Resend.
+// Every saved registration from the three forms is emailed through Resend: the answers to ICCPI, a confirmation to the visitor.
 // Only the network is faked: the handler, its validation and the email text are the real code.
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(join(root, path), 'utf8');
@@ -79,7 +79,9 @@ function setup(t, { env = {}, sheet = () => json({ ok: true }), resend = () => j
     if (String(url) === RESEND_URL) return resend();
     throw new Error(`unexpected request to ${url}`);
   });
-  return { calls, logs, emails: () => calls.filter((c) => c.url === RESEND_URL) };
+  const emails = () => calls.filter((c) => c.url === RESEND_URL);
+  const kind = (name) => () => emails().filter((c) => c.headers['Idempotency-Key'].startsWith(`forge-${name}/`));
+  return { calls, logs, emails, team: kind('registration'), confirmations: kind('confirmation') };
 }
 
 async function submit(body) {
@@ -109,10 +111,10 @@ for (const { form, kind, values, lines } of FORM_CASES) {
     const res = await submit({ form, submissionId: 'abcdef12-0000-4000-8000-000000000000', values });
 
     assert.equal(res.statusCode, 200);
-    assert.deepEqual(net.calls.map((c) => c.url), [SHEET_URL, RESEND_URL], 'saved first, then emailed');
-    const [email] = net.emails();
+    assert.deepEqual(net.calls.map((c) => c.url), [SHEET_URL, RESEND_URL, RESEND_URL], 'saved first, then emailed');
+    const [email] = net.team();
     assert.deepEqual(email.body.to, [TEAM]);
-    assert.equal(email.body.from, 'FORGE PH 2027 <onboarding@resend.dev>');
+    assert.equal(email.body.from, 'FORGE PH 2027 <registrations@forgeph.org>');
     assert.equal(email.body.reply_to, 'jane@example.com');
     assert.equal(email.body.subject, `FORGE PH 2027: new ${kind} from Jane Cruz (FORGE-ABCDEF12)`);
     for (const line of ['Reference: FORGE-ABCDEF12', 'Full name: Jane Cruz', 'Email: jane@example.com', 'Mobile number: +63 917 000 0000', 'Organization: Acme Labs', 'Consent given: Yes', ...lines]) {
@@ -135,16 +137,19 @@ test('the recipients and sender can be changed in the environment', async (t) =>
   const net = setup(t, { env: { REGISTRATION_EMAIL_TO: 'one@example.org, two@example.org', REGISTRATION_EMAIL_FROM: 'FORGE <mail@send.example.org>' } });
   await submit(booking());
   assert.deepEqual(net.emails()[0].body.to, ['one@example.org', 'two@example.org']);
-  assert.equal(net.emails()[0].body.from, 'FORGE <mail@send.example.org>');
+  assert.equal(net.team()[0].body.from, 'FORGE <mail@send.example.org>');
+  assert.equal(net.confirmations()[0].body.from, 'FORGE <mail@send.example.org>');
+  assert.deepEqual(net.confirmations()[0].body.to, ['jane@example.com'], 'the team list never changes who is confirmed');
 });
 
-test('a retry of the same submission sends an identical request, so Resend drops the duplicate', async (t) => {
+test('a retry of the same submission sends identical requests, so Resend drops the duplicates', async (t) => {
   const net = setup(t);
   await submit(booking());
   await submit(booking());
-  const [first, second] = net.emails();
-  assert.equal(first.headers['Idempotency-Key'], second.headers['Idempotency-Key']);
-  assert.deepEqual(first.body, second.body);
+  for (const [first, second] of [net.team(), net.confirmations()]) {
+    assert.equal(first.headers['Idempotency-Key'], second.headers['Idempotency-Key']);
+    assert.deepEqual(first.body, second.body);
+  }
 });
 
 test('nothing is emailed when the sheet does not accept the registration', async (t) => {
@@ -220,13 +225,16 @@ for (const address of RISKY) {
     const { body } = net.emails()[0];
     assert.equal(body.reply_to, undefined);
     assert.ok(body.text.includes(`Email: ${address}`));
+    assert.equal(net.confirmations().length, 0, 'nothing is sent to an address that could mean something else');
+    assert.match(net.logs.join('\n'), /no confirmation sent/);
   });
 }
 
 test('an ordinary address with dots, plus and apostrophe is used as reply to', async (t) => {
   const net = setup(t);
   await submit(booking({ email: "jane.o'neil+forge@mail.example.com.ph" }));
-  assert.equal(net.emails()[0].body.reply_to, "jane.o'neil+forge@mail.example.com.ph");
+  assert.equal(net.team()[0].body.reply_to, "jane.o'neil+forge@mail.example.com.ph");
+  assert.deepEqual(net.confirmations()[0].body.to, ["jane.o'neil+forge@mail.example.com.ph"]);
 });
 
 test('the function is allowed enough time to save and then email', async () => {
@@ -238,6 +246,60 @@ test('the function is allowed enough time to save and then email', async () => {
 
 test('the privacy notice names the email service and carries the date of that change', () => {
   const notice = read('src/sections/legal/legal.html');
+  assert.match(notice, /confirmation email goes to you/);
   assert.match(notice, /Resend/);
   assert.match(notice, /Last updated 27 November 2026/);
+});
+
+const WHAT = { conference: 'conference registration', booth: 'booth application', workshop: 'workshop and FD90 interest' };
+for (const { form, values } of FORM_CASES) {
+  test(`the person who sends the ${form} form gets a confirmation from the website`, async (t) => {
+    const net = setup(t);
+    await submit({ form, submissionId: 'abcdef12-0000-4000-8000-000000000000', values });
+
+    const [email] = net.confirmations();
+    assert.deepEqual(email.body.to, ['jane@example.com']);
+    assert.equal(email.body.from, 'FORGE PH 2027 <registrations@forgeph.org>');
+    assert.equal(email.body.reply_to, 'info@iccpi.org.ph');
+    assert.equal(email.body.subject, `FORGE PH 2027: we received your ${WHAT[form]} (FORGE-ABCDEF12)`);
+    for (const line of ['Hello Jane,', `We have received your ${WHAT[form]} for FORGE PH 2027.`, 'Your reference: FORGE-ABCDEF12', 'When: 27 January 2027, 10:00 AM to 6:00 PM', 'Where: WhiteSpace, Makati, Philippines', 'https://www.forgeph.org']) {
+      assert.ok(email.body.text.includes(line), `confirmation is missing "${line}"`);
+    }
+    assert.equal(email.headers['Idempotency-Key'], 'forge-confirmation/FORGE-ABCDEF12');
+    assert.ok(email.signal instanceof AbortSignal);
+    assert.ok(email.body.html.includes('FORGE-ABCDEF12') && email.body.html.includes(WHAT[form]), 'the designed version carries the same facts');
+  });
+}
+
+test('the confirmation repeats none of the typed answers, so the form cannot be used to write to strangers', async (t) => {
+  const net = setup(t);
+  await submit(booking({ fullName: 'Jane Buy-Cheap-Things', organization: 'Spam Org', notes: 'visit spam.example', otherAttendees: 'Spam Person' }));
+  assert.doesNotMatch(net.confirmations()[0].body.text, /Cheap|Spam|spam\.example/);
+});
+
+const GREETINGS = [
+  ['José Rizal', 'Hello José,'],
+  ['Ma. Cristina Santos', 'Hello Ma.,'],
+  ["D'Angelo Cruz", "Hello D'Angelo,"],
+  ['http://spam.example Jane', 'Hello,'],
+  ['spam.example', 'Hello,'],
+  ['<b>Jane</b>', 'Hello,'],
+  ['Jean-Pierre Reyes', 'Hello Jean-Pierre,'],
+  ['Your-account-is-locked-reply-with-OTP Cruz', 'Hello,'],
+  ['Abcdefghijklmnopqrstuvwxyz Cruz', 'Hello,'],
+];
+for (const [fullName, greeting] of GREETINGS) {
+  test(`${fullName} is greeted with "${greeting}"`, async (t) => {
+    const net = setup(t);
+    await submit(booking({ fullName }));
+    assert.equal(net.confirmations()[0].body.text.split('\n')[0], greeting);
+  });
+}
+
+test('one email failing does not stop the other', async (t) => {
+  let sent = 0;
+  const net = setup(t, { resend: () => (sent++ === 0 ? new Response('down', { status: 500 }) : json({ id: 'email_2' })) });
+  const res = await submit(booking());
+  assert.equal(res.statusCode, 200);
+  assert.equal(net.emails().length, 2);
 });

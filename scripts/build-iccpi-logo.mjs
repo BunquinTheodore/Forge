@@ -46,3 +46,6 @@ async function write(name, box) {
 
 await write('iccpi-color.webp', inkBounds(height));
 await write('iccpi-color-compact.webp', inkBounds(COMPACT_BOTTOM));
+
+// Registration emails need a PNG (some mail apps cannot show WebP), at twice its 120 pixel display width.
+await sharp(`${OUT}/iccpi-color.webp`).resize(240).png({ palette: true, compressionLevel: 9 }).toFile(`${OUT}/iccpi-email.png`);

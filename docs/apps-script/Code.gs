@@ -122,8 +122,11 @@ function sendConfirmation(record) {
   if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]{2,}$/.test(to)) return;
   if (!reserveEmail(1, CONFIRM_LIMIT)) return;
   var what = { conference: 'conference registration', booth: 'booth application', workshop: 'workshop and FD90 interest' }[record.form] || 'registration';
+  // The only typed text in this email: one short first name, so the form cannot send messages or links to strangers.
+  var first = String(record.fullName || '').trim().split(/\s+/)[0];
+  var greeting = /^(?=.{1,20}\.?$)[\p{L}\p{M}]+(?:['’-][\p{L}\p{M}]+)?\.?$/u.test(first) ? 'Hello ' + first + ',' : 'Hello,';
   var lines = [
-    'Hello ' + String(record.fullName || '').split(' ')[0] + ',',
+    greeting,
     '',
     'Thank you. We have received your ' + what + ' for FORGE PH 2027.',
     'Your reference: ' + record.reference,

@@ -1,11 +1,11 @@
 import { randomBytes } from 'node:crypto';
 import { validate } from '../shared/registration.js';
-import { emailTeam } from './_email.js';
+import { sendRegistrationEmails } from './_email.js';
 
 /**
  * POST /api/register
  * Validates a FORGE PH 2027 registration, hands it to the ICCPI Google Sheet webhook and, once saved,
- * emails the ICCPI team (see api/_email.js for the email settings).
+ * emails the ICCPI team and the person who registered (see api/_email.js for the email settings).
  * Environment (Vercel project settings):
  *   REGISTRATION_WEBHOOK_URL     Google Apps Script web app URL (see docs/registration-setup.md)
  *   REGISTRATION_WEBHOOK_SECRET  shared secret the Apps Script checks before writing a row
@@ -121,6 +121,6 @@ export default async function handler(req, res) {
 
   const record = toRecord(body.form, result.values, body.submissionId);
   const { status, body: reply } = await forward(record);
-  if (status === 200) await emailTeam(record.form, record.reference, result.values);
+  if (status === 200) await sendRegistrationEmails(record.form, record.reference, result.values);
   return res.status(status).json(reply);
 }
