@@ -35,7 +35,8 @@ DOC-2026_*.png the dark deck, FORGE_PH_*.png the cream programme).
 ## Search (SEO)
 - Every indexable page: unique `<title>` (65 characters or fewer) and meta description (70 to 160), canonical and `og:url` on
   `https://www.forgeph.org` with a trailing slash, `og:site_name`, and the square icons (`/favicon.ico`,
-  `/img/favicon-192.png`, `/img/apple-touch-icon.png`, rebuilt with `node scripts/build-favicons.mjs`).
+  `/img/favicon-192.png`, `/img/apple-touch-icon.png`: FORGE above its orange PH on black, rebuilt with
+  `node scripts/build-favicons.mjs`).
 - The home page JSON-LD describes the site (`WebSite`), ICCPI (`Organization`) and the forum (`Event`). Every other
   indexable page has a `BreadcrumbList`.
 - A new page goes in `PAGES` (`vite.config.js`), `public/sitemap.xml`, the redirects in `vercel.json` and the path list

@@ -100,6 +100,27 @@ test('icon files are square and the declared size', async () => {
   }
 });
 
+test('the site icon is the FORGE wordmark on black with its orange PH', async () => {
+  for (const { href, size } of ICONS) {
+    const { data, info } = await sharp(readFileSync(join(root, 'public', href))).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    const pixel = (x, y) => [...data.subarray((y * info.width + x) * 3, (y * info.width + x) * 3 + 3)];
+    for (const [x, y] of [[0, 0], [size - 1, 0], [0, size - 1], [size - 1, size - 1]]) {
+      assert.ok(pixel(x, y).every((c) => c < 32), `${href}: the corners should be the site's black, got ${pixel(x, y)}`);
+    }
+    let orangeBelow = 0;
+    let lightAbove = 0;
+    for (let y = 0; y < size; y += 1) {
+      for (let x = 0; x < size; x += 1) {
+        const [r, g, b] = pixel(x, y);
+        if (y >= size / 2 && r > 180 && g > 50 && g < 140 && b < 90) orangeBelow += 1;
+        if (y < size / 2 && r > 150 && g > 150 && b > 150) lightAbove += 1;
+      }
+    }
+    assert.ok(orangeBelow > size * size * 0.04, `${href}: the orange PH is missing from the lower half`);
+    assert.ok(lightAbove > size * size * 0.04, `${href}: the FORGE letters are missing from the upper half`);
+  }
+});
+
 test('favicon.ico exists and holds square 16, 32 and 48 pixel icons', () => {
   const file = join(root, 'public', 'favicon.ico');
   assert.ok(existsSync(file), 'public/favicon.ico is missing');

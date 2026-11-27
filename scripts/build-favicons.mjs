@@ -1,10 +1,19 @@
-// Square site icons for browser tabs, phones and search results, from the official colour ICCPI artwork on white.
-// Source: public/img/iccpi-color-compact.webp (symbol + ICCPI, built by build-iccpi-logo.mjs).
+// Square site icons for browser tabs, phones and search results: FORGE above its orange PH, on the site's black.
+// Source: scripts/forge-wordmark-src.png, the website's own FORGE PH 2027 wordmark (transparent, 1600 pixels wide).
 // Run: node scripts/build-favicons.mjs
 import sharp from 'sharp';
 import { writeFile } from 'node:fs/promises';
 
-const SRC = 'public/img/iccpi-color-compact.webp';
+const SRC = 'scripts/forge-wordmark-src.png';
+const INK = '#080b0e';
+const MASTER = 192;
+const EDGE = 2; // source pixels kept around each part so letter edges stay smooth
+const SOLID_ALPHA = 150; // anything fainter is the soft glow, which would show as a box once cut out
+// Where each part sits in the source, then its width and top on the master. Narrow enough to survive a round crop.
+const PARTS = [
+  { box: { left: 70, top: 59, width: 1284, height: 204 }, width: 158, top: 54 }, // FORGE
+  { box: { left: 1378, top: 59, width: 125, height: 53 }, width: 112, top: 91 }, // PH
+];
 const PNG_ICONS = [
   { file: 'public/img/favicon-192.png', size: 192 }, // search results need a square multiple of 48
   { file: 'public/img/apple-touch-icon.png', size: 180 },
@@ -13,8 +22,26 @@ const ICO_SIZES = [16, 32, 48];
 const ICO_HEADER = 6;
 const ICO_ENTRY = 16;
 
-const square = (size) => sharp(SRC)
-  .resize(size, size, { fit: 'contain', background: '#ffffff', kernel: 'lanczos3' })
+/** One part of the wordmark without its glow, scaled and centred, ready to place on the master. */
+async function layer({ box, width, top }) {
+  const scale = width / box.width;
+  const crop = { left: box.left - EDGE, top: box.top - EDGE, width: box.width + 2 * EDGE, height: box.height + 2 * EDGE };
+  const { data, info } = await sharp(SRC).extract(crop).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const letters = Buffer.from(data.map((value, i) => (i % 4 === 3 && value < SOLID_ALPHA ? 0 : value)));
+  const input = await sharp(letters, { raw: info })
+    .resize(Math.round(crop.width * scale), Math.round(crop.height * scale), { kernel: 'lanczos3' })
+    .png()
+    .toBuffer();
+  return { input, left: Math.round((MASTER - crop.width * scale) / 2), top: Math.round(top - EDGE * scale) };
+}
+
+const master = await sharp({ create: { width: MASTER, height: MASTER, channels: 4, background: INK } })
+  .composite(await Promise.all(PARTS.map(layer)))
+  .png()
+  .toBuffer();
+
+const square = (size) => sharp(master)
+  .resize(size, size, { kernel: 'lanczos3' })
   .ensureAlpha()
   .png({ compressionLevel: 9 })
   .toBuffer();
