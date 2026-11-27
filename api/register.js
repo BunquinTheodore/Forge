@@ -1,9 +1,11 @@
 import { randomBytes } from 'node:crypto';
 import { validate } from '../shared/registration.js';
+import { emailTeam } from './_email.js';
 
 /**
  * POST /api/register
- * Validates a FORGE PH 2027 registration and hands it to the ICCPI Google Sheet webhook.
+ * Validates a FORGE PH 2027 registration, hands it to the ICCPI Google Sheet webhook and, once saved,
+ * emails the ICCPI team (see api/_email.js for the email settings).
  * Environment (Vercel project settings):
  *   REGISTRATION_WEBHOOK_URL     Google Apps Script web app URL (see docs/registration-setup.md)
  *   REGISTRATION_WEBHOOK_SECRET  shared secret the Apps Script checks before writing a row
@@ -86,12 +88,12 @@ async function forward(record) {
     });
     const reply = await response.json().catch(() => null);
     if (!response.ok || !reply?.ok) {
-      console.error('[register] webhook rejected', record.form, response.status, reply?.error || '');
+      console.error('[register] webhook rejected', record.form, record.reference, response.status, reply?.error || '');
       return { status: 502, body: { ok: false, code: 'upstream' } };
     }
     return { status: 200, body: { ok: true, reference: record.reference } };
   } catch (err) {
-    console.error('[register] webhook failed', record.form, err.name);
+    console.error('[register] webhook failed', record.form, record.reference, err.name);
     return { status: 502, body: { ok: false, code: 'upstream' } };
   }
 }
@@ -117,6 +119,8 @@ export default async function handler(req, res) {
   const result = validate(body.form, body.values);
   if (!result.ok) return res.status(422).json({ ok: false, code: 'invalid', errors: result.errors });
 
-  const { status, body: reply } = await forward(toRecord(body.form, result.values, body.submissionId));
+  const record = toRecord(body.form, result.values, body.submissionId);
+  const { status, body: reply } = await forward(record);
+  if (status === 200) await emailTeam(record.form, record.reference, result.values);
   return res.status(status).json(reply);
 }

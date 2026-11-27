@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": { "api/register.js": { "maxDuration": 30 } },
+  "functions": { "api/register.js": { "maxDuration": 40 } },
   "redirects": [
     {
       "source": "/:path(.*)",

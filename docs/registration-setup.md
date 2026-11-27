@@ -6,8 +6,29 @@
 2. The browser validates the form, then posts it to `/api/register` (a Vercel serverless function, `api/register.js`).
 3. The function validates again on the server (same rules, `shared/registration.js`), rejects spam and cross-site posts, and forwards the registration to an **Apps Script web app that lives inside an ICCPI Google Sheet**.
 4. The script appends one row to the tab for that form (Conference, Booth, Workshop) and emails the registration team.
+5. Once the row is saved, the function emails the full registration to `f.calabretta@iccpi.org.ph` through Resend (`api/_email.js`). Replying to that email writes to the person who registered.
 
-Who can read the data is decided by who the Google Sheet is shared with. The website itself stores nothing and has no admin login.
+Who can read the data is decided by who the Google Sheet is shared with, and by who receives the emails. The website itself stores nothing and has no admin login.
+
+### Set up the Resend email
+
+**Without access to the domain's DNS (works now).** The sender `onboarding@resend.dev` needs no DNS records, but Resend only delivers it to the address that owns the Resend account. Resend describes it as being for testing.
+
+1. Create the Resend account at resend.com **with `f.calabretta@iccpi.org.ph`** as its email address, and confirm that address.
+2. API Keys > Create API key with **Sending access** only.
+3. Vercel > Project > Settings > Environment Variables, for **Production**: add `RESEND_API_KEY` with that key (never commit it or paste it into a chat).
+4. Redeploy, submit a test registration and confirm the email arrives (check spam the first time).
+
+**Later, with GoDaddy access (recommended).** Needed to send to more than one address, or from a `forgeph.org` sender.
+
+1. Resend > Domains > Add domain: `forgeph.org`. Add each DNS record it lists in GoDaddy > forgeph.org > DNS, then press Verify.
+2. In Vercel add `REGISTRATION_EMAIL_FROM`, for example `FORGE PH 2027 <registrations@forgeph.org>`.
+3. Optional: `REGISTRATION_EMAIL_TO`, recipients separated by commas. Default `f.calabretta@iccpi.org.ph`.
+4. Redeploy and test again.
+
+If an email cannot be sent, the registration is still saved and the Vercel function log shows its reference. A free Resend account has daily and monthly sending limits, so add the firewall rule under Spam protection before promoting the forms.
+
+To avoid two notices for each registration, remove `f.calabretta@iccpi.org.ph` from the Apps Script property `NOTIFY_EMAILS` once the Resend email works.
 
 ### Set up the Google Sheet (about 10 minutes, ICCPI Google account)
 
@@ -26,11 +47,11 @@ Until step 5 is done the forms show a friendly message asking people to email `i
 
 ### Spam protection
 
-The form has a hidden honeypot, same-site checks and a small per-visitor limit inside the function. For stronger protection add a Vercel Firewall rate-limit rule for `/api/register` (Project > Firewall) and, if spam appears, a CAPTCHA such as Cloudflare Turnstile. The Apps Script sends at most 100 notification emails a day; rows are always saved.
+The form has a hidden honeypot, same-site checks and a small per-visitor limit inside the function. These do not cap the total number of emails, so spam could use up the Resend allowance. Add a Vercel Firewall rate-limit rule for `/api/register` (Project > Firewall) and, if spam appears, a CAPTCHA such as Cloudflare Turnstile. The Apps Script sends at most 100 notification emails a day; rows are always saved.
 
 ### Data and privacy
 
-Collected: name, email, mobile, job title, organization, country, business category, sector, interests, notes, and form specific answers. Participants confirm a consent line on every form. IP addresses are not stored. Remove rows from the Sheet on request.
+Collected: name, email, mobile, job title, organization, country, business category, sector, interests, notes, and form specific answers. Participants confirm a consent line on every form. IP addresses are not stored. On a deletion request, remove the row from the Sheet and delete the matching notification emails. Sent emails also appear in the Resend dashboard.
 
 ## 2. Payment (to be decided)
 
