@@ -7,9 +7,23 @@
       "has": [{ "type": "host", "value": "forgeph.org" }],
       "destination": "https://www.forgeph.org/:path",
       "permanent": true
-    }
+    },
+    { "source": "/programme", "destination": "/programme/", "permanent": true },
+    { "source": "/how-forge-works", "destination": "/how-forge-works/", "permanent": true },
+    { "source": "/workshop-fd90", "destination": "/workshop-fd90/", "permanent": true },
+    { "source": "/international-forge", "destination": "/international-forge/", "permanent": true },
+    { "source": "/partners", "destination": "/partners/", "permanent": true },
+    { "source": "/privacy", "destination": "/privacy/", "permanent": true },
+    { "source": "/register/conference", "destination": "/register/conference/", "permanent": true },
+    { "source": "/register/booth", "destination": "/register/booth/", "permanent": true },
+    { "source": "/register/workshop", "destination": "/register/workshop/", "permanent": true }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": ".*\\.vercel\\.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
+    },
     {
       "source": "/(.*)",
       "headers": [

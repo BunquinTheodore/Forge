@@ -32,6 +32,15 @@ DOC-2026_*.png the dark deck, FORGE_PH_*.png the cream programme).
 - Images available: `/img/poster-900.webp`, `/img/poster-1600.webp`, `/img/ribbon-1280.webp`, `/img/iccpi-logo.webp|png`.
 - Link preview (share) image: `/img/og-forge-ph-2027.jpg`, 1200x630, a baseline JPEG under 300 KB. Every page's `og:image` and `twitter:image`, and the Event JSON-LD on the home page, point at it (`ribbon-1280.webp` is no longer the share image). It shows the date, time and venue, so replace it when those change, and give the new file a new name so shared links do not keep showing the cached old card. `npm test` checks that each page's tags match the file.
 
+## Search (SEO)
+- Every indexable page: unique `<title>` (65 characters or fewer) and meta description (70 to 160), canonical and `og:url` on
+  `https://www.forgeph.org` with a trailing slash, `og:site_name`, and the square icons (`/favicon.ico`,
+  `/img/favicon-192.png`, `/img/apple-touch-icon.png`, rebuilt with `node scripts/build-favicons.mjs`).
+- The home page JSON-LD describes the site (`WebSite`), ICCPI (`Organization`) and the forum (`Event`). Every other
+  indexable page has a `BreadcrumbList`.
+- A new page goes in `PAGES` (`vite.config.js`), `public/sitemap.xml`, the redirects in `vercel.json` and the path list
+  in `tests/seo.test.mjs`. `npm test` checks all of the above.
+
 ## Copy rules (user's hard design preferences)
 - NO hyphens or dashes before text and no decorative leading lines before labels. Write `THESIS`, `01`, never
   `01 —`, `—— WHO WE ARE`, `- item`.

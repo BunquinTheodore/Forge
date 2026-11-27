@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>FORGE PH 2027 | The International Cross-Industry Startup Forum</title>
-  <meta name="description" content="FORGE PH 2027, presented by ICCPI. The international cross-industry startup forum connecting Italy, the Philippines and international business opportunities. 27 January 2027, 10:00 AM, WhiteSpace, Makati, Philippines." />
+  <meta name="description" content="FORGE PH 2027, the international startup forum connecting Italy and the Philippines. 27 January 2027, WhiteSpace, Makati. Presented by ICCPI." />
   <meta name="theme-color" content="#080B0E" />
   <link rel="canonical" href="https://www.forgeph.org/" />
   <meta property="og:title" content="FORGE PH 2027 | Your startup. A day before Overground." />
@@ -17,23 +17,54 @@
   <meta name="twitter:image" content="https://www.forgeph.org/img/og-forge-ph-2027.jpg" />
   <meta name="twitter:image:alt" content="FORGE PH 2027, The International Cross-Industry Startup Forum. 27 January 2027, 10:00 AM, WhiteSpace, Makati, Philippines. Presented by ICCPI." />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="FORGE PH" />
   <meta property="og:url" content="https://www.forgeph.org/" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href="/img/iccpi-logo.png" type="image/png" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/img/favicon-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "FORGE PH 2027. The International Cross-Industry Startup Forum",
-    "startDate": "2027-01-27T10:00:00+08:00",
-    "endDate": "2027-01-27T18:00:00+08:00",
-    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": { "@type": "Place", "name": "WhiteSpace", "address": { "@type": "PostalAddress", "addressLocality": "Makati", "addressCountry": "PH" } },
-    "organizer": { "@type": "Organization", "name": "Italian Chamber of Commerce in the Philippines, Inc. (ICCPI)", "url": "https://www.forgeph.org/" },
-    "image": "https://www.forgeph.org/img/og-forge-ph-2027.jpg",
-    "description": "An international business event operated like a startup, connecting Italy, the Philippines and international business opportunities.",
-    "offers": { "@type": "Offer", "url": "https://www.forgeph.org/register/conference/", "price": "5000", "priceCurrency": "PHP", "availability": "https://schema.org/InStock" }
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.forgeph.org/#website",
+        "url": "https://www.forgeph.org/",
+        "name": "FORGE PH",
+        "alternateName": ["FORGE PH 2027", "forgeph.org"],
+        "inLanguage": "en",
+        "publisher": { "@id": "https://www.iccpi.org.ph/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.iccpi.org.ph/#organization",
+        "name": "Italian Chamber of Commerce in the Philippines, Inc.",
+        "alternateName": "ICCPI",
+        "url": "https://www.iccpi.org.ph/",
+        "logo": "https://www.forgeph.org/img/iccpi-color.webp",
+        "sameAs": [
+          "https://www.facebook.com/ItalianChamberPH/",
+          "https://www.instagram.com/italianchamberph/",
+          "https://www.linkedin.com/company/italian-chamber-of-commerce-in-the-philippines-inc-"
+        ]
+      },
+      {
+        "@type": "Event",
+        "@id": "https://www.forgeph.org/#event",
+        "name": "FORGE PH 2027. The International Cross-Industry Startup Forum",
+        "url": "https://www.forgeph.org/",
+        "startDate": "2027-01-27T10:00:00+08:00",
+        "endDate": "2027-01-27T18:00:00+08:00",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "location": { "@type": "Place", "name": "WhiteSpace", "address": { "@type": "PostalAddress", "addressLocality": "Makati", "addressCountry": "PH" } },
+        "organizer": { "@id": "https://www.iccpi.org.ph/#organization" },
+        "image": "https://www.forgeph.org/img/og-forge-ph-2027.jpg",
+        "description": "An international business event operated like a startup, connecting Italy, the Philippines and international business opportunities.",
+        "offers": { "@type": "Offer", "url": "https://www.forgeph.org/register/conference/", "price": "5000", "priceCurrency": "PHP", "availability": "https://schema.org/InStock" }
+      }
+    ]
   }
   </script>
   <link rel="preload" href="/fonts/archivo-latin-wdth.woff2" as="font" type="font/woff2" crossorigin />
